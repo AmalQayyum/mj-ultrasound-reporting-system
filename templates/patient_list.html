@@ -1,0 +1,931 @@
+{% extends "base.html" %}
+
+{% block title %}Search Patients - MJ Ultrasound Reporting System{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* CSS to remove/hide filters sidebar on search patient page */
+    .patient-filters-sidebar,
+    #filters_sidebar_form {
+        display: none !important;
+    }
+
+    /* Table container card with rounded corners and soft shadow */
+    .patients-table-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.03);
+        overflow: hidden;
+    }
+
+    .patients-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .patients-table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        margin-bottom: 0;
+        min-width: 940px;
+    }
+
+    /* Table Action Buttons Group */
+    .table-action-group {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-end;
+        gap: 6px;
+        flex-wrap: wrap;
+    }
+
+    .btn-action-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        height: 32px;
+        padding: 0 10px;
+        font-size: 11px;
+        font-weight: 600;
+        border-radius: 6px;
+        white-space: nowrap;
+        text-decoration: none;
+        transition: all 0.15s ease-in-out;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    }
+
+    .btn-action-btn .action-icon {
+        font-size: 14px;
+    }
+
+    .btn-action-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+    }
+
+    /* View Button - Outline Primary */
+    .btn-action-view {
+        background-color: #ffffff;
+        color: #1d4ed8;
+        border: 1px solid #93c5fd;
+    }
+    .btn-action-view:hover {
+        background-color: #1d4ed8;
+        color: #ffffff;
+        border-color: #1d4ed8;
+    }
+
+    /* Edit Button - Outline Secondary */
+    .btn-action-edit {
+        background-color: #ffffff;
+        color: #475569;
+        border: 1px solid #cbd5e1;
+    }
+    .btn-action-edit:hover {
+        background-color: #475569;
+        color: #ffffff;
+        border-color: #475569;
+    }
+
+    /* Report Button - Outline Info */
+    .btn-action-report {
+        background-color: #ffffff;
+        color: #0284c7;
+        border: 1px solid #7dd3fc;
+    }
+    .btn-action-report:hover {
+        background-color: #0284c7;
+        color: #ffffff;
+        border-color: #0284c7;
+    }
+
+    /* Delete Button - Outline Danger (Red) */
+    .btn-action-delete {
+        background-color: #ffffff;
+        color: #dc2626;
+        border: 1px solid #fca5a5;
+    }
+    .btn-action-delete:hover {
+        background-color: #dc2626;
+        color: #ffffff;
+        border-color: #dc2626;
+    }
+
+    .patients-table th {
+        background-color: #f8f9fa !important;
+        color: #475569;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        padding: 14px 18px;
+        border-bottom: 2px solid #e2e8f0;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        vertical-align: middle;
+        white-space: nowrap;
+    }
+
+    .patients-table td {
+        padding: 12px 18px;
+        vertical-align: middle;
+        border-bottom: 1px solid #f1f5f9;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        color: #334155;
+        font-size: 13px;
+        height: 60px;
+        white-space: nowrap;
+    }
+
+    .patients-table tbody tr {
+        transition: background-color 0.15s ease;
+        background-color: #ffffff;
+    }
+
+    .patients-table tbody tr:nth-child(even) {
+        background-color: #fafbfc;
+    }
+
+    .patients-table tbody tr:hover {
+        background-color: #f1f5f9;
+    }
+
+    .patients-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row g-3">
+    <!-- Filters Sidebar Hidden via CSS -->
+    <div class="patient-filters-sidebar d-none" style="display: none !important;">
+        <form action="{{ url_for('main.patients') }}" method="GET" id="filters_sidebar_form">
+            <div class="clinical-card">
+                <h2 class="h6 mb-3 fw-bold text-slate-900 font-headline-md" style="font-size: 15px;">Filters</h2>
+                
+                <div class="d-flex flex-column gap-3">
+                    <!-- Date Range Filter -->
+                    <div>
+                        <label for="date_range" class="clinical-label">Date Range</label>
+                        <select id="date_range" name="date_range" class="form-select form-select-clinical" onchange="performLivePatientSearch()">
+                            <option value="All Time" {% if date_range == 'All Time' %}selected{% endif %}>All Time</option>
+                            <option value="Last 7 Days" {% if date_range == 'Last 7 Days' %}selected{% endif %}>Last 7 Days</option>
+                            <option value="Last 30 Days" {% if date_range == 'Last 30 Days' %}selected{% endif %}>Last 30 Days</option>
+                        </select>
+                    </div>
+
+                    <!-- Gender Filter -->
+                    <div>
+                        <label class="clinical-label">Gender</label>
+                        <div class="btn-group w-100" role="group">
+                            <input type="radio" class="btn-check" name="gender" id="gender_all" value="All" {% if gender == 'All' or not gender %}checked{% endif %} onchange="performLivePatientSearch()">
+                            <label class="btn btn-outline-secondary py-1 text-center" style="font-size: 12px; border-color: var(--outline-variant);" for="gender_all">All</label>
+                            
+                            <input type="radio" class="btn-check" name="gender" id="gender_m" value="Male" {% if gender == 'Male' %}checked{% endif %} onchange="performLivePatientSearch()">
+                            <label class="btn btn-outline-secondary py-1 text-center" style="font-size: 12px; border-color: var(--outline-variant);" for="gender_m">M</label>
+                            
+                            <input type="radio" class="btn-check" name="gender" id="gender_f" value="Female" {% if gender == 'Female' %}checked{% endif %} onchange="performLivePatientSearch()">
+                            <label class="btn btn-outline-secondary py-1 text-center" style="font-size: 12px; border-color: var(--outline-variant);" for="gender_f">F</label>
+                        </div>
+                    </div>
+
+                    <!-- Referred By Filter -->
+                    <div>
+                        <label for="referred_by" class="clinical-label">Referred By</label>
+                        <div class="input-group">
+                            <input type="text" id="referred_by" name="referred_by" class="form-control form-control-clinical" placeholder="Physician Name..." value="{{ referred_by }}" oninput="onFilterInputDebounce()">
+                            <button class="btn btn-primary px-2.5" type="button" onclick="performLivePatientSearch()" style="border-radius: 0 6px 6px 0;">
+                                <span class="material-symbols-outlined fs-6" style="font-size: 16px;">search</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reset Filters Button -->
+                <a href="{{ url_for('main.patients') }}" class="btn btn-secondary-clinical w-100 mt-3 d-flex align-items-center justify-center gap-1 py-1.5" style="font-size: 11px;">
+                    <span class="material-symbols-outlined fs-6" style="font-size: 14px;">restart_alt</span>
+                    Reset Filters
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Search Patients Area (Full Width) -->
+    <div class="col-12 d-flex flex-column gap-3">
+        <!-- Top bar with Header -->
+        <div class="pb-1 border-bottom" style="border-color: var(--outline-variant) !important;">
+            <h1 class="h5 fw-bold text-slate-900 mb-0 font-headline-md" style="font-size: 18px;">
+                Search Patients
+            </h1>
+            <p class="text-secondary mb-0" style="font-size: 12px;">
+                Search patient records by Name, MR No, Phone, or Father/Husband Name.
+            </p>
+        </div>
+
+        <!-- Center Search Bar Form -->
+        <form action="{{ url_for('main.patients') }}" method="GET" class="w-100 max-w-full mx-auto" onsubmit="event.preventDefault();">
+            <div class="position-relative w-100">
+                <span class="material-symbols-outlined position-absolute" style="left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 20px;">search</span>
+                <input type="text" id="patient_search_input" name="q" class="form-control form-control-clinical bg-white w-100" style="padding-left: 2.75rem; padding-top: 0.75rem; padding-bottom: 0.75rem; font-size: 14px; border-radius: 8px !important; border: 1px solid var(--outline-variant);" placeholder="Search by Name, MR No / Patient ID, Phone Number, or Father/Husband Name..." value="{{ q }}" autofocus autocomplete="off" oninput="onFilterInputDebounce()">
+            </div>
+        </form>
+
+        <!-- Results Panel -->
+        <div class="clinical-card p-0 overflow-hidden bg-white" style="border-radius: 12px;">
+            <div class="card-header-clinical px-3 pt-3 pb-2 m-0 bg-light d-flex align-items-center justify-content-between" style="border-bottom: 1px solid var(--outline-variant);">
+                <h3 class="h6 mb-0 fw-bold text-slate-900 font-headline-md" style="font-size: 15px;">Search Results</h3>
+                <span class="text-secondary label-caps font-mono" id="matches_count_span" style="font-size: 11px; font-weight: 500;">
+                    {{ patients|length }} matches found
+                </span>
+            </div>
+
+            <div class="table-responsive w-100 overflow-x-auto">
+                <table class="table table-hover align-middle mb-0 text-left w-100">
+                    <thead>
+                        <tr style="background-color: #F8FAFC; border-bottom: 1px solid var(--outline-variant);">
+                            <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em; width: 130px;">PATIENT ID</th>
+                            <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em;">PATIENT NAME</th>
+                            <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em; width: 140px;">AGE / GENDER</th>
+                            <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em; width: 150px;">PHONE</th>
+                            <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em; width: 160px;">REGISTRATION DATE</th>
+                            <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700 text-end" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em; min-width: 270px; width: 280px;">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patient_list_tbody">
+                        {% if patients %}
+                            {% for patient in patients %}
+                                <tr id="patient_row_{{ patient.id }}" style="border-bottom: 1px solid var(--outline-variant); cursor: pointer;" onclick="window.location='{{ url_for('main.patient_detail', id=patient.id) }}'">
+                                    <td class="px-3 py-2.5 text-nowrap font-mono text-indigo-600 fw-medium" style="font-size: 13px;">
+                                        {{ patient.patient_code }}
+                                    </td>
+                                    <td class="px-3 py-2.5 text-nowrap">
+                                        <div class="fw-semibold text-slate-900" style="font-size: 14px;">{{ patient.full_name }}</div>
+                                    </td>
+                                    <td class="px-3 py-2.5 text-secondary text-nowrap" style="font-size: 12px;">
+                                        {{ patient.age }} yrs / {% if patient.gender %}{{ patient.gender[0] | upper }}{% else %}?{% endif %}
+                                    </td>
+                                    <td class="px-3 py-2.5 text-secondary font-mono text-nowrap" style="font-size: 12px;">
+                                        {{ patient.phone or '-' }}
+                                    </td>
+                                    <td class="px-3 py-2.5 text-secondary text-nowrap" style="font-size: 12px;">
+                                        <div class="fw-medium text-slate-800" style="font-size: 12px;">{{ patient.created_at | strftime('%Y-%m-%d') }}</div>
+                                        {% set reg_time = patient.created_at | strftime('%I:%M %p') %}
+                                        {% if reg_time and reg_time != (patient.created_at | strftime('%Y-%m-%d')) %}
+                                            <div class="text-secondary small" style="font-size: 11px; font-weight: 500;">{{ reg_time }}</div>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-3 py-2.5 text-end text-nowrap" onclick="event.stopPropagation()">
+                                        <div class="table-action-group">
+                                            <a href="{{ url_for('main.patient_detail', id=patient.id) }}" class="btn btn-sm btn-action-btn btn-action-view" title="View Patient">
+                                                <span class="material-symbols-outlined action-icon">visibility</span>
+                                                <span>View</span>
+                                            </a>
+                                            <a href="{{ url_for('main.patient_edit', id=patient.id) }}" class="btn btn-sm btn-action-btn btn-action-edit" title="Edit Patient">
+                                                <span class="material-symbols-outlined action-icon">edit</span>
+                                                <span>Edit</span>
+                                            </a>
+                                            <a href="{{ url_for('main.report_add', patient_id=patient.id) }}" class="btn btn-sm btn-action-btn btn-action-report" title="Create Report">
+                                                <span class="material-symbols-outlined action-icon">description</span>
+                                                <span>Report</span>
+                                            </a>
+                                            <button type="button" class="btn btn-sm btn-action-btn btn-action-delete" title="Delete Patient" onclick="confirmDeletePatient('{{ patient.id }}', '{{ patient.full_name | replace("'", "\\'") }}', '{{ patient.patient_code }}')">
+                                                <span class="material-symbols-outlined action-icon">delete</span>
+                                                <span>Delete</span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="px-3 py-5 text-center">
+                                    <div class="d-flex flex-column align-items-center justify-content-center py-4">
+                                        <span class="material-symbols-outlined text-slate-400 mb-2" style="font-size: 52px;">person_search</span>
+                                        <h4 class="h5 fw-bold text-slate-900 mb-2">No patient found.</h4>
+                                        <p class="text-secondary small mb-3 max-w-md mx-auto" style="font-size: 13px;">
+                                            No patient matches your search query. Click below to register a new patient.
+                                        </p>
+                                        <button type="button" onclick="goToRegisterPatient()" class="btn btn-primary d-inline-flex align-items-center gap-2 px-4 py-2.5 fw-semibold shadow-sm" style="font-size: 14px; border-radius: 8px; background-color: #022e67; border-color: #022e67;">
+                                            <span class="material-symbols-outlined fs-6" style="font-size: 18px;">add</span>
+                                            Add New Patient
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Patient Modal -->
+<div class="modal fade" id="addPatientModal" tabindex="-1" aria-labelledby="addPatientModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header text-white py-3" style="background-color: #022e67;">
+                <h5 class="modal-title h6 mb-0 fw-bold d-flex align-items-center gap-2" id="addPatientModalLabel">
+                    <span class="material-symbols-outlined fs-5">person_add</span>
+                    Register New Patient
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="modalAddPatientForm" action="{{ url_for('main.patient_add') }}" method="POST" onsubmit="handleModalAddPatientSubmit(event)">
+                <div class="modal-body p-4" style="background-color: #f8fafc;">
+                    <div class="row g-3">
+                        <!-- Patient Name -->
+                        <div class="col-12 col-md-6">
+                            <label for="modal_full_name" class="clinical-label" style="background-color: #8db1e1; color: #ffffff; padding: 4px 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; border-radius: 4px 4px 0 0; height: 32px; margin-bottom: 0;">Name *</label>
+                            <input type="text" id="modal_full_name" name="full_name" class="form-control form-control-clinical" placeholder="e.g. Jane Doe" style="background-color: #ffffff; height: 38px; font-size: 14px; border-radius: 0 0 4px 4px;" required>
+                        </div>
+
+                        <!-- Phone Number -->
+                        <div class="col-12 col-md-6">
+                            <label for="modal_phone" class="clinical-label" style="background-color: #8db1e1; color: #ffffff; padding: 4px 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; border-radius: 4px 4px 0 0; height: 32px; margin-bottom: 0;">Phone Number *</label>
+                            <input type="tel" id="modal_phone" name="phone" class="form-control form-control-clinical font-mono" placeholder="e.g. 0300-1234567" style="background-color: #ffffff; height: 38px; font-size: 14px; border-radius: 0 0 4px 4px;" required>
+                        </div>
+
+                        <!-- Age -->
+                        <div class="col-12 col-md-4">
+                            <label for="modal_age" class="clinical-label" style="background-color: #8db1e1; color: #ffffff; padding: 4px 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; border-radius: 4px 4px 0 0; height: 32px; margin-bottom: 0;">Age (Years) *</label>
+                            <input type="number" id="modal_age" name="age" class="form-control form-control-clinical font-mono" placeholder="e.g. 35" min="0" max="150" style="background-color: #ffffff; height: 38px; font-size: 14px; border-radius: 0 0 4px 4px;" required>
+                        </div>
+
+                        <!-- Gender -->
+                        <div class="col-12 col-md-4">
+                            <label for="modal_gender" class="clinical-label" style="background-color: #8db1e1; color: #ffffff; padding: 4px 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; border-radius: 4px 4px 0 0; height: 32px; margin-bottom: 0;">Gender *</label>
+                            <select id="modal_gender" name="gender" class="form-select form-select-clinical" style="background-color: #ffffff; height: 38px; font-size: 14px; border-radius: 0 0 4px 4px;" required>
+                                <option value="Female" selected>Female</option>
+                                <option value="Male">Male</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        <!-- Referred By -->
+                        <div class="col-12 col-md-4">
+                            <label for="modal_referred_by" class="clinical-label" style="background-color: #8db1e1; color: #ffffff; padding: 4px 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; border-radius: 4px 4px 0 0; height: 32px; margin-bottom: 0;">Referred By Physician</label>
+                            <select id="modal_referred_by" name="referred_by" class="form-select form-select-clinical" style="background-color: #ffffff; height: 38px; font-size: 14px; border-radius: 0 0 4px 4px;">
+                                {% if doctors and doctors.length > 0 %}
+                                    {% for doc in doctors %}
+                                        <option value="{{ doc.full_name }}" {% if loop.first %}selected{% endif %}>{{ doc.full_name }}</option>
+                                    {% endfor %}
+                                {% else %}
+                                    <option value="Dr. Asma" selected>Dr. Asma</option>
+                                {% endif %}
+                                <option value="Self">Self</option>
+                            </select>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="col-12 col-md-4">
+                            <label for="modal_address" class="clinical-label" style="background-color: #8db1e1; color: #ffffff; padding: 4px 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; border-radius: 4px 4px 0 0; height: 32px; margin-bottom: 0;">Address</label>
+                            <input type="text" id="modal_address" name="address" class="form-control form-control-clinical" placeholder="e.g. House #12, Street 4, City" style="background-color: #ffffff; height: 38px; font-size: 14px; border-radius: 0 0 4px 4px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2 px-4 d-flex justify-content-between">
+                    <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" id="btn_modal_save_patient" class="btn btn-primary btn-sm px-4 fw-bold d-inline-flex align-items-center gap-1.5" style="background-color: #022e67; border-color: #022e67;">
+                        <span class="material-symbols-outlined fs-6">save</span>
+                        Save Patient
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Patient Confirmation Modal -->
+<div class="modal fade" id="deletePatientModal" tabindex="-1" aria-labelledby="deletePatientModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white py-3">
+                <h5 class="modal-title h6 mb-0 fw-bold d-flex align-items-center gap-2" id="deletePatientModalLabel">
+                    <span class="material-symbols-outlined fs-5">warning</span>
+                    Confirm Patient Deletion
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-4">
+                <p class="mb-2 text-slate-800" style="font-size: 14px;">
+                    Are you sure you want to permanently delete patient <strong id="delete_patient_name_display" class="text-danger"></strong> (<span id="delete_patient_code_display" class="font-mono"></span>)?
+                </p>
+                <div class="p-2.5 rounded bg-amber-50 border border-amber-200 text-amber-900 mt-3 d-flex align-items-start gap-2" style="font-size: 12px;">
+                    <span class="material-symbols-outlined fs-6 text-amber-600 flex-shrink-0 mt-0.5">error</span>
+                    <div>
+                        <strong>Warning:</strong> This operation will permanently remove this patient and all associated ultrasound reports from the database.
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light py-2">
+                <button type="button" class="btn btn-secondary btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="btn_confirm_delete" onclick="executePatientDelete()" class="btn btn-danger btn-sm px-4 fw-bold d-inline-flex align-items-center gap-1.5" style="background-color: #dc2626; border-color: #dc2626;">
+                    <span class="material-symbols-outlined fs-6">delete_forever</span>
+                    Permanently Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let pendingDeletePatientId = null;
+    let searchDebounceTimer = null;
+
+    function togglePatientMenu(event, patientId) {
+        if (event) {
+            event.stopPropagation();
+            event.preventDefault();
+        }
+        const button = event ? event.currentTarget : null;
+        const currentMenu = document.getElementById(`patient_menu_${patientId}`);
+        const wrapper = document.getElementById(`dropdown_wrapper_${patientId}`);
+        const isCurrentlyOpen = currentMenu ? currentMenu.classList.contains('show') : false;
+
+        closeAllPatientMenus();
+
+        if (currentMenu && !isCurrentlyOpen) {
+            if (button && button.getBoundingClientRect) {
+                const rect = button.getBoundingClientRect();
+                const menuWidth = 190;
+                const menuHeight = 180;
+
+                let left = rect.right - menuWidth;
+                if (left < 10) left = 10;
+                if (left + menuWidth > window.innerWidth - 10) {
+                    left = window.innerWidth - menuWidth - 10;
+                }
+
+                let top = rect.bottom + 4;
+                if (top + menuHeight > window.innerHeight - 10 && rect.top - menuHeight > 10) {
+                    top = rect.top - menuHeight - 4;
+                }
+
+                currentMenu.style.position = 'fixed';
+                currentMenu.style.top = `${top}px`;
+                currentMenu.style.left = `${left}px`;
+            }
+
+            currentMenu.classList.add('show');
+            if (wrapper) wrapper.classList.add('show');
+        }
+    }
+
+    function closeAllPatientMenus() {
+        document.querySelectorAll('.patient-action-menu.show').forEach(menu => {
+            menu.classList.remove('show');
+        });
+        document.querySelectorAll('.patient-action-dropdown.show').forEach(wrapper => {
+            wrapper.classList.remove('show');
+        });
+    }
+
+    // Auto-close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.patient-action-dropdown') && !e.target.closest('.patient-action-menu')) {
+            closeAllPatientMenus();
+        }
+    });
+
+    // Auto-close on escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAllPatientMenus();
+        }
+    });
+
+    window.addEventListener('scroll', closeAllPatientMenus, { passive: true });
+    window.addEventListener('resize', closeAllPatientMenus, { passive: true });
+
+    function getSelectedGender() {
+        const checkedRadio = document.querySelector('input[name="gender"]:checked');
+        return checkedRadio ? checkedRadio.value : 'All';
+    }
+
+    function onFilterInputDebounce() {
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(performLivePatientSearch, 400);
+    }
+
+    function performLivePatientSearch() {
+        const searchInput = document.getElementById('patient_search_input');
+        const query = searchInput ? searchInput.value.trim() : '';
+        const dateRange = document.getElementById('date_range')?.value || 'All Time';
+        const gender = getSelectedGender();
+        const referredBy = document.getElementById('referred_by')?.value || '';
+
+        const params = new URLSearchParams({
+            q: query,
+            gender: gender,
+            date_range: dateRange,
+            referred_by: referredBy,
+            format: 'json'
+        });
+
+        const tbody = document.getElementById('patient_list_tbody');
+        const mobileCardsDiv = document.getElementById('patient_list_mobile_cards');
+        const matchSpan = document.getElementById('matches_count_span') || document.querySelector('.label-caps');
+
+        fetch(`/patients?${params.toString()}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(res => {
+            if (res.status === 401) {
+                window.location.href = '/login';
+                return null;
+            }
+            if (!res.ok) {
+                return null;
+            }
+            const contentType = res.headers.get('content-type') || '';
+            if (contentType.includes('application/json')) {
+                return res.json();
+            } else if (res.redirected) {
+                window.location.href = res.url;
+                return null;
+            }
+            return null;
+        })
+        .then(data => {
+            if (!data || !data.success) return;
+
+            if (matchSpan) {
+                matchSpan.textContent = `${data.count} matches found`;
+            }
+
+            if (data.patients && data.patients.length > 0) {
+                let tableHtml = '';
+                let cardsHtml = '';
+                data.patients.forEach(patient => {
+                    const genderLetter = patient.gender ? patient.gender.charAt(0).toUpperCase() : '?';
+                    const createdDateRaw = (patient.created_at || '').trim();
+                    let datePart = createdDateRaw;
+                    let timePart = '';
+                    if (createdDateRaw.includes(' ')) {
+                        const parts = createdDateRaw.split(' ');
+                        datePart = parts[0];
+                        timePart = parts.slice(1).join(' ');
+                    } else if (createdDateRaw.includes('T')) {
+                        const tParts = createdDateRaw.split('T');
+                        datePart = tParts[0];
+                        timePart = tParts[1].substring(0, 5);
+                    }
+                    const createdDateFormatted = `<div class="fw-medium text-slate-800" style="font-size: 13px;">${escapeHtml(datePart)}</div>` + (timePart ? `<div class="text-secondary small" style="font-size: 11px; font-weight: 500;">${escapeHtml(timePart)}</div>` : '');
+
+                    const escapedName = (patient.full_name || '').replace(/'/g, "\\'");
+                    const fatherTextTable = '';
+                    const fatherTextCard = '';
+
+                    tableHtml += `
+                        <tr id="patient_row_${patient.id}" style="border-bottom: 1px solid var(--outline-variant); cursor: pointer;" onclick="window.location='/patient/${patient.id}'">
+                            <td class="px-3 py-2.5 text-nowrap font-mono text-indigo-600 fw-medium" style="font-size: 13px;">
+                                ${escapeHtml(patient.patient_code)}
+                            </td>
+                            <td class="px-3 py-2.5 text-nowrap">
+                                <div class="fw-semibold text-slate-900" style="font-size: 14px;">${escapeHtml(patient.full_name)}</div>
+                                ${fatherTextTable}
+                            </td>
+                            <td class="px-3 py-2.5 text-secondary text-nowrap" style="font-size: 12px;">
+                                ${patient.age} yrs / ${genderLetter}
+                            </td>
+                            <td class="px-3 py-2.5 text-secondary font-mono text-nowrap" style="font-size: 12px;">
+                                ${escapeHtml(patient.phone || '-')}
+                            </td>
+                            <td class="px-3 py-2.5 text-secondary text-nowrap" style="font-size: 12px;">
+                                ${createdDateFormatted}
+                            </td>
+                            <td class="px-3 py-2.5 text-end text-nowrap" onclick="event.stopPropagation()">
+                                <div class="table-action-group">
+                                    <a href="/patient/${patient.id}" class="btn btn-sm btn-action-btn btn-action-view" title="View Patient">
+                                        <span class="material-symbols-outlined action-icon">visibility</span>
+                                        <span>View</span>
+                                    </a>
+                                    <a href="/patient/${patient.id}/edit" class="btn btn-sm btn-action-btn btn-action-edit" title="Edit Patient">
+                                        <span class="material-symbols-outlined action-icon">edit</span>
+                                        <span>Edit</span>
+                                    </a>
+                                    <a href="/patient/${patient.id}/report/add" class="btn btn-sm btn-action-btn btn-action-report" title="Create Report">
+                                        <span class="material-symbols-outlined action-icon">description</span>
+                                        <span>Report</span>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-action-btn btn-action-delete" title="Delete Patient" onclick="confirmDeletePatient('${patient.id}', '${escapedName}', '${escapeHtml(patient.patient_code)}')">
+                                        <span class="material-symbols-outlined action-icon">delete</span>
+                                        <span>Delete</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+
+                    cardsHtml += `
+                        <div class="patient-card-mobile" onclick="window.location='/patient/${patient.id}'" style="cursor: pointer;">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <div>
+                                    <span class="font-mono text-indigo-600 fw-bold" style="font-size: 13px;">${escapeHtml(patient.patient_code)}</span>
+                                    <span class="text-secondary ms-2" style="font-size: 11px;">${escapeHtml(datePart)}</span>
+                                </div>
+                            </div>
+                            <div class="fw-semibold text-slate-900" style="font-size: 14px;">${escapeHtml(patient.full_name)}</div>
+                            ${fatherTextCard}
+                            <div class="d-flex align-items-center justify-content-between mt-2 pt-2 border-top" style="font-size: 12px;">
+                                <span class="badge bg-slate-100 text-slate-700 fw-medium border" style="font-size: 11px; padding: 4px 8px;">
+                                    ${patient.age} yrs / ${genderLetter}
+                                </span>
+                                <span class="text-secondary font-mono d-inline-flex align-items-center gap-1">
+                                    <span class="material-symbols-outlined text-slate-400" style="font-size: 14px;">call</span>
+                                    ${escapeHtml(patient.phone || '-')}
+                                </span>
+                            </div>
+                            <div class="table-action-group mt-2.5 pt-2 border-top w-100 justify-content-start gap-1" onclick="event.stopPropagation()">
+                                <a href="/patient/${patient.id}" class="btn btn-sm btn-action-btn btn-action-view" title="View Patient">
+                                    <span class="material-symbols-outlined action-icon">visibility</span>
+                                    <span>View</span>
+                                </a>
+                                <a href="/patient/${patient.id}/edit" class="btn btn-sm btn-action-btn btn-action-edit" title="Edit Patient">
+                                    <span class="material-symbols-outlined action-icon">edit</span>
+                                    <span>Edit</span>
+                                </a>
+                                <a href="/patient/${patient.id}/report/add" class="btn btn-sm btn-action-btn btn-action-report" title="Create Report">
+                                    <span class="material-symbols-outlined action-icon">description</span>
+                                    <span>Report</span>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-action-btn btn-action-delete" title="Delete Patient" onclick="confirmDeletePatient('${patient.id}', '${escapedName}', '${escapeHtml(patient.patient_code)}')">
+                                    <span class="material-symbols-outlined action-icon">delete</span>
+                                    <span>Delete</span>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+                if (tbody) tbody.innerHTML = tableHtml;
+                if (mobileCardsDiv) mobileCardsDiv.innerHTML = cardsHtml;
+            } else {
+                if (tbody) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="px-3 py-5 text-center">
+                                <div class="d-flex flex-column align-items-center justify-content-center py-4">
+                                    <span class="material-symbols-outlined text-slate-400 mb-2" style="font-size: 52px;">person_search</span>
+                                    <h4 class="h5 fw-bold text-slate-900 mb-2">No patient found.</h4>
+                                    <p class="text-secondary small mb-3 max-w-md mx-auto" style="font-size: 13px;">
+                                        No patient matches your search query. Click below to register a new patient.
+                                    </p>
+                                    <button type="button" onclick="goToRegisterPatient()" class="btn btn-primary d-inline-flex align-items-center gap-2 px-4 py-2.5 fw-semibold shadow-sm" style="font-size: 14px; border-radius: 8px; background-color: #022e67; border-color: #022e67;">
+                                        <span class="material-symbols-outlined fs-6" style="font-size: 18px;">add</span>
+                                        Add New Patient
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }
+                if (mobileCardsDiv) {
+                    mobileCardsDiv.innerHTML = `
+                        <div class="d-flex flex-column align-items-center justify-content-center py-4 text-center">
+                            <span class="material-symbols-outlined text-slate-400 mb-2" style="font-size: 48px;">person_search</span>
+                            <h4 class="h6 fw-bold text-slate-900 mb-1">No patient found.</h4>
+                            <p class="text-secondary small mb-3 max-w-md mx-auto" style="font-size: 12px;">
+                                No patient matches your search query. Click below to register a new patient.
+                            </p>
+                            <button type="button" onclick="goToRegisterPatient()" class="btn btn-primary d-inline-flex align-items-center gap-2 px-3 py-2 fw-semibold shadow-sm" style="font-size: 13px; border-radius: 6px; background-color: #022e67; border-color: #022e67;">
+                                <span class="material-symbols-outlined fs-6" style="font-size: 16px;">add</span>
+                                Add New Patient
+                            </button>
+                        </div>
+                    `;
+                }
+            }
+        })
+        .catch(err => console.error('Live search error:', err));
+    }
+
+    function goToRegisterPatient() {
+        openAddPatientModal();
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('patient_search_input');
+        if (searchInput) {
+            searchInput.addEventListener('input', onFilterInputDebounce);
+            searchInput.addEventListener('keyup', onFilterInputDebounce);
+            searchInput.addEventListener('search', onFilterInputDebounce);
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedId = urlParams.get('selected');
+        if (selectedId) {
+            const row = document.getElementById(`patient_row_${selectedId}`);
+            if (row) {
+                row.classList.add('table-primary', 'bg-blue-50');
+                row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+    });
+
+    function openAddPatientModal(event) {
+        if (event) event.preventDefault();
+        const searchInput = document.getElementById('patient_search_input');
+        const query = searchInput ? searchInput.value.trim() : '';
+
+        const nameInput = document.getElementById('modal_full_name');
+        const phoneInput = document.getElementById('modal_phone');
+
+        if (nameInput) nameInput.value = '';
+        if (phoneInput) phoneInput.value = '';
+
+        if (query) {
+            const cleanQuery = query.replace(/[- +]/g, '');
+            if (/^\d{6,}$/.test(cleanQuery)) {
+                if (phoneInput) phoneInput.value = query;
+            } else {
+                if (nameInput) nameInput.value = query;
+            }
+        }
+
+        const modalElem = document.getElementById('addPatientModal');
+        if (modalElem) {
+            const modal = new bootstrap.Modal(modalElem);
+            modal.show();
+        } else {
+            const addUrl = query ? `/patient/add?name=${encodeURIComponent(query)}` : '/patient/add';
+            window.location.href = addUrl;
+        }
+    }
+
+    async function handleModalAddPatientSubmit(event) {
+        event.preventDefault();
+        const form = event.target;
+        const submitBtn = document.getElementById('btn_modal_save_patient');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Saving...`;
+        }
+
+        try {
+            const formData = new FormData(form);
+            const searchParams = new URLSearchParams(formData);
+            const response = await fetch(form.action, {
+                method: 'POST',
+                body: searchParams,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.redirected && response.url.includes('/login')) {
+                window.location.href = '/login';
+                return;
+            }
+
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.includes('application/json')) {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                    return;
+                }
+                form.submit();
+                return;
+            }
+
+            const data = await response.json();
+            if (response.ok && data.success) {
+                const modalElem = document.getElementById('addPatientModal');
+                const modal = bootstrap.Modal.getInstance(modalElem);
+                if (modal) modal.hide();
+
+                if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    performLivePatientSearch();
+                }
+            } else {
+                alert(data.message || 'Failed to save patient. Please check required fields.');
+            }
+        } catch (err) {
+            console.error('Save patient error:', err);
+            form.submit();
+        } finally {
+            if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<span class="material-symbols-outlined fs-6">save</span> Save Patient`;
+            }
+        }
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    }
+
+    function confirmDeletePatient(patientId, patientName, patientCode) {
+        pendingDeletePatientId = patientId;
+        document.getElementById('delete_patient_name_display').textContent = patientName || 'Selected Patient';
+        document.getElementById('delete_patient_code_display').textContent = patientCode || ('PT-' + patientId);
+
+        const deleteModalElem = document.getElementById('deletePatientModal');
+        const modal = new bootstrap.Modal(deleteModalElem);
+        modal.show();
+    }
+
+    async function executePatientDelete() {
+        if (!pendingDeletePatientId) return;
+
+        const confirmBtn = document.getElementById('btn_confirm_delete');
+        confirmBtn.disabled = true;
+        confirmBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Deleting...`;
+
+        try {
+            const response = await fetch(`/api/patients/${pendingDeletePatientId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.redirected && response.url.includes('/login')) {
+                window.location.href = '/login';
+                return;
+            }
+
+            const contentType = response.headers.get('content-type') || '';
+            let data = {};
+            if (contentType.includes('application/json')) {
+                data = await response.json();
+            } else if (response.ok) {
+                data = { success: true };
+            } else {
+                data = { success: false, message: 'Server returned unexpected response.' };
+            }
+
+            if (response.ok && data.success) {
+                // Remove modal
+                const modalElem = document.getElementById('deletePatientModal');
+                const modal = bootstrap.Modal.getInstance(modalElem);
+                if (modal) modal.hide();
+
+                const targetId = pendingDeletePatientId;
+
+                // Remove DOM row seamlessly without page refresh
+                const row = document.getElementById(`patient_row_${targetId}`);
+                if (row) {
+                    row.style.transition = 'all 0.3s ease';
+                    row.style.opacity = '0';
+                    row.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        row.remove();
+                        // Update matches counter
+                        const matchSpan = document.getElementById('matches_count_span') || document.querySelector('.label-caps');
+                        if (matchSpan) {
+                            const currentRows = document.querySelectorAll('#patient_list_tbody tr[id^="patient_row_"]').length;
+                            matchSpan.textContent = `${currentRows} matches found`;
+                        }
+                    }, 300);
+                }
+
+                // Remove mobile card if present
+                const mobCard = document.getElementById(`dropdown_wrapper_mob_${targetId}`)?.closest('.patient-card-mobile');
+                if (mobCard) {
+                    mobCard.style.transition = 'all 0.3s ease';
+                    mobCard.style.opacity = '0';
+                    setTimeout(() => mobCard.remove(), 300);
+                }
+
+                if (typeof showNotification === 'function') {
+                    showNotification('Patient removed from database permanently.', 'success');
+                } else {
+                    alert('Patient removed from database permanently.');
+                }
+            } else {
+                alert(data.message || 'Failed to delete patient from database.');
+            }
+        } catch (err) {
+            console.error('Delete patient error:', err);
+            alert('An error occurred while deleting the patient record.');
+        } finally {
+            confirmBtn.disabled = false;
+            confirmBtn.innerHTML = `<span class="material-symbols-outlined fs-6">delete_forever</span> Permanently Delete`;
+            pendingDeletePatientId = null;
+        }
+    }
+</script>
+{% endblock %}
+

@@ -1,0 +1,242 @@
+<!-- KUB (KIDNEYS, URETERS & BLADDER) REPORTING MODULE -->
+<div class="organ-module-card border rounded p-3 bg-white mb-4 shadow-sm" id="kub_module">
+    <div class="d-flex align-items-center justify-content-between pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-center gap-2">
+            <span class="material-symbols-outlined text-primary fs-5">water_drop</span>
+            <h5 class="fw-bold mb-0 text-dark" style="font-size: 15px;">KUB (Kidneys, Ureters & Bladder)</h5>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 11px;" onclick="selectAllNormalOrganModule()">Set All Normal</button>
+    </div>
+
+    <div class="accordion" id="accordionKUB">
+
+        <!-- 1. RIGHT KIDNEY -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingKUB_RK">
+                <button class="accordion-button py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseKUB_RK">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">water_drop</span>
+                    1. RIGHT KIDNEY
+                </button>
+            </h2>
+            <div id="collapseKUB_RK" class="accordion-collapse collapse show">
+                <div class="accordion-body p-3">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <div class="mb-2">
+                                <label class="form-label small font-mono fw-semibold text-secondary mb-1">Measure</label>
+                                <div class="d-flex align-items-center gap-1.5 flex-wrap flex-sm-nowrap">
+                                    <input type="number" step="0.1" class="form-control form-control-sm organ-input-measure-l" id="kub_rk_measure_l" data-organ="RIGHT KIDNEY" placeholder="Length" style="max-width: 110px;">
+                                    <span class="fw-bold text-muted small">cm ×</span>
+                                    <input type="number" step="0.1" class="form-control form-control-sm organ-input-measure-w" id="kub_rk_measure_w" data-organ="RIGHT KIDNEY" placeholder="Width" style="max-width: 110px;">
+                                    <span class="fw-semibold text-muted small">cm</span>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="kub_rk_parenchymal_thickness" class="form-label small font-mono fw-semibold text-secondary mb-1">Parenchymal Thickness</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="kub_rk_parenchymal_thickness" data-organ="RIGHT KIDNEY" data-template="Right renal parenchymal thickness is {val}." placeholder="e.g. 14 mm">
+                            </div>
+                            <div class="mb-2">
+                                <label for="kub_rk_parenchymal_echogenicity" class="form-label small font-mono fw-semibold text-secondary mb-1">Parenchymal Echogenicity</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="kub_rk_parenchymal_echogenicity" data-organ="RIGHT KIDNEY" data-template="Right kidney parenchymal echogenicity is {val}." placeholder="e.g. Normal">
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small font-mono fw-semibold text-secondary mb-1">Checkboxes</label>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_rk_normal" data-organ="RIGHT KIDNEY" data-sentence="Right kidney is normal in size, shape and position. Normal parenchymal thickness and preserved CMD. No calculus or hydronephrosis." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="kub_rk_normal">Normal Right Kidney</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_rk_stone" data-organ="RIGHT KIDNEY" data-sentence="Calculus with posterior acoustic shadowing noted in right kidney.">
+                                <label class="form-check-label small text-dark" for="kub_rk_stone">Renal Calculus</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_rk_hydro" data-organ="RIGHT KIDNEY" data-sentence="Mild to moderate hydronephrosis noted in right kidney.">
+                                <label class="form-check-label small text-dark" for="kub_rk_hydro">Hydronephrosis</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_rk_cyst" data-organ="RIGHT KIDNEY" data-sentence="Simple cortical cyst noted in right kidney.">
+                                <label class="form-check-label small text-dark" for="kub_rk_cyst">Cortical Cyst</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_rk_echogenic" data-organ="RIGHT KIDNEY" data-sentence="Increased cortical echogenicity with loss of corticomedullary differentiation noted in right kidney.">
+                                <label class="form-check-label small text-dark" for="kub_rk_echogenic">Increased Echogenicity</label>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="kub_rk_focal_lesion" class="form-label small font-mono fw-semibold text-secondary mb-1">Focal Lesion</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="kub_rk_focal_lesion" data-organ="RIGHT KIDNEY" data-template="Right kidney focal lesion: {val}." placeholder="e.g. None">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. LEFT KIDNEY -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingKUB_LK">
+                <button class="accordion-button collapsed py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseKUB_LK">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">water_drop</span>
+                    2. LEFT KIDNEY
+                </button>
+            </h2>
+            <div id="collapseKUB_LK" class="accordion-collapse collapse">
+                <div class="accordion-body p-3">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <div class="mb-2">
+                                <label class="form-label small font-mono fw-semibold text-secondary mb-1">Measure</label>
+                                <div class="d-flex align-items-center gap-1.5 flex-wrap flex-sm-nowrap">
+                                    <input type="number" step="0.1" class="form-control form-control-sm organ-input-measure-l" id="kub_lk_measure_l" data-organ="LEFT KIDNEY" placeholder="Length" style="max-width: 110px;">
+                                    <span class="fw-bold text-muted small">cm ×</span>
+                                    <input type="number" step="0.1" class="form-control form-control-sm organ-input-measure-w" id="kub_lk_measure_w" data-organ="LEFT KIDNEY" placeholder="Width" style="max-width: 110px;">
+                                    <span class="fw-semibold text-muted small">cm</span>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="kub_lk_parenchymal_thickness" class="form-label small font-mono fw-semibold text-secondary mb-1">Parenchymal Thickness</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="kub_lk_parenchymal_thickness" data-organ="LEFT KIDNEY" data-template="Left renal parenchymal thickness is {val}." placeholder="e.g. 15 mm">
+                            </div>
+                            <div class="mb-2">
+                                <label for="kub_lk_parenchymal_echogenicity" class="form-label small font-mono fw-semibold text-secondary mb-1">Parenchymal Echogenicity</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="kub_lk_parenchymal_echogenicity" data-organ="LEFT KIDNEY" data-template="Left kidney parenchymal echogenicity is {val}." placeholder="e.g. Normal">
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small font-mono fw-semibold text-secondary mb-1">Checkboxes</label>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_lk_normal" data-organ="LEFT KIDNEY" data-sentence="Left kidney is normal in size, shape and position. Normal parenchymal thickness and preserved CMD. No calculus or hydronephrosis." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="kub_lk_normal">Normal Left Kidney</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_lk_stone" data-organ="LEFT KIDNEY" data-sentence="Calculus with posterior acoustic shadowing noted in left kidney.">
+                                <label class="form-check-label small text-dark" for="kub_lk_stone">Renal Calculus</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_lk_hydro" data-organ="LEFT KIDNEY" data-sentence="Mild to moderate hydronephrosis noted in left kidney.">
+                                <label class="form-check-label small text-dark" for="kub_lk_hydro">Hydronephrosis</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_lk_cyst" data-organ="LEFT KIDNEY" data-sentence="Simple cortical cyst noted in left kidney.">
+                                <label class="form-check-label small text-dark" for="kub_lk_cyst">Cortical Cyst</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_lk_echogenic" data-organ="LEFT KIDNEY" data-sentence="Increased cortical echogenicity with loss of corticomedullary differentiation noted in left kidney.">
+                                <label class="form-check-label small text-dark" for="kub_lk_echogenic">Increased Echogenicity</label>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="kub_lk_focal_lesion" class="form-label small font-mono fw-semibold text-secondary mb-1">Focal Lesion</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="kub_lk_focal_lesion" data-organ="LEFT KIDNEY" data-template="Left kidney focal lesion: {val}." placeholder="e.g. None">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. URETERS -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingKUB_Ureter">
+                <button class="accordion-button collapsed py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseKUB_Ureter">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">alt_route</span>
+                    3. URETERS
+                </button>
+            </h2>
+            <div id="collapseKUB_Ureter" class="accordion-collapse collapse">
+                <div class="accordion-body p-3">
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_ur_normal" data-organ="URETERS" data-sentence="Bilateral ureters are non-dilated and not visualized, which is normal." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="kub_ur_normal">Normal Ureters</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_ur_r_stone" data-organ="URETERS" data-sentence="An echogenic calculus with acoustic shadowing noted in the right vesicoureteric junction (VUJ) / lower ureter.">
+                                <label class="form-check-label small text-dark" for="kub_ur_r_stone">Right Ureteric / VUJ Calculus</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_ur_l_stone" data-organ="URETERS" data-sentence="An echogenic calculus with acoustic shadowing noted in the left vesicoureteric junction (VUJ) / lower ureter.">
+                                <label class="form-check-label small text-dark" for="kub_ur_l_stone">Left Ureteric / VUJ Calculus</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. URINARY BLADDER & PROSTATE -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingKUB_UB">
+                <button class="accordion-button collapsed py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseKUB_UB">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">circle</span>
+                    4. URINARY BLADDER & PROSTATE
+                </button>
+            </h2>
+            <div id="collapseKUB_UB" class="accordion-collapse collapse">
+                <div class="accordion-body p-3">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <div class="mb-2">
+                                <label for="kub_ub_status" class="form-label small font-mono fw-semibold text-secondary mb-1">Urinary Bladder</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="kub_ub_status" data-organ="URINARY BLADDER" data-template="Urinary bladder: {val}." placeholder="e.g. Well distended with clear lumen">
+                            </div>
+                            <div class="mb-2">
+                                <label for="kub_ub_wall_thickness" class="form-label small font-mono fw-semibold text-secondary mb-1">Wall Thickness</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="number" step="0.1" class="form-control form-control-sm organ-input" id="kub_ub_wall_thickness" data-organ="URINARY BLADDER" data-template="Urinary bladder wall thickness is {val} cm." placeholder="e.g. 0.3" style="max-width: 140px;">
+                                    <span class="fw-semibold text-muted small">cm</span>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="kub_ub_calculi" class="form-label small font-mono fw-semibold text-secondary mb-1">Calculi</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="kub_ub_calculi" data-organ="URINARY BLADDER" data-template="Urinary bladder calculi: {val}." placeholder="e.g. None">
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small font-mono fw-semibold text-secondary mb-1">Checkboxes & Prostate</label>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_ub_normal" data-organ="URINARY BLADDER" data-sentence="Urinary bladder is well distended with clear urine. Wall thickness is normal. No intraluminal calculus." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="kub_ub_normal">Normal Urinary Bladder</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_ub_thickening" data-organ="URINARY BLADDER" data-sentence="Diffuse mucosal wall thickening noted in urinary bladder, suggestive of cystitis.">
+                                <label class="form-check-label small text-dark" for="kub_ub_thickening">Cystitis / Wall Thickening</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_ub_stone" data-organ="URINARY BLADDER" data-sentence="Echogenic calculus with acoustic shadowing in urinary bladder.">
+                                <label class="form-check-label small text-dark" for="kub_ub_stone">Bladder Stone</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_ub_residual" data-organ="URINARY BLADDER" data-sentence="Significant post-void residual urine volume noted.">
+                                <label class="form-check-label small text-dark" for="kub_ub_residual">Significant Residual Urine</label>
+                            </div>
+
+                            <hr class="my-2 text-muted">
+
+                            <div class="mb-2">
+                                <label class="form-label small font-mono fw-semibold text-secondary mb-1">Prostate Volume (cc)</label>
+                                <input type="number" step="0.1" class="form-control form-control-sm organ-input" id="kub_prostate_vol" data-organ="PROSTATE" data-template="Prostate volume measures ~{val} cc." placeholder="e.g. 38">
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_pros_normal" data-organ="PROSTATE" data-sentence="Prostate is normal in size and echotexture." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="kub_pros_normal">Normal Prostate</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="kub_pros_bph" data-organ="PROSTATE" data-sentence="Prostate is enlarged in size with median lobe prominence, consistent with Benign Prostatic Hyperplasia (BPH).">
+                                <label class="form-check-label small text-dark" for="kub_pros_bph">Enlarged Prostate (BPH)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Audit Logs - MJ Ultrasound Reporting System{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-column gap-3">
+    <!-- Page Header -->
+    <div class="d-flex align-items-center justify-content-between pb-2 border-bottom" style="border-color: var(--outline-variant) !important;">
+        <div>
+            <h1 class="h5 fw-bold text-slate-900 mb-1 font-headline-md" style="font-size: 20px;">System Audit Trail</h1>
+            <p class="text-slate-600 mb-0 small">Security and activity history tracking user actions, logins, patient records, and financial updates.</p>
+        </div>
+        <div>
+            <a href="/settings/users" class="btn btn-outline-secondary d-flex align-items-center gap-1 py-2 px-3" style="font-size: 13px; font-weight: 500;">
+                <span class="material-symbols-outlined fs-6">arrow_back</span>
+                Back to Users
+            </a>
+        </div>
+    </div>
+
+    <!-- Audit Logs Table Card -->
+    <div class="card border shadow-sm rounded-3 overflow-hidden bg-white">
+        <div class="card-header bg-slate-50 py-3 px-3 d-flex align-items-center justify-content-between" style="background-color: #f8fafc; border-bottom: 1px solid var(--outline-variant);">
+            <div class="d-flex align-items-center gap-2">
+                <span class="material-symbols-outlined text-primary fs-5" style="color: #022e67 !important;">receipt_long</span>
+                <span class="fw-bold text-slate-800" style="font-size: 14px;">Recent Audit Logs ({{ logs.length }})</span>
+            </div>
+            <div class="input-group input-group-sm" style="max-width: 280px;">
+                <span class="input-group-text bg-white border-end-0 text-muted"><span class="material-symbols-outlined fs-6">search</span></span>
+                <input type="text" id="logSearchInput" class="form-control border-start-0" placeholder="Filter audit logs..." onkeyup="filterAuditLogs()">
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="logsTable">
+                <thead class="table-light" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em;">
+                    <tr>
+                        <th class="ps-3 py-3">Date & Time</th>
+                        <th class="py-3">User</th>
+                        <th class="py-3">Action</th>
+                        <th class="pe-3 py-3">Details</th>
+                    </tr>
+                </thead>
+                <tbody style="font-size: 13px;">
+                    {% for l in logs %}
+                    <tr>
+                        <td class="ps-3 py-3 font-mono text-slate-700" style="font-size: 12px; white-space: nowrap;">
+                            {{ l.created_at | strftime('%Y-%m-%d %H:%M') }}
+                        </td>
+                        <td class="py-3">
+                            <span class="fw-bold text-slate-900">@{{ l.username }}</span>
+                        </td>
+                        <td class="py-3">
+                            {% if 'Login' in l.action %}
+                                <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size: 11px;">Login</span>
+                            {% elif 'Logout' in l.action %}
+                                <span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1" style="font-size: 11px;">Logout</span>
+                            {% elif 'Creation' in l.action %}
+                                <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1" style="font-size: 11px;">{{ l.action }}</span>
+                            {% elif 'Update' in l.action or 'Payment' in l.action %}
+                                <span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-1" style="font-size: 11px;">{{ l.action }}</span>
+                            {% elif 'Delete' in l.action %}
+                                <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1" style="font-size: 11px;">{{ l.action }}</span>
+                            {% else %}
+                                <span class="badge bg-slate-100 text-slate-800 border px-2 py-1" style="font-size: 11px;">{{ l.action }}</span>
+                            {% endif %}
+                        </td>
+                        <td class="pe-3 py-3 text-slate-700">
+                            {{ l.details or '-' }}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center py-4 text-muted">No audit log records found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    function filterAuditLogs() {
+        const query = document.getElementById('logSearchInput').value.toLowerCase();
+        const rows = document.querySelectorAll('#logsTable tbody tr');
+        rows.forEach(row => {
+            const text = row.innerText.toLowerCase();
+            row.style.display = text.includes(query) ? '' : 'none';
+        });
+    }
+</script>
+{% endblock %}

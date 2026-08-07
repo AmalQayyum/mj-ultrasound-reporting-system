@@ -1,0 +1,1256 @@
+{% extends "base.html" %}
+
+{% block title %}Add Ultrasound Report - MJ Ultrasound Reporting System{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Clean Light Theme Styles */
+    .report-card {
+        background-color: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    }
+
+    .header-banner {
+        background-color: #2563eb; /* Soft blue */
+        color: #ffffff;
+        border-radius: 8px 8px 0 0;
+        padding: 1.25rem 1.5rem;
+    }
+
+    .top-action-bar {
+        background-color: #f8fafc;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 0.75rem 1.25rem;
+        border-radius: 8px 8px 0 0;
+    }
+
+    .btn-action-primary {
+        background-color: #2563eb;
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 13px;
+        padding: 0.45rem 1rem;
+        border-radius: 6px;
+        border: 1px solid #2563eb;
+        transition: all 0.15s ease;
+    }
+
+    .btn-action-primary:hover {
+        background-color: #1d4ed8;
+        border-color: #1d4ed8;
+        color: #ffffff;
+    }
+
+    .btn-action-secondary {
+        background-color: #ffffff;
+        color: #334155;
+        font-weight: 600;
+        font-size: 13px;
+        padding: 0.45rem 1rem;
+        border-radius: 6px;
+        border: 1px solid #cbd5e1;
+        transition: all 0.15s ease;
+    }
+
+    .btn-action-secondary:hover {
+        background-color: #f1f5f9;
+        color: #0f172a;
+        border-color: #94a3b8;
+    }
+
+    .info-box {
+        background-color: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .info-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #475569;
+        margin-bottom: 0.2rem;
+        display: block;
+    }
+
+    .info-input {
+        border: 1px solid #cbd5e1;
+        border-radius: 4px;
+        padding: 0.35rem 0.5rem;
+        font-size: 13px;
+        color: #0f172a;
+        background-color: #ffffff;
+        width: 100%;
+    }
+
+    .info-input:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+
+    .section-title {
+        font-size: 13px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #1e3a8a;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .report-textarea {
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        padding: 0.75rem;
+        font-size: 14px;
+        line-height: 1.5;
+        color: #1e293b;
+        background-color: #ffffff;
+        width: 100%;
+        transition: border-color 0.15s ease;
+    }
+
+    .report-textarea:focus {
+        outline: none;
+        border-color: #2563eb;
+        box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+    }
+
+    /* Print Styles for A4 Output */
+    @media print {
+        body {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            font-size: 12pt !important;
+        }
+
+        .no-print, .sidebar, .top-navbar, .top-action-bar {
+            display: none !important;
+        }
+
+        .app-container {
+            display: block !important;
+        }
+
+        .main-workspace {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .report-card {
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+        }
+
+        .header-banner {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border-bottom: 3px solid #2563eb !important;
+            padding: 0 0 1rem 0 !important;
+        }
+
+        .header-banner h1 {
+            color: #1e3a8a !important;
+        }
+
+        .info-box {
+            background-color: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+        }
+
+        .info-input, .report-textarea {
+            border: none !important;
+            padding: 0 !important;
+            background: transparent !important;
+            resize: none !important;
+        }
+
+        .signature-section {
+            display: flex !important;
+            justify-content: space-between;
+            margin-top: 3rem;
+            padding-top: 1rem;
+            border-top: 1px solid #cbd5e1;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center w-100">
+    <div class="w-100 max-w-5xl report-card my-2 overflow-hidden">
+        
+        <form id="ultrasoundReportForm" action="/report/save" method="POST" onsubmit="event.preventDefault(); submitReportForm('save');" class="p-3 p-md-4">
+            <input type="hidden" name="report_id" value="{% if report %}{{ report.id }}{% endif %}">
+            <input type="hidden" id="patient_id" name="patient_id" value="{% if patient %}{{ patient.id }}{% endif %}">
+            <input type="hidden" id="action_after_save" name="action_after_save" value="save">
+
+            <!-- HEADER SECTION (AT TOP) -->
+            <div class="header-banner d-flex align-items-center justify-content-between flex-wrap gap-3 mb-3" style="background-color: #2563eb;">
+                <div>
+                    <h1 class="font-display fw-extrabold text-white mb-0" style="font-size: 24px; letter-spacing: -0.02em;">
+                        MJ Ultrasound Reporting System
+                    </h1>
+                    <p class="text-blue-100 mb-0 opacity-90" style="font-size: 13px;">
+                        Department of Ultrasound & Diagnostic Imaging
+                    </p>
+                </div>
+                
+                <div class="d-flex align-items-center gap-2 bg-white bg-opacity-10 p-2 rounded no-print">
+                    <div>
+                        <label for="report_date" class="text-white text-uppercase font-mono mb-1 d-block" style="font-size: 10px;">Date</label>
+                        <input type="date" id="report_date" name="report_date" class="form-control form-control-sm text-dark font-mono" value="{% if report and report.report_date %}{{ report.report_date }}{% else %}{{ defaultDate }}{% endif %}" style="font-size: 12px; height: 32px;">
+                    </div>
+                    <div>
+                        <label for="report_time" class="text-white text-uppercase font-mono mb-1 d-block" style="font-size: 10px;">Time</label>
+                        <input type="time" id="report_time" name="report_time" class="form-control form-control-sm text-dark font-mono" value="{% if report and report.report_time %}{{ report.report_time }}{% else %}{{ defaultTime }}{% endif %}" style="font-size: 12px; height: 32px;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ACTION BUTTONS BAR (BELOW BLUE HEADER BANNER) -->
+            <div class="top-action-bar d-flex align-items-center justify-content-between flex-wrap gap-2 my-3 no-print" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.6rem 1rem;">
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <button type="button" onclick="clearReportForm()" class="btn btn-action-secondary d-flex align-items-center gap-1.5" title="Reset report fields for this patient">
+                        <span class="material-symbols-outlined fs-6">refresh</span>
+                        Reset Report Form
+                    </button>
+                </div>
+
+                <!-- Back to Patient Profile / List Button on Right Side -->
+                <div class="flex-shrink-0">
+                    {% if patient %}
+                    <a href="/patient/{{ patient.id }}" class="btn btn-action-secondary d-flex align-items-center gap-1.5">
+                        <span class="material-symbols-outlined fs-6">arrow_back</span>
+                        Back to Patient Profile
+                    </a>
+                    {% else %}
+                    <a href="/patients" class="btn btn-action-secondary d-flex align-items-center gap-1.5">
+                        <span class="material-symbols-outlined fs-6">arrow_back</span>
+                        Back to Patients List
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- PATIENT INFORMATION & EXAM DETAILS (3 Columns Grid) -->
+            <div class="mb-4">
+                <div class="d-flex align-items-center justify-content-between mb-2 pb-1 border-bottom" style="border-color: #cbd5e1 !important;">
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="material-symbols-outlined text-blue-600 fs-5">badge</span>
+                        <h2 class="h6 mb-0 text-slate-900 fw-bold text-uppercase" style="font-size: 13px; letter-spacing: 0.05em;">Patient Information</h2>
+                        <span class="badge bg-slate-200 text-slate-700 border border-slate-300 rounded-pill px-2 py-0.5 font-mono" style="font-size: 10px;">READ-ONLY</span>
+                    </div>
+                    {% if patient %}
+                    <span class="text-slate-600 font-mono d-none d-sm-inline" style="font-size: 11.5px;">Selected Patient: <strong class="text-slate-900">{{ patient.full_name }}</strong> ({{ patient.patient_code }})</span>
+                    {% endif %}
+                </div>
+
+                <div class="row g-3">
+                    <!-- Column 1: Locked Identity -->
+                    <div class="col-12 col-md-4">
+                        <div class="info-box mb-2">
+                            <label class="info-label text-slate-500 d-flex align-items-center gap-1" for="patient_code">
+                                <span class="material-symbols-outlined text-slate-400" style="font-size: 13px;">lock</span> Patient ID / MR No
+                            </label>
+                            <input type="text" id="patient_code" name="patient_code" class="info-input font-mono fw-bold" style="background-color: #f1f5f9; color: #334155; cursor: not-allowed;" value="{% if patient %}{{ patient.patient_code }}{% endif %}" readonly tabindex="-1">
+                        </div>
+                        <div class="info-box">
+                            <label class="info-label text-slate-500 d-flex align-items-center gap-1" for="patient_name">
+                                <span class="material-symbols-outlined text-slate-400" style="font-size: 13px;">lock</span> Patient Name
+                            </label>
+                            <input type="text" id="patient_name" name="patient_name" class="info-input fw-bold" style="background-color: #f1f5f9; color: #0f172a;" value="{% if patient %}{{ patient.full_name }}{% endif %}" readonly tabindex="-1" required>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Locked Contact & Demographics -->
+                    <div class="col-12 col-md-4">
+                        <div class="info-box mb-2">
+                            <label class="info-label text-slate-500 d-flex align-items-center gap-1" for="phone">
+                                <span class="material-symbols-outlined text-slate-400" style="font-size: 13px;">lock</span> Phone
+                            </label>
+                            <input type="text" id="phone" name="phone" class="info-input font-mono" style="background-color: #f1f5f9; color: #334155; cursor: not-allowed;" value="{% if patient %}{{ patient.phone }}{% endif %}" readonly tabindex="-1">
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="info-box">
+                                    <label class="info-label text-slate-500 d-flex align-items-center gap-1" for="age">
+                                        <span class="material-symbols-outlined text-slate-400" style="font-size: 13px;">lock</span> Age
+                                    </label>
+                                    <input type="number" id="age" name="age" class="info-input font-mono" style="background-color: #f1f5f9; color: #334155; cursor: not-allowed;" value="{% if patient %}{{ patient.age }}{% endif %}" readonly tabindex="-1">
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="info-box">
+                                    <label class="info-label text-slate-500 d-flex align-items-center gap-1" for="gender">
+                                        <span class="material-symbols-outlined text-slate-400" style="font-size: 13px;">lock</span> Gender
+                                    </label>
+                                    <input type="text" id="gender_display" class="info-input" style="background-color: #f1f5f9; color: #334155; cursor: not-allowed;" value="{% if patient %}{{ patient.gender }}{% endif %}" readonly tabindex="-1">
+                                    <input type="hidden" id="gender" name="gender" value="{% if patient %}{{ patient.gender }}{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 3: Editable Exam Details -->
+                    <div class="col-12 col-md-4">
+                        <div class="info-box mb-2 position-relative" id="study_dropdown_container">
+                            <label class="info-label text-slate-900 fw-bold" for="study_input">
+                                Exam / Study Type <span class="text-danger">*</span>
+                            </label>
+                            <div class="position-relative">
+                                <input type="text" 
+                                       id="study_input" 
+                                       name="study" 
+                                       class="info-input fw-semibold pe-4 bg-white" 
+                                       style="color: #1e3a8a; border: 1.5px solid #2563eb;" 
+                                       placeholder="-- Select Exam Type --" 
+                                       value="{% if report %}{{ report.study or report.exam_type }}{% endif %}" 
+                                       autocomplete="off" 
+                                       onfocus="showStudyDropdown()" 
+                                       oninput="filterStudyOptions(this.value); onStudyInputChange(this.value)"
+                                       required>
+                                <span class="material-symbols-outlined position-absolute end-0 top-50 translate-middle-y me-2 text-primary pe-none fs-6">arrow_drop_down</span>
+                            </div>
+                            
+                            <!-- Searchable Dropdown Menu -->
+                            <div id="study_dropdown_menu" class="dropdown-menu w-100 shadow-lg border mt-1" style="display: none; max-height: 240px; overflow-y: auto; z-index: 1050; position: absolute; top: 100%; left: 0; background: #ffffff;">
+                                <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-muted font-italic border-bottom" style="font-size: 12px;" onclick="selectStudy('')">-- Select Exam Type --</div>
+                                <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-slate-800" style="font-size: 13px;" onclick="selectStudy('Whole Abdomen')">Whole Abdomen</div>
+                                <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-slate-800" style="font-size: 13px;" onclick="selectStudy('Upper Abdomen')">Upper Abdomen</div>
+                                <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-slate-800" style="font-size: 13px;" onclick="selectStudy('Lower Abdomen')">Lower Abdomen / Pelvis</div>
+                                <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-slate-800" style="font-size: 13px;" onclick="selectStudy('KUB')">KUB (Kidneys, Ureters, Bladder)</div>
+                                <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-slate-800" style="font-size: 13px;" onclick="selectStudy('Renal Ultrasound')">Renal Ultrasound</div>
+                                <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-slate-800" style="font-size: 13px;" onclick="selectStudy('Pelvic Ultrasound')">Pelvic Ultrasound</div>
+                                <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-slate-800" style="font-size: 13px;" onclick="selectStudy('Transvaginal (TVS)')">Transvaginal (TVS)</div>
+                                <div id="study_no_match" class="dropdown-item py-2 px-3 text-muted text-center" style="display: none; font-size: 12px;">No matching exam type</div>
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <div class="info-box">
+                                    <label class="info-label text-slate-900 fw-bold" for="referred_by">Referred By <span class="text-danger">*</span></label>
+                                    <input type="text" id="referred_by" name="referred_by" class="info-input bg-white" style="border: 1px solid #cbd5e1;" placeholder="e.g. Dr. Keith Miller or Self" value="{% if patient %}{{ patient.referred_by }}{% endif %}" required>
+                                    <input type="hidden" id="payment_amount" name="payment_amount" value="{% if report and (report.payment_amount or report.report_fee) %}{{ report.payment_amount or report.report_fee }}{% else %}2500{% endif %}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DYNAMIC STRUCTURED ORGAN REPORTING FORM CONTAINER -->
+            <div id="dynamic_organ_form_container" class="my-3 no-print">
+                <!-- Dynamically populated based on selected study -->
+            </div>
+
+            <!-- REPORT SECTIONS -->
+            <div class="mb-4 d-flex flex-column gap-3">
+                
+                <!-- 1. Clinical History -->
+                <div>
+                    <label for="clinical_history" class="section-title">
+                        <span class="material-symbols-outlined fs-6 text-blue-600">history_edu</span>
+                        Clinical History
+                    </label>
+                    <textarea id="clinical_history" name="clinical_history" class="report-textarea" rows="2" placeholder="Enter patient's clinical symptoms, history, or referral notes...">{% if report %}{{ report.clinical_history }}{% endif %}</textarea>
+                </div>
+
+                <!-- Hidden inputs to submit auto-generated values to DB -->
+                <input type="hidden" id="procedure" name="procedure" value="">
+                <input type="hidden" id="findings" name="findings" value="{% if report %}{{ report.findings or report.key_findings }}{% endif %}">
+                <input type="hidden" id="impression" name="impression" value="{% if report %}{{ report.impression }}{% endif %}">
+                <input type="hidden" id="advice" name="advice" value="{% if report %}{{ report.advice }}{% endif %}">
+                <input type="hidden" id="structured_data" name="structured_data" value="{% if report and report.structured_data %}{{ report.structured_data }}{% endif %}">
+
+                <!-- Read-Only / Live Sync Hospital-Style Report Preview & Edit Section -->
+                <div class="card border shadow-sm bg-white p-3 mb-3">
+                    <div class="d-flex align-items-center justify-content-between border-bottom pb-2 mb-3">
+                        <h6 class="fw-bold text-dark mb-0 d-flex align-items-center gap-1.5" style="font-size: 14px;">
+                            <span class="material-symbols-outlined text-primary fs-5">receipt_long</span>
+                            Auto-Generated Hospital-Style Report Preview & Final Narrative
+                        </h6>
+                        <span class="badge bg-success text-white" style="font-size: 10px;">LIVE SYNCED & EDITABLE</span>
+                    </div>
+
+                    <!-- Findings Preview -->
+                    <div class="mb-3">
+                        <label class="fw-bold text-secondary text-uppercase mb-1" style="font-size: 11px;">Findings</label>
+                        <div id="preview_findings" class="p-3 bg-light border rounded font-mono text-dark" style="min-height: 90px; white-space: pre-wrap; font-size: 13px;">{% if report %}{{ report.findings or report.key_findings }}{% else %}Select examination parameters above to auto-generate structured report...{% endif %}</div>
+                    </div>
+
+                    <!-- Impression Preview -->
+                    <div class="mb-3">
+                        <label class="fw-bold text-secondary text-uppercase mb-1" style="font-size: 11px;">Impression</label>
+                        <div id="preview_impression" class="p-3 bg-light border rounded font-mono fw-semibold text-dark" style="min-height: 60px; white-space: pre-wrap; font-size: 13px;">{% if report %}{{ report.impression }}{% else %}Normal ultrasound examination.{% endif %}</div>
+                    </div>
+
+                    <!-- Advice Preview -->
+                    <div>
+                        <label class="fw-bold text-secondary text-uppercase mb-1" style="font-size: 11px;">Advice</label>
+                        <div id="preview_advice" class="p-3 bg-light border rounded font-mono text-dark" style="min-height: 50px; white-space: pre-wrap; font-size: 13px;">{% if report %}{{ report.advice }}{% else %}1. Routine antenatal follow-up is advised.<br>2. Clinical correlation is recommended.{% endif %}</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Signature Section (Visible in Print/PDF) -->
+            <div class="signature-section d-none no-print-override">
+                <div>
+                    <p class="mb-1 font-mono text-slate-600" style="font-size: 11px;">Report Status: <span class="fw-bold text-dark">FINALIZED</span></p>
+                    <p class="mb-0 text-slate-500" style="font-size: 10px;">Generated via MJ Ultrasound Reporting System</p>
+                </div>
+                <div class="text-end">
+                    <div style="border-bottom: 1px solid #000; width: 200px; margin-left: auto; margin-bottom: 4px;"></div>
+                    <p class="fw-bold mb-0 text-slate-900" style="font-size: 13px;">Consultant Sonologist</p>
+                    <p class="text-slate-600 mb-0" style="font-size: 11px;">MJ Ultrasound Reporting System</p>
+                </div>
+            </div>
+
+            <!-- Bottom Action Footer -->
+            <div class="d-flex align-items-center justify-content-between pt-3 border-top no-print flex-wrap gap-2" style="border-color: #cbd5e1 !important;">
+                <div class="d-flex align-items-center gap-2">
+                    <label for="status" class="info-label mb-0">Status:</label>
+                    <select id="status" name="status" class="form-select form-select-sm" style="width: auto; font-size: 12px;">
+                        <option value="Finalized" {% if not report or report.status == 'Finalized' %}selected{% endif %}>Finalized</option>
+                        <option value="Draft" {% if report and report.status == 'Draft' %}selected{% endif %}>Draft / Pending</option>
+                    </select>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <button type="button" id="btn_save_report_bottom" onclick="submitReportForm('save')" class="btn btn-action-primary d-flex align-items-center gap-1.5 px-3 py-2">
+                        <span class="material-symbols-outlined fs-6">save</span>
+                        Save Report
+                    </button>
+                    <button type="button" id="btn_print_report_bottom" onclick="submitReportForm('print')" class="btn btn-action-secondary d-flex align-items-center gap-1.5 px-3 py-2">
+                        <span class="material-symbols-outlined fs-6">print</span>
+                        Print
+                    </button>
+                    <button type="button" id="btn_pdf_report_bottom" onclick="submitReportForm('pdf')" class="btn btn-action-secondary d-flex align-items-center gap-1.5 px-3 py-2">
+                        <span class="material-symbols-outlined fs-6">picture_as_pdf</span>
+                        PDF
+                    </button>
+                    <button type="button" onclick="handleCancelReport()" class="btn btn-action-secondary py-2 px-3">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="/static/js/print.js"></script>
+<script>
+    const ORGAN_ORDER = [
+        "LIVER",
+        "GALL BLADDER",
+        "PANCREAS",
+        "SPLEEN",
+        "RIGHT KIDNEY",
+        "LEFT KIDNEY",
+        "URETERS",
+        "URINARY BLADDER",
+        "PROSTATE",
+        "UTERUS",
+        "OVARIES",
+        "POUCH OF DOUGLAS",
+        "RENAL DOPPLER"
+    ];
+
+    let currentTemplateLoaded = '';
+
+    function showStudyDropdown() {
+        const menu = document.getElementById('study_dropdown_menu');
+        if (menu) {
+            menu.style.display = 'block';
+            filterStudyOptions(document.getElementById('study_input').value);
+        }
+    }
+
+    function filterStudyOptions(query) {
+        const menu = document.getElementById('study_dropdown_menu');
+        if (!menu) return;
+        menu.style.display = 'block';
+        const q = (query || '').toLowerCase().trim();
+        const options = menu.querySelectorAll('.study-option');
+        let hasMatch = false;
+
+        options.forEach(opt => {
+            const txt = opt.textContent.toLowerCase();
+            if (!q || txt.includes(q)) {
+                opt.style.display = 'block';
+                hasMatch = true;
+            } else {
+                opt.style.display = 'none';
+            }
+        });
+
+        const noMatchMsg = document.getElementById('study_no_match');
+        if (noMatchMsg) {
+            noMatchMsg.style.display = (q && !hasMatch) ? 'block' : 'none';
+        }
+    }
+
+    function mapStudyToTemplateName(studyName) {
+        const name = (studyName || '').toLowerCase().trim();
+        if (name.includes('upper')) return 'upper_abdomen';
+        if (name.includes('renal')) return 'renal';
+        if (name.includes('kub')) return 'kub';
+        if (name.includes('pelv') || name.includes('tvs') || name.includes('lower') || name.includes('gyne') || name.includes('pregnancy') || name.includes('obs')) return 'pelvis';
+        return 'whole_abdomen';
+    }
+
+    function onStudyInputChange(val) {
+        loadOrganTemplateForStudy(val);
+    }
+
+    function loadOrganTemplateForStudy(studyName) {
+        const tmplName = mapStudyToTemplateName(studyName);
+        if (tmplName === currentTemplateLoaded) return;
+
+        const container = document.getElementById('dynamic_organ_form_container');
+        if (!container) return;
+
+        fetch('/template/' + tmplName)
+            .then(res => res.text())
+            .then(html => {
+                container.innerHTML = html;
+                currentTemplateLoaded = tmplName;
+
+                // Execute any inline script tags in the loaded template
+                const scripts = container.querySelectorAll('script');
+                scripts.forEach(oldScript => {
+                    const newScript = document.createElement('script');
+                    Array.from(oldScript.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value));
+                    newScript.appendChild(document.createTextNode(oldScript.innerHTML));
+                    oldScript.parentNode.replaceChild(newScript, oldScript);
+                });
+
+                attachOrganFormListeners();
+                if (typeof window.syncObstetricReport === 'function' && tmplName === 'pelvis') {
+                    window.syncObstetricReport();
+                } else {
+                    generateReportFromOrganModule();
+                }
+            })
+            .catch(err => console.error('Error loading organ template:', err));
+    }
+
+    function attachOrganFormListeners() {
+        const container = document.getElementById('dynamic_organ_form_container');
+        if (!container) return;
+
+        // Collect all organ checkboxes and inputs
+        const allChecks = Array.from(container.querySelectorAll('.organ-check'));
+        const allInputs = Array.from(container.querySelectorAll('.organ-input'));
+
+        // Extract unique organ keys from checkboxes and inputs
+        const organKeys = Array.from(new Set([
+            ...allChecks.map(cb => cb.getAttribute('data-organ')).filter(Boolean),
+            ...allInputs.map(inp => inp.getAttribute('data-organ')).filter(Boolean)
+        ]));
+
+        // Setup independent logic per organ key
+        organKeys.forEach(organKey => {
+            const organChecks = allChecks.filter(cb => cb.getAttribute('data-organ') === organKey);
+            const organInputs = allInputs.filter(inp => inp.getAttribute('data-organ') === organKey);
+
+            if (organChecks.length === 0 && organInputs.length === 0) return;
+
+            // Locate normal checkbox for this specific organ
+            const normalCb = organChecks.find(cb => {
+                const id = (cb.id || '').toLowerCase();
+                const labelText = (cb.labels && cb.labels[0]) ? cb.labels[0].textContent.toLowerCase() : '';
+                const sentence = (cb.getAttribute('data-sentence') || '').toLowerCase();
+                return id.includes('normal') || labelText.includes('normal') || id.includes('_no_') || labelText.includes('no free fluid') || sentence.includes('normal');
+            });
+
+            // Locate abnormal checkboxes for this organ
+            const abnormalCbs = organChecks.filter(cb => cb !== normalCb);
+
+            // Locate stone / calculus / cyst checkboxes for this organ
+            const stoneCbs = organChecks.filter(cb => {
+                const id = (cb.id || '').toLowerCase();
+                const labelText = (cb.labels && cb.labels[0]) ? cb.labels[0].textContent.toLowerCase() : '';
+                const sentence = (cb.getAttribute('data-sentence') || '').toLowerCase();
+                return id.includes('stone') || id.includes('calculus') || id.includes('cyst') ||
+                       labelText.includes('stone') || labelText.includes('calculus') || labelText.includes('cyst') || labelText.includes('gallstone') ||
+                       sentence.includes('calculus') || sentence.includes('stone') || sentence.includes('cyst');
+            });
+
+            // Locate stone / calculus / cyst size inputs for this organ
+            const stoneInputs = organInputs.filter(inp => {
+                const template = (inp.getAttribute('data-template') || '').toLowerCase();
+                const placeholder = (inp.placeholder || '').toLowerCase();
+                const labelElem = inp.previousElementSibling;
+                const labelText = labelElem ? labelElem.textContent.toLowerCase() : '';
+                return template.includes('calculus') || template.includes('stone') || template.includes('cyst') ||
+                       placeholder.includes('stone') || placeholder.includes('calculus') || placeholder.includes('cyst') ||
+                       labelText.includes('stone') || labelText.includes('calculus') || labelText.includes('cyst');
+            });
+
+            // Function to synchronize state for this isolated organ
+            const syncOrganState = (triggeringElem) => {
+                if (normalCb && triggeringElem === normalCb) {
+                    if (normalCb.checked) {
+                        // Normal checked: uncheck and disable all abnormal checkboxes for THIS organ
+                        abnormalCbs.forEach(acb => {
+                            acb.checked = false;
+                            acb.disabled = true;
+                        });
+                        // Clear and disable stone size fields for THIS organ
+                        stoneInputs.forEach(sinp => {
+                            sinp.value = '';
+                            sinp.disabled = true;
+                            sinp.required = false;
+                        });
+                    } else {
+                        // Normal unchecked: enable all abnormal checkboxes for THIS organ
+                        abnormalCbs.forEach(acb => {
+                            acb.disabled = false;
+                        });
+                    }
+                } else if (abnormalCbs.includes(triggeringElem)) {
+                    const anyAbnormalChecked = abnormalCbs.some(acb => acb.checked);
+                    if (anyAbnormalChecked && normalCb) {
+                        // Abnormal checked: uncheck Normal for THIS organ
+                        normalCb.checked = false;
+                    }
+                    // Ensure all abnormal checkboxes remain enabled
+                    abnormalCbs.forEach(acb => {
+                        acb.disabled = false;
+                    });
+                }
+
+                // Check stone size fields enabling/disabling
+                const isAnyStoneChecked = stoneCbs.some(scb => scb.checked);
+                stoneInputs.forEach(sinp => {
+                    if (isAnyStoneChecked) {
+                        sinp.disabled = false;
+                        sinp.required = true;
+                    } else {
+                        sinp.value = '';
+                        sinp.disabled = true;
+                        sinp.required = false;
+                    }
+                });
+            };
+
+            // Attach listeners to checkboxes
+            organChecks.forEach(cb => {
+                cb.addEventListener('change', function() {
+                    syncOrganState(this);
+                    generateReportFromOrganModule();
+                });
+            });
+
+            // Attach listeners to measurement inputs
+            organInputs.forEach(inp => {
+                inp.addEventListener('change', generateReportFromOrganModule);
+                inp.addEventListener('input', generateReportFromOrganModule);
+            });
+
+            // Attach listeners to inline measure inputs
+            const measureInputs = Array.from(container.querySelectorAll('.organ-input-measure-l, .organ-input-measure-w'));
+            measureInputs.forEach(inp => {
+                inp.addEventListener('change', generateReportFromOrganModule);
+                inp.addEventListener('input', generateReportFromOrganModule);
+            });
+
+            // Run initial state sync on template load
+            if (normalCb) {
+                syncOrganState(normalCb);
+            } else {
+                syncOrganState(null);
+            }
+        });
+    }
+
+    function generateReportFromOrganModule() {
+        const container = document.getElementById('dynamic_organ_form_container');
+        if (!container) return;
+
+        const organFindings = {};
+        const abnormalKeywords = [];
+
+        // Collect checked checkboxes
+        const checkboxes = container.querySelectorAll('.organ-check:checked');
+        checkboxes.forEach(cb => {
+            const organ = cb.getAttribute('data-organ');
+            const sentence = cb.getAttribute('data-sentence');
+            if (organ && sentence) {
+                if (!organFindings[organ]) organFindings[organ] = [];
+                if (!organFindings[organ].includes(sentence)) {
+                    organFindings[organ].push(sentence);
+                }
+                const lowerS = sentence.toLowerCase();
+                if (!lowerS.includes('normal') && !lowerS.includes('no free fluid') && !lowerS.includes('well distended')) {
+                    abnormalKeywords.push(sentence);
+                }
+            }
+        });
+
+        // Collect inline measure inputs (Measure: ___ cm × ___ cm)
+        const measureOrgans = Array.from(new Set([
+            ...Array.from(container.querySelectorAll('.organ-input-measure-l')).map(i => i.getAttribute('data-organ')),
+            ...Array.from(container.querySelectorAll('.organ-input-measure-w')).map(i => i.getAttribute('data-organ'))
+        ])).filter(Boolean);
+
+        measureOrgans.forEach(organ => {
+            const lElem = container.querySelector(`.organ-input-measure-l[data-organ="${organ}"]`);
+            const wElem = container.querySelector(`.organ-input-measure-w[data-organ="${organ}"]`);
+            const lVal = lElem ? (lElem.value || '').trim() : '';
+            const wVal = wElem ? (wElem.value || '').trim() : '';
+
+            let sentence = '';
+            const organLower = organ.toLowerCase();
+            const organNameFormatted = organLower === 'right kidney' ? 'Right kidney' : (organLower === 'left kidney' ? 'Left kidney' : organ);
+
+            if (lVal && wVal) {
+                sentence = `${organNameFormatted} measures ${lVal} cm × ${wVal} cm.`;
+            } else if (lVal) {
+                sentence = `${organNameFormatted} length measures ${lVal} cm.`;
+            } else if (wVal) {
+                sentence = `${organNameFormatted} width measures ${wVal} cm.`;
+            }
+
+            if (sentence) {
+                if (!organFindings[organ]) organFindings[organ] = [];
+                if (!organFindings[organ].includes(sentence)) {
+                    organFindings[organ].unshift(sentence);
+                }
+                abnormalKeywords.push(sentence);
+            }
+        });
+
+        // Collect filled non-disabled measurement inputs
+        const inputs = container.querySelectorAll('.organ-input');
+        inputs.forEach(inp => {
+            if (inp.disabled) return;
+            const val = (inp.value || '').trim();
+            const organ = inp.getAttribute('data-organ');
+            const template = inp.getAttribute('data-template');
+            if (val && organ && template) {
+                const sentence = template.replace('{val}', val);
+                if (!organFindings[organ]) organFindings[organ] = [];
+                if (!organFindings[organ].includes(sentence)) {
+                    organFindings[organ].push(sentence);
+                }
+                abnormalKeywords.push(sentence);
+            }
+        });
+
+        // Format findings per organ in strict organ order
+        let finalSections = [];
+
+        ORGAN_ORDER.forEach(organKey => {
+            const sentences = organFindings[organKey];
+            if (sentences && sentences.length > 0) {
+                finalSections.push(`${organKey}:\n${sentences.join(' ')}`);
+            }
+        });
+
+        // Include any additional organ key not in standard list
+        Object.keys(organFindings).forEach(organKey => {
+            if (!ORGAN_ORDER.includes(organKey)) {
+                const sentences = organFindings[organKey];
+                if (sentences && sentences.length > 0) {
+                    finalSections.push(`${organKey}:\n${sentences.join(' ')}`);
+                }
+            }
+        });
+
+        const generatedFindings = finalSections.join('\n\n');
+
+        // Auto-generate Impression
+        let generatedImpression = '';
+        if (abnormalKeywords.length === 0 && Object.keys(organFindings).length > 0) {
+            generatedImpression = '1. Normal ultrasound examination.';
+        } else if (abnormalKeywords.length > 0) {
+            generatedImpression = abnormalKeywords.map((kw, idx) => `${idx + 1}. ${kw}`).join('\n');
+        } else {
+            generatedImpression = '1. Normal ultrasound examination.';
+        }
+
+        // Auto-generate Advice
+        let generatedAdvice = '1. Clinical correlation is advised.\n2. Follow-up ultrasound if clinically indicated.';
+
+        // Update hidden inputs
+        const findingsElem = document.getElementById('findings');
+        if (findingsElem) findingsElem.value = generatedFindings;
+
+        const impressionElem = document.getElementById('impression');
+        if (impressionElem) impressionElem.value = generatedImpression;
+
+        const adviceElem = document.getElementById('advice');
+        if (adviceElem) adviceElem.value = generatedAdvice;
+
+        // Update Read-Only Preview boxes
+        const prevFindings = document.getElementById('preview_findings');
+        if (prevFindings) {
+            prevFindings.innerText = generatedFindings || 'Select organ findings above to auto-generate structured report...';
+        }
+
+        const prevImpression = document.getElementById('preview_impression');
+        if (prevImpression) {
+            prevImpression.innerText = generatedImpression || 'Normal ultrasound examination.';
+        }
+
+        const prevAdvice = document.getElementById('preview_advice');
+        if (prevAdvice) {
+            prevAdvice.innerText = generatedAdvice || '1. Clinical correlation is advised.\n2. Follow-up ultrasound if clinically indicated.';
+        }
+    }
+
+    function selectAllNormalOrganModule() {
+        const container = document.getElementById('dynamic_organ_form_container');
+        if (!container) return;
+
+        const allChecks = Array.from(container.querySelectorAll('.organ-check'));
+        const organKeys = Array.from(new Set(allChecks.map(cb => cb.getAttribute('data-organ')).filter(Boolean)));
+
+        organKeys.forEach(organKey => {
+            const organChecks = allChecks.filter(cb => cb.getAttribute('data-organ') === organKey);
+            const normalCb = organChecks.find(cb => {
+                const id = (cb.id || '').toLowerCase();
+                const text = (cb.labels && cb.labels[0]) ? cb.labels[0].textContent.toLowerCase() : '';
+                const sentence = (cb.getAttribute('data-sentence') || '').toLowerCase();
+                return id.includes('normal') || text.includes('normal') || id.includes('_no_') || text.includes('no free fluid') || sentence.includes('normal');
+            });
+
+            if (normalCb) {
+                normalCb.checked = true;
+                organChecks.filter(cb => cb !== normalCb).forEach(cb => {
+                    cb.checked = false;
+                    cb.disabled = true;
+                });
+            }
+        });
+
+        const inputs = container.querySelectorAll('.organ-input, .organ-input-measure-l, .organ-input-measure-w');
+        inputs.forEach(inp => {
+            inp.value = '';
+            // If it's a stone/calculus input, disable it
+            const template = (inp.getAttribute('data-template') || '').toLowerCase();
+            const placeholder = (inp.placeholder || '').toLowerCase();
+            if (template.includes('calculus') || template.includes('stone') || template.includes('cyst') ||
+                placeholder.includes('stone') || placeholder.includes('calculus')) {
+                inp.disabled = true;
+                inp.required = false;
+            }
+        });
+
+        generateReportFromOrganModule();
+    }
+
+    function addImpressionLine(text) {
+        const imp = document.getElementById('impression');
+        if (!imp) return;
+        let current = imp.value.trim();
+        if (!current) {
+            imp.value = '1. ' + text;
+        } else if (!current.includes(text)) {
+            const lines = current.split('\n');
+            imp.value = current + '\n' + (lines.length + 1) + '. ' + text;
+        }
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
+
+    function showStudyDropdown() {
+        const menu = document.getElementById('study_dropdown_menu');
+        if (menu) {
+            menu.style.display = 'block';
+            const input = document.getElementById('study_input');
+            if (input) filterStudyOptions(input.value);
+        }
+    }
+
+    function filterStudyOptions(query) {
+        const menu = document.getElementById('study_dropdown_menu');
+        if (!menu) return;
+        menu.style.display = 'block';
+
+        const filter = (query || '').toLowerCase().trim();
+        const items = menu.querySelectorAll('.study-option');
+        let hasMatch = false;
+
+        items.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            if (!filter || text.includes(filter)) {
+                item.style.display = 'block';
+                hasMatch = true;
+            } else {
+                item.style.display = 'none';
+            }
+        });
+
+        const noMatch = document.getElementById('study_no_match');
+        if (noMatch) {
+            noMatch.style.display = hasMatch ? 'none' : 'block';
+        }
+    }
+
+    function selectStudy(val) {
+        const input = document.getElementById('study_input');
+        if (input) input.value = val;
+        const menu = document.getElementById('study_dropdown_menu');
+        if (menu) menu.style.display = 'none';
+
+        if (val) {
+            loadOrganTemplateForStudy(val);
+        } else {
+            currentTemplateLoaded = '';
+            const container = document.getElementById('dynamic_organ_form_container');
+            if (container) {
+                container.innerHTML = `
+                    <div class="p-4 bg-slate-50 text-center text-slate-600 border rounded my-2" style="font-size: 13.5px; border-color: #cbd5e1 !important;">
+                        <span class="material-symbols-outlined fs-3 text-primary d-block mb-1">note_alt</span>
+                        Please select an <strong>Exam / Study Type</strong> above to load the organ findings form.
+                    </div>
+                `;
+            }
+        }
+    }
+
+    // Hide study dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        const sContainer = document.getElementById('study_dropdown_container');
+        if (sContainer && !sContainer.contains(e.target)) {
+            const sMenu = document.getElementById('study_dropdown_menu');
+            if (sMenu) sMenu.style.display = 'none';
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        setInitialDateTime(false);
+
+        const sInput = document.getElementById('study_input');
+        const initialStudy = sInput ? sInput.value.trim() : '';
+        if (initialStudy) {
+            loadOrganTemplateForStudy(initialStudy);
+        } else {
+            const container = document.getElementById('dynamic_organ_form_container');
+            if (container) {
+                container.innerHTML = `
+                    <div class="p-4 bg-slate-50 text-center text-slate-600 border rounded my-2" style="font-size: 13.5px; border-color: #cbd5e1 !important;">
+                        <span class="material-symbols-outlined fs-3 text-primary d-block mb-1">note_alt</span>
+                        Please select an <strong>Exam / Study Type</strong> above to load the organ findings form.
+                    </div>
+                `;
+            }
+        }
+    });
+
+    function setInitialDateTime(forceRefresh = false) {
+        const reportIdInput = document.querySelector('input[name="report_id"]');
+        const isExistingReport = reportIdInput && reportIdInput.value.trim() !== '';
+
+        const dateInput = document.getElementById('report_date');
+        const timeInput = document.getElementById('report_time');
+
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, '0');
+        const day = String(now.getDate()).padStart(2, '0');
+        const currentDateStr = `${year}-${month}-${day}`;
+
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        const currentTimeStr = `${hours}:${minutes}`;
+
+        if (forceRefresh || !isExistingReport) {
+            if (dateInput) dateInput.value = currentDateStr;
+            if (timeInput) timeInput.value = currentTimeStr;
+        } else {
+            if (dateInput && !dateInput.value) {
+                dateInput.value = currentDateStr;
+            }
+            if (timeInput && !timeInput.value) {
+                timeInput.value = currentTimeStr;
+            }
+        }
+    }
+
+    function clearReportForm() {
+        if (confirm("Are you sure you want to reset report findings and study selection for this patient?")) {
+            const reportIdInput = document.querySelector('input[name="report_id"]');
+            if (reportIdInput) reportIdInput.value = '';
+            
+            const sInput = document.getElementById('study_input');
+            if (sInput) sInput.value = '';
+            
+            const chInput = document.getElementById('clinical_history');
+            if (chInput) chInput.value = '';
+            
+            const fInput = document.getElementById('findings');
+            if (fInput) fInput.value = '';
+            
+            const iInput = document.getElementById('impression');
+            if (iInput) iInput.value = '';
+            
+            const aInput = document.getElementById('advice');
+            if (aInput) aInput.value = '';
+
+            const pInput = document.getElementById('payment_amount');
+            if (pInput) pInput.value = '2500';
+
+            setInitialDateTime(true);
+            selectStudy('');
+        }
+    }
+
+    function handleCancelReport() {
+        if (confirm("Are you sure you want to cancel? Any unsaved changes will be lost.")) {
+            const patientId = document.getElementById('patient_id').value;
+            if (patientId) {
+                window.location.href = `/patient/${patientId}`;
+            } else {
+                window.location.href = '/patients';
+            }
+        }
+    }
+
+    async function submitReportForm(action = 'save') {
+        // Always generate latest report values from organ module or obstetric module before saving
+        if (typeof window.syncObstetricReport === 'function' && currentTemplateLoaded === 'pelvis') {
+            window.syncObstetricReport();
+        } else if (typeof generateReportFromOrganModule === 'function') {
+            generateReportFromOrganModule();
+        }
+
+        const findingsInput = document.getElementById('findings');
+        const impressionInput = document.getElementById('impression');
+        const adviceInput = document.getElementById('advice');
+
+        console.log('==================================================');
+        console.log('[FRONTEND DEBUG] Generated Report Values Before Save:');
+        console.log('- Findings:\n', findingsInput ? findingsInput.value : '');
+        console.log('- Impression:\n', impressionInput ? impressionInput.value : '');
+        console.log('- Advice:\n', adviceInput ? adviceInput.value : '');
+        console.log('==================================================');
+
+        const pNameInput = document.getElementById('patient_name');
+        const pName = pNameInput ? pNameInput.value.trim() : '';
+
+        const studyInput = document.getElementById('study_input');
+        const studyType = studyInput ? studyInput.value.trim() : '';
+
+        const refInput = document.getElementById('referred_by');
+        const referredBy = refInput ? refInput.value.trim() : '';
+
+        const paymentAmtInput = document.getElementById('payment_amount');
+        const paymentAmt = paymentAmtInput ? parseFloat(paymentAmtInput.value) : 0;
+
+        const findings = findingsInput ? findingsInput.value.trim() : '';
+
+        // Validation Checks
+        if (!pName) {
+            if (typeof showNotification === 'function') {
+                showNotification('Patient details missing. Please select a patient from Patient Profile to create a report.', 'error');
+            } else {
+                alert('Patient details missing. Please select a patient from Patient Profile to create a report.');
+            }
+            return;
+        }
+
+        if (!studyType) {
+            if (typeof showNotification === 'function') {
+                showNotification('Please select or enter an Exam / Study Type.', 'error');
+            } else {
+                alert('Please select or enter an Exam / Study Type.');
+            }
+            if (studyInput) studyInput.focus();
+            return;
+        }
+
+        if (!referredBy) {
+            if (typeof showNotification === 'function') {
+                showNotification('Please enter Referred By doctor name or "Self".', 'error');
+            } else {
+                alert('Please enter Referred By doctor name or "Self".');
+            }
+            if (refInput) refInput.focus();
+            return;
+        }
+
+        if (!findings) {
+            if (typeof showNotification === 'function') {
+                showNotification('Please enter report Findings.', 'error');
+            } else {
+                alert('Please enter report Findings.');
+            }
+            if (findingsInput) findingsInput.focus();
+            return;
+        }
+
+        const btnSaveBtm = document.getElementById('btn_save_report_bottom');
+        const btnPrintBtm = document.getElementById('btn_print_report_bottom');
+        const btnPDFBtm = document.getElementById('btn_pdf_report_bottom');
+
+        // Prevent duplicate clicks
+        [btnSaveBtm, btnPrintBtm, btnPDFBtm].forEach(btn => {
+            if (btn) btn.disabled = true;
+        });
+
+        // Display loading indicators
+        if (action === 'save') {
+            if (btnSaveBtm) btnSaveBtm.innerHTML = `<span class="spinner-border spinner-border-sm me-1.5" role="status" aria-hidden="true"></span> Saving...`;
+        } else if (action === 'print') {
+            if (btnPrintBtm) btnPrintBtm.innerHTML = `<span class="spinner-border spinner-border-sm me-1.5" role="status" aria-hidden="true"></span> Saving & Printing...`;
+        } else if (action === 'pdf') {
+            if (btnPDFBtm) btnPDFBtm.innerHTML = `<span class="spinner-border spinner-border-sm me-1.5" role="status" aria-hidden="true"></span> Saving & PDF...`;
+        }
+
+        const actionInput = document.getElementById('action_after_save');
+        if (actionInput) actionInput.value = action;
+
+        if (typeof showNotification === 'function') {
+            showNotification('Saving report to database...', 'info');
+        }
+
+        const formElement = document.getElementById('ultrasoundReportForm');
+        const formData = new FormData(formElement);
+        const searchParams = new URLSearchParams(formData);
+
+        try {
+            const response = await fetch('/report/save', {
+                method: 'POST',
+                body: searchParams,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (response.redirected && response.url.includes('/login')) {
+                window.location.href = '/login';
+                return;
+            }
+
+            const contentType = response.headers.get('content-type') || '';
+            if (!contentType.includes('application/json')) {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                    return;
+                }
+                throw new Error('Server returned non-JSON response. Please check your session or try refreshing the page.');
+            }
+
+            let data;
+            try {
+                data = await response.json();
+            } catch (jsonErr) {
+                throw new Error('Failed to parse server response as JSON.');
+            }
+
+            if (!response.ok) {
+                throw new Error(data.error || data.message || `Server error (${response.status})`);
+            }
+
+            if (data.success) {
+                // Update hidden inputs for report_id and patient_id
+                const reportIdInput = document.querySelector('input[name="report_id"]');
+                if (reportIdInput) reportIdInput.value = data.report_id;
+                
+                const patientIdInput = document.getElementById('patient_id');
+                if (patientIdInput && data.patient_id) patientIdInput.value = data.patient_id;
+
+                if (typeof showNotification === 'function') {
+                    showNotification(data.message || 'Report saved successfully!', 'success');
+                }
+
+                resetActionButtons();
+
+                const pNameInput = document.getElementById('patient_name');
+                const pCodeInput = document.getElementById('patient_code');
+                const patientName = pNameInput ? pNameInput.value : data.patient_name;
+                const mrNo = pCodeInput ? pCodeInput.value : data.patient_code;
+                const examTypeInput = document.getElementById('study_input');
+                const examType = examTypeInput ? examTypeInput.value : data.exam_type;
+
+                if (action === 'print') {
+                    window.location.href = `/report/${data.report_id}/print?autoprint=true`;
+                } else if (action === 'pdf') {
+                    window.location.href = `/report/${data.report_id}/pdf`;
+                } else {
+                    openPaymentModal(
+                        data.report_id,
+                        patientName,
+                        mrNo,
+                        examType,
+                        data.payment_amount || data.report_fee || '',
+                        data.payment_status || 'Unpaid',
+                        function(newPaymentStatus, updatedReport) {
+                            if (newPaymentStatus === 'Paid') {
+                                window.location.href = `/patient/${data.patient_id}`;
+                            }
+                        }
+                    );
+                }
+            } else {
+                if (typeof showNotification === 'function') {
+                    showNotification(data.error || 'Failed to save report.', 'error');
+                } else {
+                    alert(data.error || 'Failed to save report.');
+                }
+                resetActionButtons();
+            }
+        } catch (err) {
+            console.error('Error submitting report:', err);
+            if (typeof showNotification === 'function') {
+                showNotification('Failed to save report: ' + err.message, 'error');
+            } else {
+                alert('Failed to save report: ' + err.message);
+            }
+            resetActionButtons();
+        }
+    }
+
+    function resetActionButtons() {
+        const btnSaveBtm = document.getElementById('btn_save_report_bottom');
+        const btnPrintBtm = document.getElementById('btn_print_report_bottom');
+        const btnPDFBtm = document.getElementById('btn_pdf_report_bottom');
+
+        if (btnSaveBtm) {
+            btnSaveBtm.disabled = false;
+            btnSaveBtm.innerHTML = `<span class="material-symbols-outlined fs-6">save</span> Save Report`;
+        }
+        if (btnPrintBtm) {
+            btnPrintBtm.disabled = false;
+            btnPrintBtm.innerHTML = `<span class="material-symbols-outlined fs-6">print</span> Print`;
+        }
+        if (btnPDFBtm) {
+            btnPDFBtm.disabled = false;
+            btnPDFBtm.innerHTML = `<span class="material-symbols-outlined fs-6">picture_as_pdf</span> PDF`;
+        }
+    }
+
+    function triggerPrint() {
+        submitReportForm('print');
+    }
+
+    function triggerPDF() {
+        submitReportForm('pdf');
+    }
+</script>
+{% endblock %}

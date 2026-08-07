@@ -1,0 +1,404 @@
+<!-- WHOLE ABDOMEN ULTRASOUND REPORTING MODULE -->
+<div class="organ-module-card border rounded p-3 bg-white mb-4 shadow-sm" id="whole_abdomen_module">
+    <div class="d-flex align-items-center justify-content-between pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-center gap-2">
+            <span class="material-symbols-outlined text-primary fs-5">view_compact</span>
+            <h5 class="fw-bold mb-0 text-dark" style="font-size: 15px;">Whole Abdomen Structured Examination</h5>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 11px;" onclick="selectAllNormalOrganModule()">Set All Normal</button>
+    </div>
+
+    <!-- ACCORDION SECTIONS -->
+    <div class="accordion" id="accordionWholeAbdomen">
+
+        <!-- 1. LIVER -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingLiver">
+                <button class="accordion-button py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLiver" aria-expanded="true" aria-controls="collapseLiver">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">medical_services</span>
+                    1. LIVER
+                </button>
+            </h2>
+            <div id="collapseLiver" class="accordion-collapse collapse show" aria-labelledby="headingLiver">
+                <div class="accordion-body p-3">
+                    <div class="row g-2 mb-2">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small font-mono fw-semibold text-secondary mb-1">Liver Span (cm)</label>
+                            <input type="number" step="0.1" class="form-control form-control-sm organ-input" data-organ="LIVER" data-template="Liver span measures {val} cm." placeholder="e.g. 14.5">
+                        </div>
+                    </div>
+
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="liv_normal" data-organ="LIVER" data-sentence="The liver is normal in size, smooth in contour and normal in echotexture. No focal lesion or intrahepatic biliary radicle dilation (IHBRD) seen." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="liv_normal">Normal Liver</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="liv_fatty_1" data-organ="LIVER" data-sentence="Mild diffusely increased hepatic echogenicity with preserved vascular visualization, consistent with Grade I Fatty Liver.">
+                                <label class="form-check-label small text-dark" for="liv_fatty_1">Fatty Liver Grade I</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="liv_fatty_2" data-organ="LIVER" data-sentence="Diffuse increased hepatic echogenicity with sound attenuation, consistent with Grade II Fatty Liver.">
+                                <label class="form-check-label small text-dark" for="liv_fatty_2">Fatty Liver Grade II</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="liv_fatty_3" data-organ="LIVER" data-sentence="Markedly increased hepatic echogenicity with severe posterior acoustic attenuation, consistent with Grade III Fatty Liver.">
+                                <label class="form-check-label small text-dark" for="liv_fatty_3">Fatty Liver Grade III</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="liv_hepatomegaly" data-organ="LIVER" data-sentence="Liver is enlarged in size (Hepatomegaly).">
+                                <label class="form-check-label small text-dark" for="liv_hepatomegaly">Hepatomegaly</label>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="liv_cirrhosis" data-organ="LIVER" data-sentence="Liver shows coarse heterogeneous echotexture with nodular surface contour, suggestive of cirrhotic changes.">
+                                <label class="form-check-label small text-dark" for="liv_cirrhosis">Cirrhosis</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="liv_cyst" data-organ="LIVER" data-sentence="A well-defined rounded anechoic cystic lesion noted in the liver.">
+                                <label class="form-check-label small text-dark" for="liv_cyst">Hepatic Cyst</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="liv_hemangioma" data-organ="LIVER" data-sentence="A well-defined hyperechoic focal lesion noted in the right lobe of liver, likely hemangioma.">
+                                <label class="form-check-label small text-dark" for="liv_hemangioma">Hemangioma</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="liv_metastasis" data-organ="LIVER" data-sentence="Multiple target-like hypoechoic focal space occupying lesions seen in both lobes of liver, suspicious for metastases.">
+                                <label class="form-check-label small text-dark" for="liv_metastasis">Metastatic Lesions</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. GALL BLADDER -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingGB">
+                <button class="accordion-button collapsed py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseGB" aria-expanded="false" aria-controls="collapseGB">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">opacity</span>
+                    2. GALL BLADDER & BILIARY TREE
+                </button>
+            </h2>
+            <div id="collapseGB" class="accordion-collapse collapse" aria-labelledby="headingGB">
+                <div class="accordion-body p-3">
+                    <div class="row g-2 mb-2">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small font-mono fw-semibold text-secondary mb-1">Stone Size (mm)</label>
+                            <input type="number" step="0.1" class="form-control form-control-sm organ-input" data-organ="GALL BLADDER" data-template="Calculus in gall bladder lumen measures {val} mm." placeholder="e.g. 8.5">
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small font-mono fw-semibold text-secondary mb-1">CBD Diameter (mm)</label>
+                            <input type="number" step="0.1" class="form-control form-control-sm organ-input" data-organ="GALL BLADDER" data-template="Common bile duct (CBD) measures {val} mm in caliber." placeholder="e.g. 4.0">
+                        </div>
+                    </div>
+
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="gb_normal" data-organ="GALL BLADDER" data-sentence="Gall bladder is well distended with thin, smooth wall (< 3 mm). No intraluminal calculus, sludge or mass lesion. Common bile duct (CBD) is normal in caliber." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="gb_normal">Normal Gall Bladder</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="gb_stone" data-organ="GALL BLADDER" data-sentence="Multiple echogenic calculi with posterior acoustic shadowing are seen in the gall bladder lumen (Cholelithiasis).">
+                                <label class="form-check-label small text-dark" for="gb_stone">Gallstones (Cholelithiasis)</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="gb_sludge" data-organ="GALL BLADDER" data-sentence="Intraluminal low-level dependent echogenic sludge noted in the gall bladder.">
+                                <label class="form-check-label small text-dark" for="gb_sludge">Biliary Sludge</label>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="gb_thickening" data-organ="GALL BLADDER" data-sentence="Gall bladder wall is diffusely thickened (> 3 mm) with pericholecystic fluid, suggestive of cholecystitis.">
+                                <label class="form-check-label small text-dark" for="gb_thickening">Wall Thickening / Cholecystitis</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="gb_polyp" data-organ="GALL BLADDER" data-sentence="A non-shadowing fixed echogenic mucosal lesion noted in the gall bladder wall, likely polyp.">
+                                <label class="form-check-label small text-dark" for="gb_polyp">Gall Bladder Polyp</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="gb_contracted" data-organ="GALL BLADDER" data-sentence="Gall bladder is physiologically contracted, limiting detailed wall and luminal evaluation.">
+                                <label class="form-check-label small text-dark" for="gb_contracted">Contracted Gall Bladder</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. PANCREAS -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingPancreas">
+                <button class="accordion-button collapsed py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePancreas" aria-expanded="false" aria-controls="collapsePancreas">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">grain</span>
+                    3. PANCREAS
+                </button>
+            </h2>
+            <div id="collapsePancreas" class="accordion-collapse collapse" aria-labelledby="headingPancreas">
+                <div class="accordion-body p-3">
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="panc_normal" data-organ="PANCREAS" data-sentence="Pancreas is normal in size, smooth in outline and uniform in echotexture. Main pancreatic duct is non-dilated." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="panc_normal">Normal Pancreas</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="panc_bulky" data-organ="PANCREAS" data-sentence="Pancreas appears diffusely bulky with reduced parenchymal echogenicity, suggestive of acute pancreatitis.">
+                                <label class="form-check-label small text-dark" for="panc_bulky">Bulky / Acute Pancreatitis</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="panc_atrophic" data-organ="PANCREAS" data-sentence="Pancreas appears atrophic with increased parenchymal echogenicity, consistent with chronic changes.">
+                                <label class="form-check-label small text-dark" for="panc_atrophic">Atrophic / Chronic Changes</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. SPLEEN -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingSpleen">
+                <button class="accordion-button collapsed py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSpleen" aria-expanded="false" aria-controls="collapseSpleen">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">adjust</span>
+                    4. SPLEEN
+                </button>
+            </h2>
+            <div id="collapseSpleen" class="accordion-collapse collapse" aria-labelledby="headingSpleen">
+                <div class="accordion-body p-3">
+                    <div class="row g-2 mb-2">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small font-mono fw-semibold text-secondary mb-1">Splenic Length (cm)</label>
+                            <input type="number" step="0.1" class="form-control form-control-sm organ-input" data-organ="SPLEEN" data-template="Splenic length measures {val} cm." placeholder="e.g. 11.2">
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="spl_normal" data-organ="SPLEEN" data-sentence="Spleen is normal in size, shape and echotexture. Splenic vein is normal." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="spl_normal">Normal Spleen</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="spl_enlarged" data-organ="SPLEEN" data-sentence="Spleen is enlarged in size (Splenomegaly) with normal homogeneous echotexture.">
+                                <label class="form-check-label small text-dark" for="spl_enlarged">Splenomegaly</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. RIGHT KIDNEY -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingRK">
+                <button class="accordion-button collapsed py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRK" aria-expanded="false" aria-controls="collapseRK">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">water_drop</span>
+                    5. RIGHT KIDNEY
+                </button>
+            </h2>
+            <div id="collapseRK" class="accordion-collapse collapse" aria-labelledby="headingRK">
+                <div class="accordion-body p-3">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <div class="mb-2">
+                                <label class="form-label small font-mono fw-semibold text-secondary mb-1">Measure</label>
+                                <div class="d-flex align-items-center gap-1.5 flex-wrap flex-sm-nowrap">
+                                    <input type="number" step="0.1" class="form-control form-control-sm organ-input-measure-l" id="rk_measure_l" data-organ="RIGHT KIDNEY" placeholder="Length" style="max-width: 110px;">
+                                    <span class="fw-bold text-muted small">cm ×</span>
+                                    <input type="number" step="0.1" class="form-control form-control-sm organ-input-measure-w" id="rk_measure_w" data-organ="RIGHT KIDNEY" placeholder="Width" style="max-width: 110px;">
+                                    <span class="fw-semibold text-muted small">cm</span>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="rk_parenchymal_thickness" class="form-label small font-mono fw-semibold text-secondary mb-1">Parenchymal Thickness</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="rk_parenchymal_thickness" data-organ="RIGHT KIDNEY" data-template="Right renal parenchymal thickness is {val}." placeholder="e.g. 14 mm">
+                            </div>
+                            <div class="mb-2">
+                                <label for="rk_parenchymal_echogenicity" class="form-label small font-mono fw-semibold text-secondary mb-1">Parenchymal Echogenicity</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="rk_parenchymal_echogenicity" data-organ="RIGHT KIDNEY" data-template="Right kidney parenchymal echogenicity is {val}." placeholder="e.g. Normal">
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small font-mono fw-semibold text-secondary mb-1">Checkboxes</label>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="rk_normal" data-organ="RIGHT KIDNEY" data-sentence="Right kidney is normal in size, position, shape, and echotexture. Corticomedullary differentiation is preserved. No calculus or hydronephrosis seen." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="rk_normal">Normal Right Kidney</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="rk_stone" data-organ="RIGHT KIDNEY" data-sentence="An echogenic calculus with acoustic shadowing is noted in the right kidney.">
+                                <label class="form-check-label small text-dark" for="rk_stone">Renal Calculus</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="rk_hydro" data-organ="RIGHT KIDNEY" data-sentence="Dilation of pelvicalyceal system (Hydronephrosis) noted in right kidney.">
+                                <label class="form-check-label small text-dark" for="rk_hydro">Hydronephrosis</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="rk_cyst" data-organ="RIGHT KIDNEY" data-sentence="A well-defined cortical cyst noted in the right kidney.">
+                                <label class="form-check-label small text-dark" for="rk_cyst">Cortical Cyst</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input organ-check" type="checkbox" id="rk_echogenic" data-organ="RIGHT KIDNEY" data-sentence="Increased cortical echogenicity with loss of corticomedullary differentiation noted in right kidney.">
+                                <label class="form-check-label small text-dark" for="rk_echogenic">Increased Echogenicity</label>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="rk_focal_lesion" class="form-label small font-mono fw-semibold text-secondary mb-1">Focal Lesion</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="rk_focal_lesion" data-organ="RIGHT KIDNEY" data-template="Right kidney focal lesion: {val}." placeholder="e.g. None">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. LEFT KIDNEY -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingLK">
+                <button class="accordion-button collapsed py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseLK" aria-expanded="false" aria-controls="collapseLK">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">water_drop</span>
+                    6. LEFT KIDNEY
+                </button>
+            </h2>
+            <div id="collapseLK" class="accordion-collapse collapse" aria-labelledby="headingLK">
+                <div class="accordion-body p-3">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <div class="mb-2">
+                                <label class="form-label small font-mono fw-semibold text-secondary mb-1">Measure</label>
+                                <div class="d-flex align-items-center gap-1.5 flex-wrap flex-sm-nowrap">
+                                    <input type="number" step="0.1" class="form-control form-control-sm organ-input-measure-l" id="lk_measure_l" data-organ="LEFT KIDNEY" placeholder="Length" style="max-width: 110px;">
+                                    <span class="fw-bold text-muted small">cm ×</span>
+                                    <input type="number" step="0.1" class="form-control form-control-sm organ-input-measure-w" id="lk_measure_w" data-organ="LEFT KIDNEY" placeholder="Width" style="max-width: 110px;">
+                                    <span class="fw-semibold text-muted small">cm</span>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="lk_parenchymal_thickness" class="form-label small font-mono fw-semibold text-secondary mb-1">Parenchymal Thickness</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="lk_parenchymal_thickness" data-organ="LEFT KIDNEY" data-template="Left renal parenchymal thickness is {val}." placeholder="e.g. 15 mm">
+                            </div>
+                            <div class="mb-2">
+                                <label for="lk_parenchymal_echogenicity" class="form-label small font-mono fw-semibold text-secondary mb-1">Parenchymal Echogenicity</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="lk_parenchymal_echogenicity" data-organ="LEFT KIDNEY" data-template="Left kidney parenchymal echogenicity is {val}." placeholder="e.g. Normal">
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small font-mono fw-semibold text-secondary mb-1">Checkboxes</label>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="lk_normal" data-organ="LEFT KIDNEY" data-sentence="Left kidney is normal in size, position, shape, and echotexture. Corticomedullary differentiation is preserved. No calculus or hydronephrosis seen." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="lk_normal">Normal Left Kidney</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="lk_stone" data-organ="LEFT KIDNEY" data-sentence="An echogenic calculus with acoustic shadowing is noted in the left kidney.">
+                                <label class="form-check-label small text-dark" for="lk_stone">Renal Calculus</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="lk_hydro" data-organ="LEFT KIDNEY" data-sentence="Dilation of pelvicalyceal system (Hydronephrosis) noted in left kidney.">
+                                <label class="form-check-label small text-dark" for="lk_hydro">Hydronephrosis</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="lk_cyst" data-organ="LEFT KIDNEY" data-sentence="A well-defined cortical cyst noted in the left kidney.">
+                                <label class="form-check-label small text-dark" for="lk_cyst">Cortical Cyst</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input organ-check" type="checkbox" id="lk_echogenic" data-organ="LEFT KIDNEY" data-sentence="Increased cortical echogenicity with loss of corticomedullary differentiation noted in left kidney.">
+                                <label class="form-check-label small text-dark" for="lk_echogenic">Increased Echogenicity</label>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="lk_focal_lesion" class="form-label small font-mono fw-semibold text-secondary mb-1">Focal Lesion</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="lk_focal_lesion" data-organ="LEFT KIDNEY" data-template="Left kidney focal lesion: {val}." placeholder="e.g. None">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. URINARY BLADDER -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingUB">
+                <button class="accordion-button collapsed py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUB" aria-expanded="false" aria-controls="collapseUB">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">circle</span>
+                    7. URINARY BLADDER
+                </button>
+            </h2>
+            <div id="collapseUB" class="accordion-collapse collapse" aria-labelledby="headingUB">
+                <div class="accordion-body p-3">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <div class="mb-2">
+                                <label for="ub_status" class="form-label small font-mono fw-semibold text-secondary mb-1">Urinary Bladder</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="ub_status" data-organ="URINARY BLADDER" data-template="Urinary bladder: {val}." placeholder="e.g. Well distended with clear lumen">
+                            </div>
+                            <div class="mb-2">
+                                <label for="ub_wall_thickness" class="form-label small font-mono fw-semibold text-secondary mb-1">Wall Thickness</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="number" step="0.1" class="form-control form-control-sm organ-input" id="ub_wall_thickness" data-organ="URINARY BLADDER" data-template="Urinary bladder wall thickness is {val} cm." placeholder="e.g. 0.3" style="max-width: 140px;">
+                                    <span class="fw-semibold text-muted small">cm</span>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="ub_calculi" class="form-label small font-mono fw-semibold text-secondary mb-1">Calculi</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="ub_calculi" data-organ="URINARY BLADDER" data-template="Urinary bladder calculi: {val}." placeholder="e.g. None">
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small font-mono fw-semibold text-secondary mb-1">Checkboxes</label>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="ub_normal" data-organ="URINARY BLADDER" data-sentence="Urinary bladder is well distended with clear lumen. Wall thickness and mucosal contour are normal. No intraluminal calculus or mass." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="ub_normal">Normal Urinary Bladder</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="ub_thickening" data-organ="URINARY BLADDER" data-sentence="Diffuse mucosal wall thickening noted in urinary bladder, suggestive of cystitis.">
+                                <label class="form-check-label small text-dark" for="ub_thickening">Cystitis / Wall Thickening</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="ub_stone" data-organ="URINARY BLADDER" data-sentence="Echogenic calculus with acoustic shadowing noted within the urinary bladder lumen.">
+                                <label class="form-check-label small text-dark" for="ub_stone">Bladder Stone</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="ub_residual" data-organ="URINARY BLADDER" data-sentence="Significant post-void residual urine volume noted.">
+                                <label class="form-check-label small text-dark" for="ub_residual">Significant Residual Urine</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. CONCLUSION / IMPRESSION -->
+        <div class="accordion-item border rounded overflow-hidden">
+            <h2 class="accordion-header" id="headingConc">
+                <button class="accordion-button collapsed py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseConc" aria-expanded="false" aria-controls="collapseConc">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">verified</span>
+                    8. CONCLUSION & IMPRESSION QUICK SELECT
+                </button>
+            </h2>
+            <div id="collapseConc" class="accordion-collapse collapse" aria-labelledby="headingConc">
+                <div class="accordion-body p-3">
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addImpressionLine('Normal ultrasound scan of whole abdomen.')">+ Normal Scan</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addImpressionLine('Grade II Fatty Liver.')">+ Grade II Fatty Liver</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addImpressionLine('Cholelithiasis (Gallbladder stones).')">+ Gallstones</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addImpressionLine('Right Renal Calculus.')">+ Right Kidney Stone</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addImpressionLine('Left Renal Calculus.')">+ Left Kidney Stone</button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="addImpressionLine('Prostatomegaly / Benign Prostatic Hyperplasia (BPH).')">+ Prostatomegaly (BPH)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

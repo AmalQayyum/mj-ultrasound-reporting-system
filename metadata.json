@@ -1,0 +1,8 @@
+{
+  "name": "MJ Ultrasound DEV",
+  "description": "A comprehensive Flask-based medical portal for patient registration, ultrasound reports management, and key clinical insights, styled with Bootstrap 5.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

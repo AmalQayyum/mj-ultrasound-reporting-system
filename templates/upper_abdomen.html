@@ -1,0 +1,194 @@
+<!-- UPPER ABDOMEN ULTRASOUND REPORTING MODULE -->
+<div class="organ-module-card border rounded p-3 bg-white mb-4 shadow-sm" id="upper_abdomen_module">
+    <div class="d-flex align-items-center justify-content-between pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-center gap-2">
+            <span class="material-symbols-outlined text-primary fs-5">view_compact</span>
+            <h5 class="fw-bold mb-0 text-dark" style="font-size: 15px;">Upper Abdomen Examination</h5>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 11px;" onclick="selectAllNormalOrganModule()">Set All Normal</button>
+    </div>
+
+    <div class="accordion" id="accordionUpperAbdomen">
+
+        <!-- 1. LIVER -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingUA_Liver">
+                <button class="accordion-button py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUA_Liver">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">medical_services</span>
+                    1. LIVER
+                </button>
+            </h2>
+            <div id="collapseUA_Liver" class="accordion-collapse collapse show">
+                <div class="accordion-body p-3">
+                    <div class="row g-2 mb-2">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small font-mono fw-semibold text-secondary mb-1">Liver Span (cm)</label>
+                            <input type="number" step="0.1" class="form-control form-control-sm organ-input" data-organ="LIVER" data-template="Liver span measures {val} cm." placeholder="e.g. 14.2">
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ua_liv_normal" data-organ="LIVER" data-sentence="The liver is normal in size, smooth in contour and normal in echotexture. No focal lesion or IHBRD seen." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="ua_liv_normal">Normal Liver</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ua_liv_fatty_1" data-organ="LIVER" data-sentence="Mild diffusely increased hepatic echogenicity, consistent with Grade I Fatty Liver.">
+                                <label class="form-check-label small text-dark" for="ua_liv_fatty_1">Fatty Liver Grade I</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ua_liv_fatty_2" data-organ="LIVER" data-sentence="Diffuse increased hepatic echogenicity with sound attenuation, consistent with Grade II Fatty Liver.">
+                                <label class="form-check-label small text-dark" for="ua_liv_fatty_2">Fatty Liver Grade II</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ua_liv_fatty_3" data-organ="LIVER" data-sentence="Markedly increased hepatic echogenicity with severe acoustic attenuation, consistent with Grade III Fatty Liver.">
+                                <label class="form-check-label small text-dark" for="ua_liv_fatty_3">Fatty Liver Grade III</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ua_liv_hepatomegaly" data-organ="LIVER" data-sentence="Liver is enlarged in size (Hepatomegaly).">
+                                <label class="form-check-label small text-dark" for="ua_liv_hepatomegaly">Hepatomegaly</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ua_liv_cyst" data-organ="LIVER" data-sentence="A well-defined anechoic simple hepatic cyst noted.">
+                                <label class="form-check-label small text-dark" for="ua_liv_cyst">Hepatic Cyst</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ua_liv_hemangioma" data-organ="LIVER" data-sentence="Hyperechoic focal lesion noted in hepatic parenchyma, likely hemangioma.">
+                                <label class="form-check-label small text-dark" for="ua_liv_hemangioma">Hemangioma</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. GALL BLADDER -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingUA_GB">
+                <button class="accordion-button collapsed py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUA_GB">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">opacity</span>
+                    2. GALL BLADDER & BILIARY TRACT
+                </button>
+            </h2>
+            <div id="collapseUA_GB" class="accordion-collapse collapse">
+                <div class="accordion-body p-3">
+                    <div class="row g-2 mb-2">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small font-mono fw-semibold text-secondary mb-1">Stone Size (mm)</label>
+                            <input type="number" step="0.1" class="form-control form-control-sm organ-input" data-organ="GALL BLADDER" data-template="Calculus in gall bladder measures {val} mm." placeholder="e.g. 7.0">
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ua_gb_normal" data-organ="GALL BLADDER" data-sentence="Gall bladder is well distended with thin, smooth wall. No calculus or sludge seen. CBD is normal in caliber." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="ua_gb_normal">Normal Gall Bladder</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ua_gb_stone" data-organ="GALL BLADDER" data-sentence="Multiple echogenic calculi with acoustic shadowing in gall bladder lumen.">
+                                <label class="form-check-label small text-dark" for="ua_gb_stone">Gallstones</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ua_gb_sludge" data-organ="GALL BLADDER" data-sentence="Intraluminal low-level dependent echogenic sludge noted.">
+                                <label class="form-check-label small text-dark" for="ua_gb_sludge">Biliary Sludge</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ua_gb_thickening" data-organ="GALL BLADDER" data-sentence="Gall bladder wall thickening noted (> 3 mm).">
+                                <label class="form-check-label small text-dark" for="ua_gb_thickening">Wall Thickening</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. PANCREAS -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingUA_Panc">
+                <button class="accordion-button collapsed py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUA_Panc">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">grain</span>
+                    3. PANCREAS
+                </button>
+            </h2>
+            <div id="collapseUA_Panc" class="accordion-collapse collapse">
+                <div class="accordion-body p-3">
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ua_panc_normal" data-organ="PANCREAS" data-sentence="Pancreas is normal in size, smooth in outline and uniform in echotexture." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="ua_panc_normal">Normal Pancreas</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ua_panc_bulky" data-organ="PANCREAS" data-sentence="Pancreas is diffusely bulky with decreased echogenicity.">
+                                <label class="form-check-label small text-dark" for="ua_panc_bulky">Bulky Pancreas</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. SPLEEN -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingUA_Spleen">
+                <button class="accordion-button collapsed py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUA_Spleen">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">adjust</span>
+                    4. SPLEEN
+                </button>
+            </h2>
+            <div id="collapseUA_Spleen" class="accordion-collapse collapse">
+                <div class="accordion-body p-3">
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ua_spl_normal" data-organ="SPLEEN" data-sentence="Spleen is normal in size and echotexture." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="ua_spl_normal">Normal Spleen</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ua_spl_enlarged" data-organ="SPLEEN" data-sentence="Spleen is enlarged in size (Splenomegaly).">
+                                <label class="form-check-label small text-dark" for="ua_spl_enlarged">Splenomegaly</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. KIDNEYS (Upper Abdomen Overview) -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingUA_Kidneys">
+                <button class="accordion-button collapsed py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseUA_Kidneys">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">water_drop</span>
+                    5. KIDNEYS OVERVIEW
+                </button>
+            </h2>
+            <div id="collapseUA_Kidneys" class="accordion-collapse collapse">
+                <div class="accordion-body p-3">
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ua_rk_normal" data-organ="RIGHT KIDNEY" data-sentence="Right kidney is normal in size, shape and position. No calculus or hydronephrosis." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="ua_rk_normal">Normal Right Kidney</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ua_lk_normal" data-organ="LEFT KIDNEY" data-sentence="Left kidney is normal in size, shape and position. No calculus or hydronephrosis." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="ua_lk_normal">Normal Left Kidney</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,1086 @@
+<!-- LOWER ABDOMEN / PELVIS & OBSTETRIC ULTRASOUND EXAMINATION FORM MODULE -->
+<div class="organ-module-card border rounded-3 p-3 p-md-4 bg-white mb-4 shadow-sm" id="pelvis_obs_module">
+    
+    <!-- Module Header -->
+    <div class="d-flex align-items-center justify-content-between pb-3 mb-3 border-bottom">
+        <div class="d-flex align-items-center gap-2">
+            <span class="material-symbols-outlined text-primary fs-4">female</span>
+            <div>
+                <h5 class="fw-bold mb-0 text-slate-900" style="font-size: 16px;">Lower Abdomen / Pelvis Ultrasound Structured Reporting</h5>
+                <p class="text-muted mb-0" style="font-size: 11px;">Structured Radiology Information System (RIS) Form • Live Auto-Update Enabled</p>
+            </div>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2.5 py-1 font-mono" style="font-size: 10.5px;">
+                <span class="material-symbols-outlined fs-6 align-middle me-1">sync</span>AUTO-UPDATE
+            </span>
+            <button type="button" class="btn btn-sm btn-outline-primary fw-semibold py-1 px-3" style="font-size: 12px; border-radius: 6px;" onclick="resetPelvisFormToNormal()">
+                <span class="material-symbols-outlined fs-6 align-middle me-1">restart_alt</span>Set All Normal
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN CATEGORY SELECTOR -->
+    <div class="card border-0 bg-slate-50 p-3 mb-4 rounded-3 border" style="border-color: #cbd5e1 !important;">
+        <div class="row g-3">
+            <div class="col-12">
+                <label class="fw-bold text-uppercase text-slate-800 mb-1.5 d-flex align-items-center gap-1.5" style="font-size: 12px;">
+                    <span class="material-symbols-outlined text-primary fs-6">category</span>
+                    Exam Module Type
+                </label>
+                <div class="btn-group w-full" role="group">
+                    <input type="radio" class="btn-check obs-input" name="pelvis_exam_mode" id="mode_gyne" value="Gynecological Pelvis" checked onclick="togglePelvisMode('gyne')">
+                    <label class="btn btn-outline-primary btn-sm fw-bold py-2" for="mode_gyne">
+                        <span class="material-symbols-outlined fs-6 align-middle me-1">female</span>Lower Abdomen / Gynecological Pelvis
+                    </label>
+
+                    <input type="radio" class="btn-check obs-input" name="pelvis_exam_mode" id="mode_obs" value="Obstetric Pregnancy" onclick="togglePelvisMode('obs')">
+                    <label class="btn btn-outline-primary btn-sm fw-bold py-2" for="mode_obs">
+                        <span class="material-symbols-outlined fs-6 align-middle me-1">child_care</span>Obstetric / Pregnancy
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- SECTION A: LOWER ABDOMEN / GYNECOLOGICAL PELVIS FORM CONTAINER -->
+    <!-- ============================================================== -->
+    <div id="gyne_pelvis_section">
+        <div class="row g-3">
+
+            <!-- 1. UTERUS -->
+            <div class="col-12 col-lg-6">
+                <div class="card h-100 border shadow-2xs rounded-3">
+                    <div class="card-header bg-light py-2 px-3 border-bottom d-flex align-items-center gap-2">
+                        <span class="badge bg-primary rounded-circle p-1" style="width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; font-size:11px;">1</span>
+                        <h6 class="fw-bold mb-0 text-dark text-uppercase" style="font-size: 13px;">Uterus</h6>
+                    </div>
+                    <div class="card-body p-3">
+                        
+                        <!-- Position & Myometrium -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-secondary mb-1">Uterus Position</label>
+                                <select id="ut_position" class="form-select form-select-sm obs-input fw-semibold text-dark">
+                                    <option value="Anteverted" selected>Anteverted</option>
+                                    <option value="Retroverted">Retroverted</option>
+                                    <option value="Midline">Midline / Axial</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-secondary mb-1">Myometrium</label>
+                                <select id="ut_myometrium" class="form-select form-select-sm obs-input fw-semibold text-dark">
+                                    <option value="Normal" selected>Normal / Homogeneous</option>
+                                    <option value="Heterogeneous">Heterogeneous</option>
+                                    <option value="Bulky">Bulky</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Size Dimensions -->
+                        <label class="form-label small fw-bold text-secondary mb-1">Uterus Size (cm)</label>
+                        <div class="row g-2 mb-3">
+                            <div class="col-4">
+                                <input type="number" step="0.1" id="ut_length" class="form-control form-control-sm obs-input font-mono" placeholder="Length (cm)" value="7.8">
+                            </div>
+                            <div class="col-4">
+                                <input type="number" step="0.1" id="ut_ap" class="form-control form-control-sm obs-input font-mono" placeholder="AP (cm)" value="4.2">
+                            </div>
+                            <div class="col-4">
+                                <input type="number" step="0.1" id="ut_width" class="form-control form-control-sm obs-input font-mono" placeholder="Width (cm)" value="3.8">
+                            </div>
+                        </div>
+
+                        <!-- Endometrium -->
+                        <div class="row g-2 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-secondary mb-1">Endometrial Thickness (mm)</label>
+                                <input type="number" step="0.1" id="ut_et_mm" class="form-control form-control-sm obs-input font-mono" placeholder="ET in mm" value="8.0">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-secondary mb-1">Endometrium Appearance</label>
+                                <select id="ut_et_appearance" class="form-select form-select-sm obs-input fw-semibold text-dark">
+                                    <option value="Normal" selected>Normal</option>
+                                    <option value="Thickened">Thickened</option>
+                                    <option value="Thin">Thin</option>
+                                    <option value="Irregular">Irregular</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Focal Lesion -->
+                        <div class="p-2.5 bg-light rounded border mb-3">
+                            <label class="form-label small fw-bold text-dark mb-1.5 d-block">Focal Uterine Lesion</label>
+                            <div class="d-flex align-items-center gap-3 flex-wrap mb-2">
+                                <div class="form-check">
+                                    <input class="form-check-input obs-input" type="radio" name="ut_focal_lesion" id="lesion_none" value="None" checked onclick="toggleLesionDetails()">
+                                    <label class="form-check-label small fw-semibold text-dark" for="lesion_none">None</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input obs-input" type="radio" name="ut_focal_lesion" id="lesion_fibroid" value="Fibroid" onclick="toggleLesionDetails()">
+                                    <label class="form-check-label small fw-semibold text-dark" for="lesion_fibroid">Fibroid</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input obs-input" type="radio" name="ut_focal_lesion" id="lesion_polyp" value="Polyp" onclick="toggleLesionDetails()">
+                                    <label class="form-check-label small fw-semibold text-dark" for="lesion_polyp">Polyp</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input obs-input" type="radio" name="ut_focal_lesion" id="lesion_other" value="Other" onclick="toggleLesionDetails()">
+                                    <label class="form-check-label small fw-semibold text-dark" for="lesion_other">Other</label>
+                                </div>
+                            </div>
+                            <input type="text" id="ut_lesion_details" class="form-control form-control-sm obs-input" placeholder="Lesion location & size (e.g. 2.4 x 2.1 cm intramural fibroid in anterior wall)" disabled>
+                        </div>
+
+                        <!-- Fluid in Endometrial Cavity -->
+                        <div>
+                            <label class="form-label small fw-bold text-secondary mb-1">Fluid in Endometrial Cavity</label>
+                            <div class="d-flex align-items-center gap-4">
+                                <div class="form-check">
+                                    <input class="form-check-input obs-input" type="radio" name="ut_endo_fluid" id="endo_fluid_absent" value="Absent" checked>
+                                    <label class="form-check-label small text-dark" for="endo_fluid_absent">Absent</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input obs-input" type="radio" name="ut_endo_fluid" id="endo_fluid_present" value="Present">
+                                    <label class="form-check-label small text-danger fw-bold" for="endo_fluid_present">Present</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. RIGHT OVARY -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100 border shadow-2xs rounded-3">
+                    <div class="card-header bg-light py-2 px-3 border-bottom d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-primary rounded-circle p-1" style="width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; font-size:11px;">2</span>
+                            <h6 class="fw-bold mb-0 text-dark text-uppercase" style="font-size: 13px;">Right Ovary</h6>
+                        </div>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-secondary mb-1">Visualized</label>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input obs-input" type="radio" name="ro_vis" id="ro_vis_yes" value="Yes" checked>
+                                    <label class="form-check-label small text-dark fw-semibold" for="ro_vis_yes">Yes</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input obs-input" type="radio" name="ro_vis" id="ro_vis_no" value="No">
+                                    <label class="form-check-label small text-muted" for="ro_vis_no">No</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <label class="form-label small fw-bold text-secondary mb-1">Size Dimensions (cm)</label>
+                        <div class="row g-2 mb-2">
+                            <div class="col-4">
+                                <input type="number" step="0.1" id="ro_l" class="form-control form-control-sm obs-input font-mono" placeholder="L (cm)" value="3.0">
+                            </div>
+                            <div class="col-4">
+                                <input type="number" step="0.1" id="ro_w" class="form-control form-control-sm obs-input font-mono" placeholder="W (cm)" value="2.0">
+                            </div>
+                            <div class="col-4">
+                                <input type="number" step="0.1" id="ro_h" class="form-control form-control-sm obs-input font-mono" placeholder="H (cm)" value="1.8">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-primary mb-1">Volume (Auto Calculated)</label>
+                            <input type="text" id="ro_vol" class="form-control form-control-sm obs-input font-mono bg-light text-primary fw-bold" placeholder="e.g. 5.6 cm³" readonly>
+                        </div>
+
+                        <div>
+                            <label class="form-label small fw-bold text-secondary mb-1">Appearance</label>
+                            <select id="ro_appearance" class="form-select form-select-sm obs-input fw-semibold text-dark mb-2">
+                                <option value="Normal" selected>Normal</option>
+                                <option value="Bulky">Bulky</option>
+                                <option value="Cyst">Cyst</option>
+                                <option value="Complex Cyst">Complex Cyst</option>
+                                <option value="Solid Mass">Solid Mass</option>
+                                <option value="PCO Changes">PCO Changes (PCOS)</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="ro_notes" class="form-control form-control-sm obs-input" placeholder="Right ovary notes/size...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. LEFT OVARY -->
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card h-100 border shadow-2xs rounded-3">
+                    <div class="card-header bg-light py-2 px-3 border-bottom d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-primary rounded-circle p-1" style="width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; font-size:11px;">3</span>
+                            <h6 class="fw-bold mb-0 text-dark text-uppercase" style="font-size: 13px;">Left Ovary</h6>
+                        </div>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-secondary mb-1">Visualized</label>
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input obs-input" type="radio" name="lo_vis" id="lo_vis_yes" value="Yes" checked>
+                                    <label class="form-check-label small text-dark fw-semibold" for="lo_vis_yes">Yes</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input obs-input" type="radio" name="lo_vis" id="lo_vis_no" value="No">
+                                    <label class="form-check-label small text-muted" for="lo_vis_no">No</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <label class="form-label small fw-bold text-secondary mb-1">Size Dimensions (cm)</label>
+                        <div class="row g-2 mb-2">
+                            <div class="col-4">
+                                <input type="number" step="0.1" id="lo_l" class="form-control form-control-sm obs-input font-mono" placeholder="L (cm)" value="2.8">
+                            </div>
+                            <div class="col-4">
+                                <input type="number" step="0.1" id="lo_w" class="form-control form-control-sm obs-input font-mono" placeholder="W (cm)" value="1.9">
+                            </div>
+                            <div class="col-4">
+                                <input type="number" step="0.1" id="lo_h" class="form-control form-control-sm obs-input font-mono" placeholder="H (cm)" value="1.7">
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-primary mb-1">Volume (Auto Calculated)</label>
+                            <input type="text" id="lo_vol" class="form-control form-control-sm obs-input font-mono bg-light text-primary fw-bold" placeholder="e.g. 4.7 cm³" readonly>
+                        </div>
+
+                        <div>
+                            <label class="form-label small fw-bold text-secondary mb-1">Appearance</label>
+                            <select id="lo_appearance" class="form-select form-select-sm obs-input fw-semibold text-dark mb-2">
+                                <option value="Normal" selected>Normal</option>
+                                <option value="Bulky">Bulky</option>
+                                <option value="Cyst">Cyst</option>
+                                <option value="Complex Cyst">Complex Cyst</option>
+                                <option value="Solid Mass">Solid Mass</option>
+                                <option value="PCO Changes">PCO Changes (PCOS)</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="text" id="lo_notes" class="form-control form-control-sm obs-input" placeholder="Left ovary notes/size...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. ADNEXA -->
+            <div class="col-12 col-md-4">
+                <div class="card h-100 border shadow-2xs rounded-3">
+                    <div class="card-header bg-light py-2 px-3 border-bottom d-flex align-items-center gap-2">
+                        <span class="badge bg-primary rounded-circle p-1" style="width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; font-size:11px;">4</span>
+                        <h6 class="fw-bold mb-0 text-dark text-uppercase" style="font-size: 13px;">Adnexa</h6>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="d-flex flex-column gap-2 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input obs-input" type="radio" name="adnexa_status" id="adnexa_normal" value="Normal" checked>
+                                <label class="form-check-label small text-dark fw-semibold" for="adnexa_normal">Normal (Clear)</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input obs-input" type="radio" name="adnexa_status" id="adnexa_right_mass" value="Right Adnexal Mass">
+                                <label class="form-check-label small text-dark" for="adnexa_right_mass">Right Adnexal Mass</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input obs-input" type="radio" name="adnexa_status" id="adnexa_left_mass" value="Left Adnexal Mass">
+                                <label class="form-check-label small text-dark" for="adnexa_left_mass">Left Adnexal Mass</label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="form-label small fw-bold text-secondary mb-1">Mass / Lesion Description</label>
+                            <input type="text" id="adnexa_mass_desc" class="form-control form-control-sm obs-input" placeholder="e.g. 3.2 cm cystic lesion in right adnexa...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. CUL-DE-SAC (POUCH OF DOUGLAS) -->
+            <div class="col-12 col-md-4">
+                <div class="card h-100 border shadow-2xs rounded-3">
+                    <div class="card-header bg-light py-2 px-3 border-bottom d-flex align-items-center gap-2">
+                        <span class="badge bg-primary rounded-circle p-1" style="width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; font-size:11px;">5</span>
+                        <h6 class="fw-bold mb-0 text-dark text-uppercase" style="font-size: 13px;">Cul-De-Sac (Pouch of Douglas)</h6>
+                    </div>
+                    <div class="card-body p-3">
+                        <label class="form-label small fw-bold text-secondary mb-1">Free Fluid</label>
+                        <div class="d-flex align-items-center gap-3 flex-wrap mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input obs-input" type="radio" name="pod_fluid" id="pod_none" value="None" checked>
+                                <label class="form-check-label small text-dark fw-semibold" for="pod_none">None</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input obs-input" type="radio" name="pod_fluid" id="pod_minimal" value="Minimal">
+                                <label class="form-check-label small text-dark" for="pod_minimal">Minimal</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input obs-input" type="radio" name="pod_fluid" id="pod_moderate" value="Moderate">
+                                <label class="form-check-label small text-dark" for="pod_moderate">Moderate</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input obs-input" type="radio" name="pod_fluid" id="pod_large" value="Large">
+                                <label class="form-check-label small text-danger fw-bold" for="pod_large">Large</label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="form-label small fw-bold text-secondary mb-1">Comments</label>
+                            <input type="text" id="pod_comments" class="form-control form-control-sm obs-input" placeholder="e.g. Trace fluid in posterior cul-de-sac...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. URINARY BLADDER -->
+            <div class="col-12 col-md-4">
+                <div class="card h-100 border shadow-2xs rounded-3">
+                    <div class="card-header bg-light py-2 px-3 border-bottom d-flex align-items-center gap-2">
+                        <span class="badge bg-primary rounded-circle p-1" style="width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; font-size:11px;">6</span>
+                        <h6 class="fw-bold mb-0 text-dark text-uppercase" style="font-size: 13px;">Urinary Bladder</h6>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="row g-2 mb-2">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-secondary mb-1">Distension</label>
+                                <select id="ub_distended" class="form-select form-select-sm obs-input fw-semibold text-dark">
+                                    <option value="Adequately Filled" selected>Adequately Filled</option>
+                                    <option value="Partially Filled">Partially Filled</option>
+                                    <option value="Over Distended">Over Distended</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-secondary mb-1">Wall</label>
+                                <select id="ub_wall" class="form-select form-select-sm obs-input fw-semibold text-dark">
+                                    <option value="Normal" selected>Normal</option>
+                                    <option value="Thickened">Thickened</option>
+                                    <option value="Irregular">Irregular</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-2">
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-secondary mb-1">Calculus</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input obs-input" type="radio" name="ub_calc" id="ub_calc_absent" value="Absent" checked>
+                                        <label class="form-check-label small text-dark" for="ub_calc_absent">Absent</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input obs-input" type="radio" name="ub_calc" id="ub_calc_present" value="Present">
+                                        <label class="form-check-label small text-danger fw-bold" for="ub_calc_present">Present</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small fw-bold text-secondary mb-1">Mass</label>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="form-check">
+                                        <input class="form-check-input obs-input" type="radio" name="ub_mass" id="ub_mass_absent" value="Absent" checked>
+                                        <label class="form-check-label small text-dark" for="ub_mass_absent">Absent</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input obs-input" type="radio" name="ub_mass" id="ub_mass_present" value="Present">
+                                        <label class="form-check-label small text-danger fw-bold" for="ub_mass_present">Present</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="form-label small fw-bold text-secondary mb-1">Residual Urine (ml) - Optional</label>
+                            <input type="number" id="ub_pvr" class="form-control form-control-sm obs-input font-mono" placeholder="e.g. 15 ml">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. ADDITIONAL FINDINGS -->
+            <div class="col-12">
+                <div class="card border shadow-2xs rounded-3">
+                    <div class="card-header bg-light py-2 px-3 border-bottom d-flex align-items-center gap-2">
+                        <span class="badge bg-primary rounded-circle p-1" style="width:22px; height:22px; display:inline-flex; align-items:center; justify-content:center; font-size:11px;">7</span>
+                        <h6 class="fw-bold mb-0 text-dark text-uppercase" style="font-size: 13px;">Additional Pelvic / Abdominal Findings</h6>
+                    </div>
+                    <div class="card-body p-3">
+                        <textarea id="pelvis_additional_notes" class="form-control form-control-sm obs-input" rows="2" placeholder="Enter any custom observations, pelvic pathology notes, acoustic window quality..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ============================================================== -->
+    <!-- SECTION B: OBSTETRIC / PREGNANCY FORM CONTAINER (OPTIONAL MODE)-->
+    <!-- ============================================================== -->
+    <div id="obs_pregnancy_section" class="d-none">
+        <div class="row g-3">
+
+            <!-- 1. GESTATION -->
+            <div class="col-12 col-md-4">
+                <div class="card h-100 border shadow-2xs rounded-3">
+                    <div class="card-header bg-light py-2 px-3 border-bottom d-flex align-items-center gap-2">
+                        <span class="badge bg-primary rounded-circle p-1" style="width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center; font-size:10px;">1</span>
+                        <h6 class="fw-bold mb-0 text-dark text-uppercase" style="font-size: 12.5px;">Gestation</h6>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input obs-input" type="radio" name="obs_gestation" id="gest_single" value="Single" checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="gest_single">Single</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input obs-input" type="radio" name="obs_gestation" id="gest_multiple" value="Multiple">
+                                <label class="form-check-label small fw-semibold text-dark" for="gest_multiple">Multiple (Twins/Triplets)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. VIABILITY -->
+            <div class="col-12 col-md-4">
+                <div class="card h-100 border shadow-2xs rounded-3">
+                    <div class="card-header bg-light py-2 px-3 border-bottom d-flex align-items-center gap-2">
+                        <span class="badge bg-primary rounded-circle p-1" style="width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center; font-size:10px;">2</span>
+                        <h6 class="fw-bold mb-0 text-dark text-uppercase" style="font-size: 12.5px;">Viability</h6>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input obs-input" type="radio" name="obs_viability" id="viab_seen" value="Seen" checked>
+                                <label class="form-check-label small fw-semibold text-success" for="viab_seen">
+                                    <span class="material-symbols-outlined fs-6 align-middle me-0.5">favorite</span>Seen (Live Fetus)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input obs-input" type="radio" name="obs_viability" id="viab_not_seen" value="Not Seen">
+                                <label class="form-check-label small fw-semibold text-danger" for="viab_not_seen">Not Seen</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. PRESENTATION -->
+            <div class="col-12 col-md-4">
+                <div class="card h-100 border shadow-2xs rounded-3">
+                    <div class="card-header bg-light py-2 px-3 border-bottom d-flex align-items-center gap-2">
+                        <span class="badge bg-primary rounded-circle p-1" style="width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center; font-size:10px;">3</span>
+                        <h6 class="fw-bold mb-0 text-dark text-uppercase" style="font-size: 12.5px;">Presentation</h6>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input obs-input" type="radio" name="obs_presentation" id="pres_cephalic" value="Cephalic" checked>
+                                    <label class="form-check-label small fw-semibold text-dark" for="pres_cephalic">Cephalic</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input obs-input" type="radio" name="obs_presentation" id="pres_breech" value="Breech">
+                                    <label class="form-check-label small fw-semibold text-dark" for="pres_breech">Breech</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input obs-input" type="radio" name="obs_presentation" id="pres_transverse" value="Transverse">
+                                    <label class="form-check-label small fw-semibold text-dark" for="pres_transverse">Transverse</label>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="form-check">
+                                    <input class="form-check-input obs-input" type="radio" name="obs_presentation" id="pres_oblique" value="Oblique">
+                                    <label class="form-check-label small fw-semibold text-dark" for="pres_oblique">Oblique</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. PLACENTA -->
+            <div class="col-12 col-md-6">
+                <div class="card h-100 border shadow-2xs rounded-3">
+                    <div class="card-header bg-light py-2 px-3 border-bottom d-flex align-items-center gap-2">
+                        <span class="badge bg-primary rounded-circle p-1" style="width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center; font-size:10px;">4</span>
+                        <h6 class="fw-bold mb-0 text-dark text-uppercase" style="font-size: 12.5px;">Placenta</h6>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="row g-2 mb-2">
+                            <div class="col-12 col-sm-6">
+                                <label class="form-label small fw-bold text-secondary mb-1">Position</label>
+                                <select id="placenta_position" class="form-select form-select-sm obs-input fw-semibold text-dark">
+                                    <option value="Anterior Wall">Anterior Wall</option>
+                                    <option value="Posterior Wall" selected>Posterior Wall</option>
+                                    <option value="Fundal">Fundal</option>
+                                    <option value="Upper Segment">Upper Segment</option>
+                                    <option value="Lower Segment">Lower Segment</option>
+                                    <option value="Right Lateral">Right Lateral</option>
+                                    <option value="Left Lateral">Left Lateral</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <label class="form-label small fw-bold text-secondary mb-1">Maturity Grade</label>
+                                <select id="placenta_grade" class="form-select form-select-sm obs-input fw-semibold text-dark">
+                                    <option value="Grade 0">Grade 0</option>
+                                    <option value="Grade I" selected>Grade I</option>
+                                    <option value="Grade II">Grade II</option>
+                                    <option value="Grade III">Grade III</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row g-2 mb-2">
+                            <div class="col-12 col-sm-6">
+                                <label class="form-label small fw-bold text-secondary mb-1">Thickness (mm)</label>
+                                <input type="number" step="0.1" id="placenta_thickness" class="form-control form-control-sm obs-input" placeholder="e.g. 28">
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <label class="form-label small fw-bold text-secondary mb-1">Placenta Previa</label>
+                                <div class="d-flex align-items-center gap-3 mt-1">
+                                    <div class="form-check">
+                                        <input class="form-check-input obs-input" type="radio" name="obs_previa" id="previa_no" value="No" checked>
+                                        <label class="form-check-label small text-dark" for="previa_no">No</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input obs-input" type="radio" name="obs_previa" id="previa_yes" value="Yes">
+                                        <label class="form-check-label small text-danger fw-bold" for="previa_yes">Yes (Previa)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. AMNIOTIC FLUID -->
+            <div class="col-12 col-md-6">
+                <div class="card h-100 border shadow-2xs rounded-3">
+                    <div class="card-header bg-light py-2 px-3 border-bottom d-flex align-items-center gap-2">
+                        <span class="badge bg-primary rounded-circle p-1" style="width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center; font-size:10px;">5</span>
+                        <h6 class="fw-bold mb-0 text-dark text-uppercase" style="font-size: 12.5px;">Amniotic Fluid</h6>
+                    </div>
+                    <div class="card-body p-3">
+                        <label class="form-label small fw-bold text-secondary mb-1">Fluid Status</label>
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input obs-input" type="radio" name="obs_fluid_status" id="fluid_normal" value="Normal" checked>
+                                <label class="form-check-label small fw-semibold text-success" for="fluid_normal">Normal Adequate</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input obs-input" type="radio" name="obs_fluid_status" id="fluid_oligo" value="Oligohydramnios">
+                                <label class="form-check-label small fw-semibold text-warning" for="fluid_oligo">Oligohydramnios</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input obs-input" type="radio" name="obs_fluid_status" id="fluid_poly" value="Polyhydramnios">
+                                <label class="form-check-label small fw-semibold text-danger" for="fluid_poly">Polyhydramnios</label>
+                            </div>
+                        </div>
+
+                        <div class="row g-2">
+                            <div class="col-12 col-sm-6">
+                                <label class="form-label small fw-bold text-secondary mb-1">AFI (cm)</label>
+                                <input type="number" step="0.1" id="afi_cm" class="form-control form-control-sm obs-input font-mono" placeholder="e.g. 14.2">
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <label class="form-label small fw-bold text-secondary mb-1">Single Deepest Pocket (cm)</label>
+                                <input type="number" step="0.1" id="sdp_cm" class="form-control form-control-sm obs-input font-mono" placeholder="e.g. 4.5">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. BIOMETRY -->
+            <div class="col-12">
+                <div class="card border shadow-2xs rounded-3">
+                    <div class="card-header bg-light py-2 px-3 border-bottom d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-primary rounded-circle p-1" style="width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center; font-size:10px;">6</span>
+                            <h6 class="fw-bold mb-0 text-dark text-uppercase" style="font-size: 12.5px;">Biometry & Growth Parameters</h6>
+                        </div>
+                    </div>
+                    <div class="card-body p-3">
+                        <div class="row g-2">
+                            <div class="col-6 col-sm-2">
+                                <label class="form-label small fw-bold text-secondary mb-1">GS (mm)</label>
+                                <input type="number" step="0.1" id="bio_gs" class="form-control form-control-sm obs-input font-mono">
+                            </div>
+                            <div class="col-6 col-sm-2">
+                                <label class="form-label small fw-bold text-secondary mb-1">CRL (mm)</label>
+                                <input type="number" step="0.1" id="bio_crl" class="form-control form-control-sm obs-input font-mono">
+                            </div>
+                            <div class="col-6 col-sm-2">
+                                <label class="form-label small fw-bold text-secondary mb-1">BPD (mm)</label>
+                                <input type="number" step="0.1" id="bio_bpd" class="form-control form-control-sm obs-input font-mono">
+                            </div>
+                            <div class="col-6 col-sm-2">
+                                <label class="form-label small fw-bold text-secondary mb-1">HC (mm)</label>
+                                <input type="number" step="0.1" id="bio_hc" class="form-control form-control-sm obs-input font-mono">
+                            </div>
+                            <div class="col-6 col-sm-2">
+                                <label class="form-label small fw-bold text-secondary mb-1">AC (mm)</label>
+                                <input type="number" step="0.1" id="bio_ac" class="form-control form-control-sm obs-input font-mono">
+                            </div>
+                            <div class="col-6 col-sm-2">
+                                <label class="form-label small fw-bold text-secondary mb-1">FL (mm)</label>
+                                <input type="number" step="0.1" id="bio_fl" class="form-control form-control-sm obs-input font-mono">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<!-- LIVE JAVASCRIPT ENGINE FOR PELVIS / LOWER ABDOMEN FORM -->
+<script>
+    (function() {
+        // Toggle Lesion Details input state
+        window.toggleLesionDetails = function() {
+            const selectedLesion = document.querySelector('input[name="ut_focal_lesion"]:checked')?.value || 'None';
+            const detailsElem = document.getElementById('ut_lesion_details');
+            if (detailsElem) {
+                if (selectedLesion === 'None') {
+                    detailsElem.disabled = true;
+                    detailsElem.value = '';
+                } else {
+                    detailsElem.disabled = false;
+                }
+            }
+        };
+
+        // Toggle Pelvis vs Obstetric Mode
+        window.togglePelvisMode = function(mode) {
+            const gyneSec = document.getElementById('gyne_pelvis_section');
+            const obsSec = document.getElementById('obs_pregnancy_section');
+            if (mode === 'gyne') {
+                if (gyneSec) gyneSec.classList.remove('d-none');
+                if (obsSec) obsSec.classList.add('d-none');
+            } else {
+                if (gyneSec) gyneSec.classList.add('d-none');
+                if (obsSec) obsSec.classList.remove('d-none');
+            }
+            window.syncObstetricReport();
+        };
+
+        // Reset form fields to default normal values
+        window.resetPelvisFormToNormal = function() {
+            // Uterus
+            const utPos = document.getElementById('ut_position'); if (utPos) utPos.value = 'Anteverted';
+            const utMyo = document.getElementById('ut_myometrium'); if (utMyo) utMyo.value = 'Normal';
+            const utL = document.getElementById('ut_length'); if (utL) utL.value = '7.8';
+            const utAp = document.getElementById('ut_ap'); if (utAp) utAp.value = '4.2';
+            const utW = document.getElementById('ut_width'); if (utW) utW.value = '3.8';
+            const utEt = document.getElementById('ut_et_mm'); if (utEt) utEt.value = '8.0';
+            const utEtApp = document.getElementById('ut_et_appearance'); if (utEtApp) utEtApp.value = 'Normal';
+            
+            const lesNone = document.getElementById('lesion_none'); if (lesNone) lesNone.checked = true;
+            toggleLesionDetails();
+
+            const endoFluidAbsent = document.getElementById('endo_fluid_absent'); if (endoFluidAbsent) endoFluidAbsent.checked = true;
+
+            // Ovaries
+            const roVisYes = document.getElementById('ro_vis_yes'); if (roVisYes) roVisYes.checked = true;
+            const roL = document.getElementById('ro_l'); if (roL) roL.value = '3.0';
+            const roW = document.getElementById('ro_w'); if (roW) roW.value = '2.0';
+            const roH = document.getElementById('ro_h'); if (roH) roH.value = '1.8';
+            const roApp = document.getElementById('ro_appearance'); if (roApp) roApp.value = 'Normal';
+            const roNotes = document.getElementById('ro_notes'); if (roNotes) roNotes.value = '';
+
+            const loVisYes = document.getElementById('lo_vis_yes'); if (loVisYes) loVisYes.checked = true;
+            const loL = document.getElementById('lo_l'); if (loL) loL.value = '2.8';
+            const loW = document.getElementById('lo_w'); if (loW) loW.value = '1.9';
+            const loH = document.getElementById('lo_h'); if (loH) loH.value = '1.7';
+            const loApp = document.getElementById('lo_appearance'); if (loApp) loApp.value = 'Normal';
+            const loNotes = document.getElementById('lo_notes'); if (loNotes) loNotes.value = '';
+
+            // Adnexa & POD & Bladder
+            const adnexaNorm = document.getElementById('adnexa_normal'); if (adnexaNorm) adnexaNorm.checked = true;
+            const adnexaDesc = document.getElementById('adnexa_mass_desc'); if (adnexaDesc) adnexaDesc.value = '';
+
+            const podNone = document.getElementById('pod_none'); if (podNone) podNone.checked = true;
+            const podComments = document.getElementById('pod_comments'); if (podComments) podComments.value = '';
+
+            const ubDist = document.getElementById('ub_distended'); if (ubDist) ubDist.value = 'Adequately Filled';
+            const ubWall = document.getElementById('ub_wall'); if (ubWall) ubWall.value = 'Normal';
+            const ubCalcAbs = document.getElementById('ub_calc_absent'); if (ubCalcAbs) ubCalcAbs.checked = true;
+            const ubMassAbs = document.getElementById('ub_mass_absent'); if (ubMassAbs) ubMassAbs.checked = true;
+            const ubPvr = document.getElementById('ub_pvr'); if (ubPvr) ubPvr.value = '';
+
+            const addNotes = document.getElementById('pelvis_additional_notes'); if (addNotes) addNotes.value = '';
+
+            window.syncObstetricReport();
+        };
+
+        // Calculate Ovary Volumes (L * W * H * 0.523)
+        function calculateOvaryVolumes() {
+            const roL = parseFloat(document.getElementById('ro_l')?.value) || 0;
+            const roW = parseFloat(document.getElementById('ro_w')?.value) || 0;
+            const roH = parseFloat(document.getElementById('ro_h')?.value) || 0;
+            const roVolElem = document.getElementById('ro_vol');
+            if (roVolElem) {
+                if (roL > 0 && roW > 0 && roH > 0) {
+                    const vol = (roL * roW * roH * 0.523).toFixed(1);
+                    roVolElem.value = `${vol} cm³`;
+                } else {
+                    roVolElem.value = '';
+                }
+            }
+
+            const loL = parseFloat(document.getElementById('lo_l')?.value) || 0;
+            const loW = parseFloat(document.getElementById('lo_w')?.value) || 0;
+            const loH = parseFloat(document.getElementById('lo_h')?.value) || 0;
+            const loVolElem = document.getElementById('lo_vol');
+            if (loVolElem) {
+                if (loL > 0 && loW > 0 && loH > 0) {
+                    const vol = (loL * loW * loH * 0.523).toFixed(1);
+                    loVolElem.value = `${vol} cm³`;
+                } else {
+                    loVolElem.value = '';
+                }
+            }
+        }
+
+        // Generate Procedure Text
+        function generateProcedureText() {
+            const procElem = document.getElementById('procedure'); if (procElem) procElem.value = '';
+            const prevProcElem = document.getElementById('preview_procedure'); if (prevProcElem) prevProcElem.innerText = '';
+        }
+
+        // Main Live Sync Engine for Gynecological Pelvis / Lower Abdomen
+        window.syncObstetricReport = function() {
+            calculateOvaryVolumes();
+            generateProcedureText();
+
+            const examMode = document.querySelector('input[name="pelvis_exam_mode"]:checked')?.value || 'Gynecological Pelvis';
+
+            // Collect all structured input values to save in DB JSON
+            const dataObj = {
+                examMode: examMode,
+                
+                // Uterus
+                utPosition: document.getElementById('ut_position')?.value || 'Anteverted',
+                utMyometrium: document.getElementById('ut_myometrium')?.value || 'Normal',
+                utLength: document.getElementById('ut_length')?.value || '',
+                utAp: document.getElementById('ut_ap')?.value || '',
+                utWidth: document.getElementById('ut_width')?.value || '',
+                utEtMm: document.getElementById('ut_et_mm')?.value || '',
+                utEtAppearance: document.getElementById('ut_et_appearance')?.value || 'Normal',
+                utFocalLesion: document.querySelector('input[name="ut_focal_lesion"]:checked')?.value || 'None',
+                utLesionDetails: document.getElementById('ut_lesion_details')?.value || '',
+                utEndoFluid: document.querySelector('input[name="ut_endo_fluid"]:checked')?.value || 'Absent',
+
+                // Right Ovary
+                roVis: document.querySelector('input[name="ro_vis"]:checked')?.value || 'Yes',
+                roL: document.getElementById('ro_l')?.value || '',
+                roW: document.getElementById('ro_w')?.value || '',
+                roH: document.getElementById('ro_h')?.value || '',
+                roVol: document.getElementById('ro_vol')?.value || '',
+                roAppearance: document.getElementById('ro_appearance')?.value || 'Normal',
+                roNotes: document.getElementById('ro_notes')?.value || '',
+
+                // Left Ovary
+                loVis: document.querySelector('input[name="lo_vis"]:checked')?.value || 'Yes',
+                loL: document.getElementById('lo_l')?.value || '',
+                loW: document.getElementById('lo_w')?.value || '',
+                loH: document.getElementById('lo_h')?.value || '',
+                loVol: document.getElementById('lo_vol')?.value || '',
+                loAppearance: document.getElementById('lo_appearance')?.value || 'Normal',
+                loNotes: document.getElementById('lo_notes')?.value || '',
+
+                // Adnexa & POD
+                adnexaStatus: document.querySelector('input[name="adnexa_status"]:checked')?.value || 'Normal',
+                adnexaMassDesc: document.getElementById('adnexa_mass_desc')?.value || '',
+                podFluid: document.querySelector('input[name="pod_fluid"]:checked')?.value || 'None',
+                podComments: document.getElementById('pod_comments')?.value || '',
+
+                // Urinary Bladder
+                ubDistended: document.getElementById('ub_distended')?.value || 'Adequately Filled',
+                ubWall: document.getElementById('ub_wall')?.value || 'Normal',
+                ubCalc: document.querySelector('input[name="ub_calc"]:checked')?.value || 'Absent',
+                ubMass: document.querySelector('input[name="ub_mass"]:checked')?.value || 'Absent',
+                ubPvr: document.getElementById('ub_pvr')?.value || '',
+
+                // Additional
+                additionalNotes: document.getElementById('pelvis_additional_notes')?.value || ''
+            };
+
+            // Save JSON string to hidden input
+            const structElem = document.getElementById('structured_data');
+            if (structElem) structElem.value = JSON.stringify(dataObj);
+
+            // Generate Narrative Findings, Impression, Advice
+            let findingsLines = [];
+            let impressionLines = [];
+
+            if (examMode === 'Obstetric Pregnancy') {
+                const gest = document.querySelector('input[name="obs_gestation"]:checked')?.value || 'Single';
+                const viab = document.querySelector('input[name="obs_viability"]:checked')?.value || 'Seen';
+                const pres = document.querySelector('input[name="obs_presentation"]:checked')?.value || 'Cephalic';
+
+                findingsLines.push(`A ${gest.toLowerCase()} intrauterine fetus is visualized.`);
+                if (viab === 'Seen') {
+                    findingsLines.push(`Fetal cardiac activity and active body movements are SEEN (Live Fetus). Fetal presentation is ${pres.toLowerCase()}.`);
+                    impressionLines.push(`Single live intrauterine fetus corresponding to ultrasound biometry.`);
+                } else {
+                    findingsLines.push(`NO fetal cardiac activity or movement identified.`);
+                    impressionLines.push(`Intrauterine pregnancy without active fetal cardiac pulsation.`);
+                }
+
+                const placPos = document.getElementById('placenta_position')?.value || 'Posterior Wall';
+                const placGrade = document.getElementById('placenta_grade')?.value || 'Grade I';
+                findingsLines.push(`Placenta is situated on the ${placPos} with ${placGrade} maturation.`);
+
+                const afi = document.getElementById('afi_cm')?.value;
+                if (afi) findingsLines.push(`Amniotic fluid index (AFI) measures ${afi} cm (adequate).`);
+                else findingsLines.push(`Amniotic fluid volume is subjectively adequate.`);
+
+            } else {
+                // GYNECOLOGICAL PELVIS NARRATIVE GENERATOR
+
+                // 1. Uterus
+                let utStr = `Uterus is ${dataObj.utPosition.toLowerCase()}`;
+                if (dataObj.utLength && dataObj.utAp && dataObj.utWidth) {
+                    utStr += ` and measures ${dataObj.utLength} × ${dataObj.utAp} × ${dataObj.utWidth} cm.`;
+                } else {
+                    utStr += `.`;
+                }
+                findingsLines.push(utStr);
+
+                if (dataObj.utMyometrium === 'Normal') {
+                    findingsLines.push(`Myometrium is homogeneous in echotexture.`);
+                } else {
+                    findingsLines.push(`Myometrium appears ${dataObj.utMyometrium.toLowerCase()} in echotexture.`);
+                    impressionLines.push(`${dataObj.utMyometrium} myometrial pattern.`);
+                }
+
+                if (dataObj.utEtMm) {
+                    findingsLines.push(`Endometrial thickness measures ${dataObj.utEtMm} mm (${dataObj.utEtAppearance.toLowerCase()}).`);
+                } else {
+                    findingsLines.push(`Endometrial cavity appears ${dataObj.utEtAppearance.toLowerCase()}.`);
+                }
+
+                if (dataObj.utFocalLesion === 'None') {
+                    findingsLines.push(`No focal uterine lesion is identified.`);
+                } else {
+                    let lesText = `Focal uterine lesion identified: ${dataObj.utFocalLesion}.`;
+                    if (dataObj.utLesionDetails) lesText += ` ${dataObj.utLesionDetails}.`;
+                    findingsLines.push(lesText);
+                    impressionLines.push(`Uterine ${dataObj.utFocalLesion.toLowerCase()}${dataObj.utLesionDetails ? ' (' + dataObj.utLesionDetails + ')' : ''}.`);
+                }
+
+                if (dataObj.utEndoFluid === 'Present') {
+                    findingsLines.push(`Fluid is noted within the endometrial cavity.`);
+                    impressionLines.push(`Fluid in endometrial cavity.`);
+                }
+
+                // 2. Ovaries
+                if (dataObj.roVis === 'Yes' && dataObj.loVis === 'Yes') {
+                    if (dataObj.roAppearance === 'Normal' && dataObj.loAppearance === 'Normal') {
+                        findingsLines.push(`Both ovaries are normal in size and echotexture.`);
+                    } else {
+                        // Right Ovary
+                        let roStr = `Right ovary measures ${dataObj.roL} × ${dataObj.roW} × ${dataObj.roH} cm`;
+                        if (dataObj.roVol) roStr += ` (Volume: ${dataObj.roVol})`;
+                        roStr += ` with ${dataObj.roAppearance.toLowerCase()} appearance.`;
+                        if (dataObj.roNotes) roStr += ` ${dataObj.roNotes}.`;
+                        findingsLines.push(roStr);
+
+                        if (dataObj.roAppearance !== 'Normal') {
+                            impressionLines.push(`Right ovary: ${dataObj.roAppearance}.`);
+                        }
+
+                        // Left Ovary
+                        let loStr = `Left ovary measures ${dataObj.loL} × ${dataObj.loW} × ${dataObj.loH} cm`;
+                        if (dataObj.loVol) loStr += ` (Volume: ${dataObj.loVol})`;
+                        loStr += ` with ${dataObj.loAppearance.toLowerCase()} appearance.`;
+                        if (dataObj.loNotes) loStr += ` ${dataObj.loNotes}.`;
+                        findingsLines.push(loStr);
+
+                        if (dataObj.loAppearance !== 'Normal') {
+                            impressionLines.push(`Left ovary: ${dataObj.loAppearance}.`);
+                        }
+                    }
+                } else {
+                    if (dataObj.roVis === 'No') findingsLines.push(`Right ovary is not visualized.`);
+                    if (dataObj.loVis === 'No') findingsLines.push(`Left ovary is not visualized.`);
+                }
+
+                // 3. Adnexa
+                if (dataObj.adnexaStatus === 'Normal') {
+                    findingsLines.push(`No adnexal mass or abnormality is seen.`);
+                } else {
+                    let adStr = `Adnexal pathology noted: ${dataObj.adnexaStatus}.`;
+                    if (dataObj.adnexaMassDesc) adStr += ` ${dataObj.adnexaMassDesc}.`;
+                    findingsLines.push(adStr);
+                    impressionLines.push(`${dataObj.adnexaStatus}${dataObj.adnexaMassDesc ? ' (' + dataObj.adnexaMassDesc + ')' : ''}.`);
+                }
+
+                // 4. Cul-de-sac
+                if (dataObj.podFluid === 'None') {
+                    findingsLines.push(`No free fluid is noted in the pouch of Douglas.`);
+                } else {
+                    let podStr = `${dataObj.podFluid} free fluid is noted in the pouch of Douglas.`;
+                    if (dataObj.podComments) podStr += ` ${dataObj.podComments}.`;
+                    findingsLines.push(podStr);
+                    impressionLines.push(`${dataObj.podFluid} pelvic free fluid in pouch of Douglas.`);
+                }
+
+                // 5. Urinary Bladder
+                let ubStr = `Urinary bladder is ${dataObj.ubDistended.toLowerCase()} with ${dataObj.ubWall.toLowerCase()} wall thickness.`;
+                if (dataObj.ubCalc === 'Present') {
+                    ubStr += ` Urinary bladder calculus identified.`;
+                    impressionLines.push(`Urinary bladder calculus.`);
+                } else if (dataObj.ubMass === 'Present') {
+                    ubStr += ` Intraluminal bladder mass identified.`;
+                    impressionLines.push(`Urinary bladder mass.`);
+                } else {
+                    ubStr += ` No bladder calculus or intraluminal mass seen.`;
+                }
+                if (dataObj.ubPvr) ubStr += ` Post-void residual urine volume measures ${dataObj.ubPvr} ml.`;
+                findingsLines.push(ubStr);
+
+                // 6. Additional Findings
+                if (dataObj.additionalNotes && dataObj.additionalNotes.trim()) {
+                    findingsLines.push(`ADDITIONAL OBSERVATIONS: ${dataObj.additionalNotes.trim()}`);
+                }
+
+                // Impression Fallback if all normal
+                if (impressionLines.length === 0) {
+                    impressionLines = [
+                        'Normal pelvic ultrasound examination.',
+                        'Normal uterus and bilateral ovaries.',
+                        'No focal uterine lesion or adnexal pathology.',
+                        'No pelvic free fluid.'
+                    ];
+                }
+            }
+
+            const adviceLines = [
+                '1. Clinical correlation is advised.',
+                '2. Follow-up ultrasound if clinically indicated.',
+                '3. Gynecological consultation if required.'
+            ];
+
+            const finalFindingsText = findingsLines.join('\n\n');
+            const finalImpressionText = impressionLines.map(line => line.startsWith('•') ? line : `• ${line}`).join('\n');
+            const finalAdviceText = adviceLines.join('\n');
+
+            // Update Hidden Inputs
+            const findHidden = document.getElementById('findings'); if (findHidden) findHidden.value = finalFindingsText;
+            const impHidden = document.getElementById('impression'); if (impHidden) impHidden.value = finalImpressionText;
+            const advHidden = document.getElementById('advice'); if (advHidden) advHidden.value = finalAdviceText;
+
+            // Update UI Previews
+            const findPrev = document.getElementById('preview_findings'); if (findPrev) findPrev.innerText = finalFindingsText;
+            const impPrev = document.getElementById('preview_impression'); if (impPrev) impPrev.innerText = finalImpressionText;
+            const advPrev = document.getElementById('preview_advice'); if (advPrev) advPrev.innerText = finalAdviceText;
+        };
+
+        // Attach event listeners to all form controls for instant live sync
+        function attachPelvisListeners() {
+            const module = document.getElementById('pelvis_obs_module');
+            if (!module) return;
+
+            const inputs = module.querySelectorAll('input, select, textarea');
+            inputs.forEach(input => {
+                input.removeEventListener('input', window.syncObstetricReport);
+                input.removeEventListener('change', window.syncObstetricReport);
+                input.removeEventListener('keyup', window.syncObstetricReport);
+
+                input.addEventListener('input', window.syncObstetricReport);
+                input.addEventListener('change', window.syncObstetricReport);
+                input.addEventListener('keyup', window.syncObstetricReport);
+            });
+        }
+
+        // Restore Saved Structured JSON if loading existing report
+        function restorePelvisSavedData() {
+            const structElem = document.getElementById('structured_data');
+            if (!structElem || !structElem.value) return;
+
+            try {
+                const data = JSON.parse(structElem.value);
+                if (!data || typeof data !== 'object') return;
+
+                if (data.examMode) {
+                    if (data.examMode === 'Obstetric Pregnancy') {
+                        const mObs = document.getElementById('mode_obs'); if (mObs) { mObs.checked = true; togglePelvisMode('obs'); }
+                    } else {
+                        const mGyne = document.getElementById('mode_gyne'); if (mGyne) { mGyne.checked = true; togglePelvisMode('gyne'); }
+                    }
+                }
+
+                if (data.utPosition) { const el = document.getElementById('ut_position'); if (el) el.value = data.utPosition; }
+                if (data.utMyometrium) { const el = document.getElementById('ut_myometrium'); if (el) el.value = data.utMyometrium; }
+                if (data.utLength) { const el = document.getElementById('ut_length'); if (el) el.value = data.utLength; }
+                if (data.utAp) { const el = document.getElementById('ut_ap'); if (el) el.value = data.utAp; }
+                if (data.utWidth) { const el = document.getElementById('ut_width'); if (el) el.value = data.utWidth; }
+                if (data.utEtMm) { const el = document.getElementById('ut_et_mm'); if (el) el.value = data.utEtMm; }
+                if (data.utEtAppearance) { const el = document.getElementById('ut_et_appearance'); if (el) el.value = data.utEtAppearance; }
+
+                if (data.utFocalLesion) {
+                    const r = document.querySelector(`input[name="ut_focal_lesion"][value="${data.utFocalLesion}"]`);
+                    if (r) r.checked = true;
+                    toggleLesionDetails();
+                }
+                if (data.utLesionDetails) { const el = document.getElementById('ut_lesion_details'); if (el) el.value = data.utLesionDetails; }
+                if (data.utEndoFluid) {
+                    const r = document.querySelector(`input[name="ut_endo_fluid"][value="${data.utEndoFluid}"]`);
+                    if (r) r.checked = true;
+                }
+
+                if (data.roVis) { const r = document.querySelector(`input[name="ro_vis"][value="${data.roVis}"]`); if (r) r.checked = true; }
+                if (data.roL) { const el = document.getElementById('ro_l'); if (el) el.value = data.roL; }
+                if (data.roW) { const el = document.getElementById('ro_w'); if (el) el.value = data.roW; }
+                if (data.roH) { const el = document.getElementById('ro_h'); if (el) el.value = data.roH; }
+                if (data.roAppearance) { const el = document.getElementById('ro_appearance'); if (el) el.value = data.roAppearance; }
+                if (data.roNotes) { const el = document.getElementById('ro_notes'); if (el) el.value = data.roNotes; }
+
+                if (data.loVis) { const r = document.querySelector(`input[name="lo_vis"][value="${data.loVis}"]`); if (r) r.checked = true; }
+                if (data.loL) { const el = document.getElementById('lo_l'); if (el) el.value = data.loL; }
+                if (data.loW) { const el = document.getElementById('lo_w'); if (el) el.value = data.loW; }
+                if (data.loH) { const el = document.getElementById('lo_h'); if (el) el.value = data.loH; }
+                if (data.loAppearance) { const el = document.getElementById('lo_appearance'); if (el) el.value = data.loAppearance; }
+                if (data.loNotes) { const el = document.getElementById('lo_notes'); if (el) el.value = data.loNotes; }
+
+                if (data.adnexaStatus) { const r = document.querySelector(`input[name="adnexa_status"][value="${data.adnexaStatus}"]`); if (r) r.checked = true; }
+                if (data.adnexaMassDesc) { const el = document.getElementById('adnexa_mass_desc'); if (el) el.value = data.adnexaMassDesc; }
+
+                if (data.podFluid) { const r = document.querySelector(`input[name="pod_fluid"][value="${data.podFluid}"]`); if (r) r.checked = true; }
+                if (data.podComments) { const el = document.getElementById('pod_comments'); if (el) el.value = data.podComments; }
+
+                if (data.ubDistended) { const el = document.getElementById('ub_distended'); if (el) el.value = data.ubDistended; }
+                if (data.ubWall) { const el = document.getElementById('ub_wall'); if (el) el.value = data.ubWall; }
+                if (data.ubCalc) { const r = document.querySelector(`input[name="ub_calc"][value="${data.ubCalc}"]`); if (r) r.checked = true; }
+                if (data.ubMass) { const r = document.querySelector(`input[name="ub_mass"][value="${data.ubMass}"]`); if (r) r.checked = true; }
+                if (data.ubPvr) { const el = document.getElementById('ub_pvr'); if (el) el.value = data.ubPvr; }
+
+                if (data.additionalNotes) { const el = document.getElementById('pelvis_additional_notes'); if (el) el.value = data.additionalNotes; }
+
+            } catch (e) {
+                console.warn('Could not parse saved structured data:', e);
+            }
+        }
+
+        // Initialize Module
+        toggleLesionDetails();
+        attachPelvisListeners();
+        restorePelvisSavedData();
+        window.syncObstetricReport();
+
+    })();
+</script>

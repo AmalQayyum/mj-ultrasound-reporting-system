@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}{{ action }} Patient - MJ Ultrasound Reporting System{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center w-100">
+    <div class="w-100 max-w-5xl rounded-lg border p-3 p-md-4 my-1 shadow-sm" style="border-color: var(--outline-variant) !important; background-color: #f8fafc;">
+        <!-- Header -->
+        <header class="mb-3 border-bottom pb-2" style="border-color: var(--outline-variant) !important;">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <h1 class="font-display fw-bold text-slate-900 mb-1" style="font-size: 20px; letter-spacing: -0.01em;">
+                        {% if patient %}Edit Patient Details{% else %}Patient Registration{% endif %}
+                    </h1>
+                    <p class="text-secondary mb-0" style="font-size: 13px;">Please complete the form below to {% if patient %}update the{% else %}register a new{% endif %} patient record.</p>
+                </div>
+                <span class="badge font-mono d-none d-sm-inline-block px-3 py-2" style="background-color: #8db1e1; color: #ffffff; font-size: 16px; font-family: Inter, sans-serif; font-weight: 600;">
+                    Patient Portal
+                </span>
+            </div>
+        </header>
+
+        <form action="{% if patient %}{{ url_for('main.patient_edit', id=patient.id) }}{% else %}{{ url_for('main.patient_add') }}{% endif %}" method="POST">
+            
+            <!-- Section 1: Personal Information -->
+            <div class="border-bottom pb-1 mb-3 mt-2 d-flex align-items-center gap-1.5" style="border-color: var(--outline-variant) !important;">
+                <span class="material-symbols-outlined" style="font-size: 18px; color: #0c0c0d;">person</span>
+                <h2 class="h6 mb-0 fw-bold font-headline-md" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #010101;">Personal Information</h2>
+            </div>
+
+            <!-- Row 1: Equal 3 columns on desktop -->
+            <div class="row g-3 mb-3">
+                <div class="col-12 col-sm-6 col-md-4">
+                    <label for="full_name" class="clinical-label" style="background-color: #8db1e1; color: #ffffff; padding: 4px 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; border-radius: 4px 4px 0 0; height: 32px; min-height: 32px; margin-bottom: 0;">Name *</label>
+                    <input type="text" id="full_name" name="full_name" class="form-control form-control-clinical" placeholder="e.g. Jane Doe" value="{% if patient %}{{ patient.full_name }}{% elif initial_name %}{{ initial_name }}{% endif %}" style="background-color: #ffffff; height: 38px; font-size: 14px; border-radius: 0 0 4px 4px;" required>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-4">
+                    <label for="age" class="clinical-label" style="background-color: #8db1e1; color: #ffffff; padding: 4px 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; border-radius: 4px 4px 0 0; height: 32px; min-height: 32px; margin-bottom: 0;">Age (Years) *</label>
+                    <input type="number" id="age" name="age" min="0" max="150" class="form-control form-control-clinical font-mono" placeholder="e.g. 35" value="{% if patient %}{{ patient.age }}{% endif %}" style="color: #0c0c0c; background-color: #ffffff; height: 38px; font-size: 14px; border-radius: 0 0 4px 4px;" required>
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-4">
+                    <label for="gender" class="clinical-label" style="background-color: #8db1e1; color: #ffffff; padding: 4px 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; border-radius: 4px 4px 0 0; height: 32px; min-height: 32px; margin-bottom: 0;">Gender *</label>
+                    <select id="gender" name="gender" class="form-select form-select-clinical" style="background-color: #ffffff; height: 38px; font-size: 14px; border-radius: 0 0 4px 4px;" required>
+                        <option value="Female" {% if (patient and patient.gender == 'Female') or (not patient) %}selected{% endif %}>Female</option>
+                        <option value="Male" {% if patient and patient.gender == 'Male' %}selected{% endif %}>Male</option>
+                        <option value="Other" {% if patient and patient.gender == 'Other' %}selected{% endif %}>Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Section 2: Contact & Referral Information -->
+            <div class="border-bottom pb-1 mb-3 mt-4 d-flex align-items-center gap-1.5" style="border-color: var(--outline-variant) !important;">
+                <span class="material-symbols-outlined" style="font-size: 18px; color: #070709; padding-left: 3px; padding-top: 0px; padding-right: 5px;">contact_phone</span>
+                <h2 class="h6 mb-0 fw-bold font-headline-md" style="font-size: 12px; text-transform: uppercase; letter-spacing: 0.05em; color: #07070d; padding-left: 0px; padding-top: 0px;">Contact & Referral Information</h2>
+            </div>
+
+            <!-- Row 2: Equal 3 columns on desktop (col-md-4) -->
+            <div class="row g-3 mb-3">
+                <div class="col-12 col-sm-6 col-md-4">
+                    <label for="phone" class="clinical-label" style="background-color: #8db1e1; color: #ffffff; padding: 4px 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; border-radius: 4px 4px 0 0; height: 32px; min-height: 32px; margin-bottom: 0;">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" class="form-control form-control-clinical font-mono" placeholder="e.g. 0300-1234567" value="{% if patient %}{{ patient.phone }}{% elif initial_phone %}{{ initial_phone }}{% endif %}" style="background-color: #ffffff; height: 38px; font-size: 14px; border-radius: 0 0 4px 4px;" required>
+                </div>
+                
+                <div class="col-12 col-sm-6 col-md-4">
+                    <label for="email" class="clinical-label" style="background-color: #8db1e1; color: #ffffff; padding: 4px 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; border-radius: 4px 4px 0 0; height: 32px; min-height: 32px; margin-bottom: 0;">Email Address</label>
+                    <input type="email" id="email" name="email" class="form-control form-control-clinical font-mono" placeholder="patient@example.com" value="{% if patient %}{{ patient.email }}{% endif %}" style="background-color: #ffffff; height: 38px; font-size: 14px; border-radius: 0 0 4px 4px;">
+                </div>
+
+                <div class="col-12 col-sm-6 col-md-4">
+                    <label for="referred_by" class="clinical-label" style="background-color: #8db1e1; color: #ffffff; padding: 4px 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; border-radius: 4px 4px 0 0; height: 32px; min-height: 32px; margin-bottom: 0;">Referred By</label>
+                    <select id="referred_by" name="referred_by" class="form-select form-select-clinical" style="background-color: #ffffff; height: 38px; font-size: 14px; border-radius: 0 0 4px 4px;">
+                        {% if doctors and doctors.length > 0 %}
+                            {% for doc in doctors %}
+                                <option value="{{ doc.full_name }}" {% if (patient and patient.referred_by == doc.full_name) or (not patient and loop.first) %}selected{% endif %}>{{ doc.full_name }}</option>
+                            {% endfor %}
+                        {% else %}
+                            <option value="Dr. Asma" {% if (patient and patient.referred_by == 'Dr. Asma') or not patient %}selected{% endif %}>Dr. Asma</option>
+                        {% endif %}
+                        <option value="Self" {% if patient and patient.referred_by == 'Self' %}selected{% endif %}>Self</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Row 3: Full-width Address field (col-12) -->
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <label for="address" class="clinical-label" style="background-color: #8db1e1; color: #ffffff; padding: 4px 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; border-radius: 4px 4px 0 0; height: 32px; min-height: 32px; margin-bottom: 0;">Residential Address</label>
+                    <textarea id="address" name="address" class="form-control form-control-clinical resize-none" placeholder="Enter complete residential address..." rows="2" style="background-color: #ffffff; font-size: 14px; border-radius: 0 0 4px 4px; min-height: 70px;">{% if patient %}{{ patient.address }}{% endif %}</textarea>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="d-flex align-items-center justify-content-end gap-2 pt-3 border-top" style="border-color: var(--outline-variant) !important;">
+                <a href="{% if patient %}{{ url_for('main.patient_detail', id=patient.id) }}{% else %}{{ url_for('main.dashboard') }}{% endif %}" class="btn btn-secondary">
+                    Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    {% if patient %}Save Changes{% else %}Register Patient{% endif %}
+                    <span class="material-symbols-outlined action-icon">arrow_forward</span>
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+{% endblock %}

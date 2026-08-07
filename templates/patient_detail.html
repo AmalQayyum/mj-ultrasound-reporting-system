@@ -1,0 +1,369 @@
+{% extends "base.html" %}
+
+{% block title %}Patient Detail: {{ patient.full_name }} - MJ Ultrasound Reporting System{% endblock %}
+
+{% block content %}
+<style>
+    /* Hide Upper Blue Button using CSS only */
+    .upper-new-report-btn {
+        display: none !important;
+    }
+
+    /* Patient Avatar Styling */
+    .patient-avatar-img {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        object-fit: cover;
+        background-color: #ffffff;
+        border: 2px solid #e2e8f0;
+        box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08);
+        flex-shrink: 0;
+        display: block;
+        animation: none !important;
+        transform: none !important;
+    }
+
+    /* Lower Action Buttons - Responsive Flexbox Layout */
+    .patient-details-actions {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .form-detail-action {
+        margin: 0;
+        display: inline-flex;
+    }
+
+    .btn-detail-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        height: 42px;
+        padding: 0 16px;
+        font-size: 13px;
+        font-weight: 600;
+        border-radius: 8px;
+        white-space: nowrap;
+        transition: all 0.15s ease;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-detail-action:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Mobile View (Stack Vertically, Full Width, Equal Spacing, Equal Height) */
+    @media (max-width: 767.98px) {
+        .patient-details-actions {
+            flex-direction: column;
+            width: 100%;
+            gap: 10px;
+        }
+
+        .patient-details-actions > a,
+        .patient-details-actions > .form-detail-action,
+        .form-detail-action > button,
+        .btn-detail-action {
+            width: 100% !important;
+            display: flex !important;
+            justify-content: center !important;
+            height: 42px !important;
+        }
+    }
+</style>
+
+<div class="max-w-100 mx-auto">
+    <!-- Simplified Patient Profile Panel -->
+    <div class="clinical-card p-3 p-md-4 bg-white mb-4 border rounded-3 shadow-sm" style="border-color: var(--outline-variant) !important;">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 border-bottom pb-3 mb-3" style="border-color: var(--outline-variant) !important;">
+            <div class="d-flex align-items-center gap-3">
+                <div class="avatar-circle rounded-circle d-flex align-items-center justify-content-center fw-bold text-white shrink-0" style="width: 50px; height: 50px; font-size: 20px; background-color: #123B7A;">
+                    {{ patient.full_name[0] | upper if patient.full_name else 'P' }}
+                </div>
+                <div>
+                    <h1 class="font-display fw-bold mb-0 text-slate-900" style="font-size: 22px;">{{ patient.full_name }}</h1>
+                    <span class="badge bg-light text-secondary border font-mono mt-1" style="font-size: 11px;">MR No: {{ patient.patient_code }}</span>
+                </div>
+            </div>
+
+            <!-- Lower Action Buttons Container -->
+            <div class="patient-details-actions ms-md-auto">
+                <a href="{{ url_for('main.report_add', patient_id=patient.id) }}" class="btn btn-primary btn-detail-action">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">add_circle</span>
+                    <span>New Ultrasound Report</span>
+                </a>
+                <a href="{{ url_for('main.patient_edit', id=patient.id) }}" class="btn btn-secondary btn-detail-action">
+                    <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
+                    <span>Edit Details</span>
+                </a>
+                <form action="{{ url_for('main.patient_delete', id=patient.id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this patient profile and all their associated reports? This cannot be undone.');" class="m-0 form-detail-action">
+                    <button type="submit" class="btn btn-danger btn-detail-action">
+                        <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
+                        <span>Delete</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Simplified Patient Info Details: ONLY Name, Age, Gender, MR No, Email, Phone, Referred By -->
+        <div class="row g-3">
+            <div class="col-6 col-sm-4 col-md-2">
+                <div class="p-2.5 rounded bg-light border" style="border-color: #e2e8f0 !important;">
+                    <span class="text-muted d-block small text-uppercase fw-semibold" style="font-size: 10px; letter-spacing: 0.05em;">Age</span>
+                    <span class="fw-bold text-slate-900" style="font-size: 14px;">{{ patient.age }} Yrs</span>
+                </div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-2">
+                <div class="p-2.5 rounded bg-light border" style="border-color: #e2e8f0 !important;">
+                    <span class="text-muted d-block small text-uppercase fw-semibold" style="font-size: 10px; letter-spacing: 0.05em;">Gender</span>
+                    <span class="fw-bold text-slate-900" style="font-size: 14px;">{{ patient.gender }}</span>
+                </div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-2">
+                <div class="p-2.5 rounded bg-light border" style="border-color: #e2e8f0 !important;">
+                    <span class="text-muted d-block small text-uppercase fw-semibold" style="font-size: 10px; letter-spacing: 0.05em;">MR No</span>
+                    <span class="fw-bold font-mono text-indigo-600" style="font-size: 14px;">{{ patient.patient_code }}</span>
+                </div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3">
+                <div class="p-2.5 rounded bg-light border" style="border-color: #e2e8f0 !important;">
+                    <span class="text-muted d-block small text-uppercase fw-semibold" style="font-size: 10px; letter-spacing: 0.05em;">Phone</span>
+                    <span class="fw-bold font-mono text-slate-900" style="font-size: 14px;">{{ patient.phone if patient.phone else '-' }}</span>
+                </div>
+            </div>
+            <div class="col-6 col-sm-4 col-md-3">
+                <div class="p-2.5 rounded bg-light border" style="border-color: #e2e8f0 !important;">
+                    <span class="text-muted d-block small text-uppercase fw-semibold" style="font-size: 10px; letter-spacing: 0.05em;">Email</span>
+                    <span class="fw-bold text-slate-900 text-truncate d-block" style="font-size: 14px;" title="{{ patient.email }}">{{ patient.email if patient.email else 'N/A' }}</span>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="p-2.5 rounded bg-light border" style="border-color: #e2e8f0 !important;">
+                    <span class="text-muted d-block small text-uppercase fw-semibold" style="font-size: 10px; letter-spacing: 0.05em;">Referred By</span>
+                    <span class="fw-bold text-slate-900" style="font-size: 14px;">{{ patient.referred_by if patient.referred_by else 'Self' }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exam Ultrasound History Table (Full Width) -->
+    <div class="col-12">
+        <div class="clinical-card p-0 overflow-hidden bg-white h-100 d-flex flex-column">
+                <div class="card-header-clinical px-3 pt-3 pb-2 m-0 bg-light d-flex justify-content-between align-items-center" style="border-bottom: 1px solid var(--outline-variant);">
+                    <h3 class="h6 mb-0 fw-bold text-slate-900 font-headline-md" style="font-size: 15px;">Ultrasound History</h3>
+                    <div class="d-flex gap-1.5">
+                        <button class="btn btn-outline-secondary p-1 rounded d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; border-color: var(--outline-variant);" onclick="alert('Filtered by latest entry.')">
+                            <span class="material-symbols-outlined" style="font-size: 14px;">filter_list</span>
+                        </button>
+                        <button class="btn btn-outline-secondary p-1 rounded d-flex align-items-center justify-content-center" style="width: 28px; height: 28px; border-color: var(--outline-variant);" onclick="alert('Exporting clinical ultrasound logs as CSV...')">
+                            <span class="material-symbols-outlined" style="font-size: 14px;">download</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive w-100 overflow-x-auto flex-grow-1">
+                    <table class="table table-hover align-middle mb-0 text-left w-100">
+                        <thead>
+                            <tr style="background-color: #F8FAFC; border-bottom: 1px solid var(--outline-variant);">
+                                <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em;">DATE</th>
+                                <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em;">EXAM TYPE</th>
+                                <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em;">FINDINGS</th>
+                                <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em;">STATUS</th>
+                                <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em;">PAYMENT</th>
+                                <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700 text-center" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em;">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patient_reports_tbody" class="divide-y">
+                            {% if patient.reports %}
+                                {% for report in patient.reports %}
+                                    <tr id="report-row-{{ report.id }}" class="{% if report.status == 'Critical' %}bg-danger-subtle{% endif %}" style="border-bottom: 1px solid var(--outline-variant);">
+                                        <td class="px-3 py-2.5 font-mono text-slate-800 text-nowrap" style="font-size: 12px;">
+                                            {{ report.created_at | strftime }}
+                                        </td>
+                                        <td class="px-3 py-2.5 text-indigo-600 fw-bold text-nowrap" style="font-size: 13px; background-color: #ffffff; color: #198bef;">
+                                            {{ report.exam_type }}
+                                        </td>
+                                        <td class="px-3 py-2.5 text-secondary text-truncate" style="font-size: 12px; max-width: 220px;" title="{{ report.key_findings }}">
+                                            {{ report.key_findings }}
+                                        </td>
+                                        <td class="px-3 py-2.5 text-nowrap">
+                                            {% if report.status == 'Finalized' or report.status == 'Completed' %}
+                                                <span class="status-badge status-badge-finalized">Finalized</span>
+                                            {% elif report.status == 'Critical' %}
+                                                <span class="status-badge status-badge-critical">Critical</span>
+                                            {% else %}
+                                                <span class="status-badge status-badge-draft">Draft</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="px-3 py-2.5 text-nowrap">
+                                            <div class="fw-bold font-mono text-slate-900 mb-0.5" style="font-size: 12px;">PKR {{ (report.payment_amount or report.report_fee or 0) | formatCurrency }}</div>
+                                            {% if report.payment_status == 'Paid' %}
+                                                <span class="badge bg-success-subtle text-success fw-semibold px-2 py-0.5" style="font-size: 10px; cursor: pointer;" onclick="openPaymentModal('{{ report.id }}', '{{ patient.full_name | replace("'", "\\'") }}', '{{ patient.patient_code }}', '{{ report.exam_type | replace("'", "\\'") }}', '{{ report.payment_amount or report.report_fee or '' }}', 'Paid')" title="Click to update payment">🟢 Paid</span>
+                                            {% else %}
+                                                <span class="badge bg-danger-subtle text-danger fw-semibold px-2 py-0.5" style="font-size: 10px; cursor: pointer;" onclick="openPaymentModal('{{ report.id }}', '{{ patient.full_name | replace("'", "\\'") }}', '{{ patient.patient_code }}', '{{ report.exam_type | replace("'", "\\'") }}', '{{ report.payment_amount or report.report_fee or '' }}', 'Unpaid')" title="Click to update payment">🔴 Unpaid</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="px-3 py-2.5 text-center text-nowrap">
+                                            <div class="table-action-group justify-content-center">
+                                                <a href="/report/{{ report.id }}/print?autoprint=true" class="btn btn-sm btn-action-btn btn-action-print" title="Print Report">
+                                                    <span class="material-symbols-outlined action-icon">print</span>
+                                                    <span>Print</span>
+                                                </a>
+                                                <a href="/report/{{ report.id }}/pdf" class="btn btn-sm btn-action-btn btn-action-view" title="Download PDF">
+                                                    <span class="material-symbols-outlined action-icon">picture_as_pdf</span>
+                                                    <span>PDF</span>
+                                                </a>
+                                                <a href="{{ url_for('main.report_edit', id=report.id) }}" class="btn btn-sm btn-action-btn btn-action-edit" title="Edit Report">
+                                                    <span class="material-symbols-outlined action-icon">edit</span>
+                                                    <span>Edit</span>
+                                                </a>
+                                                <!-- Delete report button -->
+                                                <button type="button" onclick="openDeleteReportModal('{{ report.id }}', '{{ report.status }}', '{{ report.exam_type | replace("'", "\\'") }}')" class="btn btn-sm btn-action-btn btn-action-delete" title="Delete Report">
+                                                    <span class="material-symbols-outlined action-icon">delete</span>
+                                                    <span>Delete</span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="px-3 py-4 text-center text-secondary" style="font-size: 13px;">
+                                        No ultrasound reports currently exist for this patient. Click "New Ultrasound Report" above to log one.
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="p-2.5 border-top bg-light text-center" style="border-color: var(--outline-variant) !important;">
+                    <button class="btn btn-link text-indigo-600 text-decoration-none label-caps" style="font-size: 11px; font-weight: 700; text-transform: uppercase;" onclick="alert('Viewing comprehensive patient clinical folder history.')">View Full Archives</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Report Confirmation Modal -->
+<div class="modal fade" id="deleteReportModal" tabindex="-1" aria-labelledby="deleteReportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-danger text-white py-2.5 px-3">
+                <h5 class="modal-title h6 mb-0 fw-bold d-flex align-items-center gap-2" id="deleteReportModalLabel">
+                    <span class="material-symbols-outlined fs-5">warning</span> Delete Report Confirmation
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-3">
+                <p class="mb-2 text-slate-800" style="font-size: 14px;">
+                    Are you sure you want to delete this report (<strong id="delete_report_exam_display"></strong>)?
+                </p>
+                <div id="finalized_warning_box" class="alert alert-warning d-none py-2 px-3 mb-2 small fw-semibold">
+                    <span class="material-symbols-outlined fs-6 align-middle me-1 text-warning">warning</span>
+                    This report is finalized. Do you still want to delete?
+                </div>
+                <p class="text-muted mb-0 small" style="font-size: 12px;">This action cannot be undone and will permanently remove the record.</p>
+            </div>
+            <div class="modal-footer py-2 px-3 bg-light d-flex justify-content-end gap-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary px-3" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="btn_confirm_delete_report" onclick="executeReportDelete()" class="btn btn-sm btn-danger px-3 fw-bold d-inline-flex align-items-center gap-1.5" style="background-color: #dc2626; border-color: #dc2626;">
+                    <span class="material-symbols-outlined fs-6">delete_forever</span> Delete
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let targetReportIdToDelete = null;
+
+function openDeleteReportModal(reportId, reportStatus, examType) {
+    targetReportIdToDelete = reportId;
+    document.getElementById('delete_report_exam_display').textContent = examType || ('Report #' + reportId);
+    
+    const finalizedBox = document.getElementById('finalized_warning_box');
+    if (reportStatus === 'Finalized' || reportStatus === 'Completed') {
+        finalizedBox.classList.remove('d-none');
+    } else {
+        finalizedBox.classList.add('d-none');
+    }
+
+    const modalElem = document.getElementById('deleteReportModal');
+    const modal = new bootstrap.Modal(modalElem);
+    modal.show();
+}
+
+async function executeReportDelete() {
+    if (!targetReportIdToDelete) return;
+    
+    const confirmBtn = document.getElementById('btn_confirm_delete_report');
+    confirmBtn.disabled = true;
+    confirmBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Deleting...`;
+
+    try {
+        const response = await fetch(`/report/${targetReportIdToDelete}/delete`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            // Hide modal
+            const modalElem = document.getElementById('deleteReportModal');
+            const modal = bootstrap.Modal.getInstance(modalElem);
+            if (modal) modal.hide();
+
+            // Remove row from UI immediately without page reload
+            const targetRow = document.getElementById(`report-row-${targetReportIdToDelete}`);
+            if (targetRow) {
+                targetRow.remove();
+            }
+
+            // Check if table is now empty
+            const tbody = document.getElementById('patient_reports_tbody');
+            if (tbody && tbody.querySelectorAll('tr').length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="px-3 py-4 text-center text-secondary" style="font-size: 13px;">
+                            No ultrasound reports currently exist for this patient. Click "New Ultrasound Report" above to log one.
+                        </td>
+                    </tr>
+                `;
+            }
+
+            if (typeof showNotification === 'function') {
+                showNotification('Report deleted successfully', 'success');
+            } else {
+                alert('Report deleted successfully');
+            }
+        } else {
+            if (typeof showNotification === 'function') {
+                showNotification(data.error || 'Failed to delete report', 'error');
+            } else {
+                alert(data.error || 'Failed to delete report');
+            }
+        }
+    } catch (err) {
+        if (typeof showNotification === 'function') {
+            showNotification('Failed to delete report', 'error');
+        } else {
+            alert('Failed to delete report');
+        }
+    } finally {
+        confirmBtn.disabled = false;
+        confirmBtn.innerHTML = `<span class="material-symbols-outlined fs-6">delete_forever</span> Delete`;
+        targetReportIdToDelete = null;
+    }
+}
+</script>
+{% endblock %}

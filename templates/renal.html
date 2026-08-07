@@ -1,0 +1,170 @@
+<!-- RENAL ULTRASOUND REPORTING MODULE -->
+<div class="organ-module-card border rounded p-3 bg-white mb-4 shadow-sm" id="renal_module">
+    <div class="d-flex align-items-center justify-content-between pb-2 mb-3 border-bottom">
+        <div class="d-flex align-items-center gap-2">
+            <span class="material-symbols-outlined text-primary fs-5">water_drop</span>
+            <h5 class="fw-bold mb-0 text-dark" style="font-size: 15px;">Renal & Renovascular Ultrasound</h5>
+        </div>
+        <button type="button" class="btn btn-sm btn-outline-primary py-0 px-2" style="font-size: 11px;" onclick="selectAllNormalOrganModule()">Set All Normal</button>
+    </div>
+
+    <div class="accordion" id="accordionRenal">
+
+        <!-- 1. RIGHT KIDNEY -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingR_RK">
+                <button class="accordion-button py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseR_RK">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">water_drop</span>
+                    1. RIGHT KIDNEY
+                </button>
+            </h2>
+            <div id="collapseR_RK" class="accordion-collapse collapse show">
+                <div class="accordion-body p-3">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <div class="mb-2">
+                                <label class="form-label small font-mono fw-semibold text-secondary mb-1">Measure</label>
+                                <div class="d-flex align-items-center gap-1.5 flex-wrap flex-sm-nowrap">
+                                    <input type="number" step="0.1" class="form-control form-control-sm organ-input-measure-l" id="ren_rk_measure_l" data-organ="RIGHT KIDNEY" placeholder="Length" style="max-width: 110px;">
+                                    <span class="fw-bold text-muted small">cm ×</span>
+                                    <input type="number" step="0.1" class="form-control form-control-sm organ-input-measure-w" id="ren_rk_measure_w" data-organ="RIGHT KIDNEY" placeholder="Width" style="max-width: 110px;">
+                                    <span class="fw-semibold text-muted small">cm</span>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="ren_rk_parenchymal_thickness" class="form-label small font-mono fw-semibold text-secondary mb-1">Parenchymal Thickness</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="ren_rk_parenchymal_thickness" data-organ="RIGHT KIDNEY" data-template="Right renal parenchymal thickness is {val}." placeholder="e.g. 14 mm">
+                            </div>
+                            <div class="mb-2">
+                                <label for="ren_rk_parenchymal_echogenicity" class="form-label small font-mono fw-semibold text-secondary mb-1">Parenchymal Echogenicity</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="ren_rk_parenchymal_echogenicity" data-organ="RIGHT KIDNEY" data-template="Right kidney parenchymal echogenicity is {val}." placeholder="e.g. Normal">
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small font-mono fw-semibold text-secondary mb-1">Checkboxes</label>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="ren_rk_normal" data-organ="RIGHT KIDNEY" data-sentence="Right kidney is normal in size, shape and position. Normal cortical thickness and preserved corticomedullary differentiation. No calculus or hydronephrosis." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="ren_rk_normal">Normal Right Kidney</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="ren_rk_stone" data-organ="RIGHT KIDNEY" data-sentence="An echogenic calculus with acoustic shadowing is noted in the right kidney.">
+                                <label class="form-check-label small text-dark" for="ren_rk_stone">Renal Calculus</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="ren_rk_hydro" data-organ="RIGHT KIDNEY" data-sentence="Dilation of pelvicalyceal system (Hydronephrosis) noted in right kidney.">
+                                <label class="form-check-label small text-dark" for="ren_rk_hydro">Hydronephrosis</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="ren_rk_cyst" data-organ="RIGHT KIDNEY" data-sentence="A well-defined cortical cyst noted in the right kidney.">
+                                <label class="form-check-label small text-dark" for="ren_rk_cyst">Cortical Cyst</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input organ-check" type="checkbox" id="ren_rk_echogenic" data-organ="RIGHT KIDNEY" data-sentence="Increased cortical echogenicity with loss of corticomedullary differentiation noted in right kidney.">
+                                <label class="form-check-label small text-dark" for="ren_rk_echogenic">Increased Echogenicity</label>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="ren_rk_focal_lesion" class="form-label small font-mono fw-semibold text-secondary mb-1">Focal Lesion</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="ren_rk_focal_lesion" data-organ="RIGHT KIDNEY" data-template="Right kidney focal lesion: {val}." placeholder="e.g. None">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. LEFT KIDNEY -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingR_LK">
+                <button class="accordion-button collapsed py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseR_LK">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">water_drop</span>
+                    2. LEFT KIDNEY
+                </button>
+            </h2>
+            <div id="collapseR_LK" class="accordion-collapse collapse">
+                <div class="accordion-body p-3">
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <div class="mb-2">
+                                <label class="form-label small font-mono fw-semibold text-secondary mb-1">Measure</label>
+                                <div class="d-flex align-items-center gap-1.5 flex-wrap flex-sm-nowrap">
+                                    <input type="number" step="0.1" class="form-control form-control-sm organ-input-measure-l" id="ren_lk_measure_l" data-organ="LEFT KIDNEY" placeholder="Length" style="max-width: 110px;">
+                                    <span class="fw-bold text-muted small">cm ×</span>
+                                    <input type="number" step="0.1" class="form-control form-control-sm organ-input-measure-w" id="ren_lk_measure_w" data-organ="LEFT KIDNEY" placeholder="Width" style="max-width: 110px;">
+                                    <span class="fw-semibold text-muted small">cm</span>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <label for="ren_lk_parenchymal_thickness" class="form-label small font-mono fw-semibold text-secondary mb-1">Parenchymal Thickness</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="ren_lk_parenchymal_thickness" data-organ="LEFT KIDNEY" data-template="Left renal parenchymal thickness is {val}." placeholder="e.g. 15 mm">
+                            </div>
+                            <div class="mb-2">
+                                <label for="ren_lk_parenchymal_echogenicity" class="form-label small font-mono fw-semibold text-secondary mb-1">Parenchymal Echogenicity</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="ren_lk_parenchymal_echogenicity" data-organ="LEFT KIDNEY" data-template="Left kidney parenchymal echogenicity is {val}." placeholder="e.g. Normal">
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small font-mono fw-semibold text-secondary mb-1">Checkboxes</label>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="ren_lk_normal" data-organ="LEFT KIDNEY" data-sentence="Left kidney is normal in size, shape and position. Normal cortical thickness and preserved corticomedullary differentiation. No calculus or hydronephrosis." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="ren_lk_normal">Normal Left Kidney</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="ren_lk_stone" data-organ="LEFT KIDNEY" data-sentence="An echogenic calculus with acoustic shadowing is noted in the left kidney.">
+                                <label class="form-check-label small text-dark" for="ren_lk_stone">Renal Calculus</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="ren_lk_hydro" data-organ="LEFT KIDNEY" data-sentence="Dilation of pelvicalyceal system (Hydronephrosis) noted in left kidney.">
+                                <label class="form-check-label small text-dark" for="ren_lk_hydro">Hydronephrosis</label>
+                            </div>
+                            <div class="form-check mb-1">
+                                <input class="form-check-input organ-check" type="checkbox" id="ren_lk_cyst" data-organ="LEFT KIDNEY" data-sentence="A well-defined cortical cyst noted in the left kidney.">
+                                <label class="form-check-label small text-dark" for="ren_lk_cyst">Cortical Cyst</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input organ-check" type="checkbox" id="ren_lk_echogenic" data-organ="LEFT KIDNEY" data-sentence="Increased cortical echogenicity with loss of corticomedullary differentiation noted in left kidney.">
+                                <label class="form-check-label small text-dark" for="ren_lk_echogenic">Increased Echogenicity</label>
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="ren_lk_focal_lesion" class="form-label small font-mono fw-semibold text-secondary mb-1">Focal Lesion</label>
+                                <input type="text" class="form-control form-control-sm organ-input" id="ren_lk_focal_lesion" data-organ="LEFT KIDNEY" data-template="Left kidney focal lesion: {val}." placeholder="e.g. None">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. RENAL DOPPLER & VASCULARITY -->
+        <div class="accordion-item border rounded mb-2 overflow-hidden">
+            <h2 class="accordion-header" id="headingR_Dop">
+                <button class="accordion-button collapsed py-2 px-3 bg-light fw-bold text-dark" style="font-size: 13px;" type="button" data-bs-toggle="collapse" data-bs-target="#collapseR_Dop">
+                    <span class="material-symbols-outlined fs-6 text-primary me-2">favorite</span>
+                    3. RENAL DOPPLER & VASCULARITY
+                </button>
+            </h2>
+            <div id="collapseR_Dop" class="accordion-collapse collapse">
+                <div class="accordion-body p-3">
+                    <div class="row g-2">
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ren_dop_normal" data-organ="RENAL DOPPLER" data-sentence="Color and spectral Doppler interrogation demonstrates normal bilateral intrarenal arterial flow with normal Resistive Index (RI < 0.70)." checked>
+                                <label class="form-check-label small fw-semibold text-dark" for="ren_dop_normal">Normal Doppler (RI < 0.70)</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input organ-check" type="checkbox" id="ren_dop_high_ri" data-organ="RENAL DOPPLER" data-sentence="Elevated intrarenal arterial resistive index (RI > 0.75) noted bilaterally, consistent with medical renal disease.">
+                                <label class="form-check-label small text-dark" for="ren_dop_high_ri">Elevated Resistive Index (RI > 0.75)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

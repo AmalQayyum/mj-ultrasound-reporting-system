@@ -1,0 +1,518 @@
+{% extends "base.html" %}
+
+{% block title %} Payment Records & Revenue - MJ Ultrasound Reporting System {% endblock %}
+
+{% block content %}
+<div class="container-fluid px-3 px-md-4 py-3">
+    <!-- Page Header & Action Buttons -->
+    <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3 mb-4">
+        <div>
+            <div class="d-flex align-items-center gap-2">
+                <span class="material-symbols-outlined text-primary fs-3">payments</span>
+                <h1 class="h4 fw-bold mb-0 text-slate-900">Payments & Revenue Analytics</h1>
+                <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2.5 py-1 font-mono" style="font-size: 11px;">ADMIN ACCESS</span>
+            </div>
+            <p class="text-slate-500 mb-0 mt-1" style="font-size: 13px;">Manage transaction logs, track billing receipts, and filter clinic revenue statistics.</p>
+        </div>
+        <div class="d-flex align-items-center gap-2 w-100 w-md-auto">
+            <button type="button" onclick="exportPaymentsPDF()" class="btn btn-action-secondary d-flex align-items-center gap-1.5 px-3 py-2 text-nowrap flex-grow-1 flex-md-grow-0 justify-content-center">
+                <span class="material-symbols-outlined fs-5">picture_as_pdf</span>
+                Export PDF
+            </button>
+            <button type="button" onclick="exportPaymentsCSV()" class="btn btn-action-primary d-flex align-items-center gap-1.5 px-3 py-2 text-nowrap flex-grow-1 flex-md-grow-0 justify-content-center">
+                <span class="material-symbols-outlined fs-5">file_download</span>
+                Export Excel
+            </button>
+        </div>
+    </div>
+
+    <!-- Summary Cards (Bento Grid) -->
+    <div class="row g-2.5 mb-4">
+        <!-- Card 1: Today's Collection -->
+        <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+            <div class="clinical-card position-relative overflow-hidden p-3 d-flex flex-column justify-content-between h-100" style="background-color: #d1fae5; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.3);">
+                <div class="position-absolute" style="top: 0.4rem; right: 0.5rem; opacity: 0.22; color: #047857; pointer-events: none;">
+                    <span class="material-symbols-outlined" style="font-size: 32px;">today</span>
+                </div>
+                <span class="clinical-label text-uppercase fw-bold text-truncate" style="font-size: 10px; letter-spacing: 0.04em; color: #065f46;">Today's Collection</span>
+                <div class="my-1">
+                    <span class="fw-bold font-mono text-truncate d-block" style="font-size: 18px; line-height: 1.2; color: #064e3b;">PKR {{ summary.todayCollection | formatCurrency }}</span>
+                </div>
+                <span class="text-truncate" style="font-size: 10px; font-weight: 600; color: #047857;">Collected today</span>
+            </div>
+        </div>
+
+        <!-- Card 2: This Month Collection -->
+        <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+            <div class="clinical-card position-relative overflow-hidden p-3 d-flex flex-column justify-content-between h-100" style="background-color: #e0f2fe; border-radius: 12px; border: 1px solid rgba(14, 165, 233, 0.3);">
+                <div class="position-absolute" style="top: 0.4rem; right: 0.5rem; opacity: 0.22; color: #0369a1; pointer-events: none;">
+                    <span class="material-symbols-outlined" style="font-size: 32px;">calendar_month</span>
+                </div>
+                <span class="clinical-label text-uppercase fw-bold text-truncate" style="font-size: 10px; letter-spacing: 0.04em; color: #075985;">This Month Collection</span>
+                <div class="my-1">
+                    <span class="fw-bold font-mono text-truncate d-block" style="font-size: 18px; line-height: 1.2; color: #0c4a6e;">PKR {{ summary.thisMonthCollection | formatCurrency }}</span>
+                </div>
+                <span class="text-truncate" style="font-size: 10px; font-weight: 600; color: #0369a1;">Current month revenue</span>
+            </div>
+        </div>
+
+        <!-- Card 3: Total Collection -->
+        <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+            <div class="clinical-card position-relative overflow-hidden p-3 d-flex flex-column justify-content-between h-100" style="background-color: #ede9fe; border-radius: 12px; border: 1px solid rgba(139, 92, 246, 0.3);">
+                <div class="position-absolute" style="top: 0.4rem; right: 0.5rem; opacity: 0.22; color: #6d28d9; pointer-events: none;">
+                    <span class="material-symbols-outlined" style="font-size: 32px;">account_balance_wallet</span>
+                </div>
+                <span class="clinical-label text-uppercase fw-bold text-truncate" style="font-size: 10px; letter-spacing: 0.04em; color: #5b21b6;">Total Collection</span>
+                <div class="my-1">
+                    <span class="fw-bold font-mono text-truncate d-block" style="font-size: 18px; line-height: 1.2; color: #4c1d95;">PKR {{ summary.totalCollection | formatCurrency }}</span>
+                </div>
+                <span class="text-truncate" style="font-size: 10px; font-weight: 600; color: #6d28d9;">All-time paid total</span>
+            </div>
+        </div>
+
+        <!-- Card 4: Pending Payments -->
+        <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+            <div class="clinical-card position-relative overflow-hidden p-3 d-flex flex-column justify-content-between h-100" style="background-color: #fee2e2; border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.3);">
+                <div class="position-absolute" style="top: 0.4rem; right: 0.5rem; opacity: 0.22; color: #b91c1c; pointer-events: none;">
+                    <span class="material-symbols-outlined" style="font-size: 32px;">pending_actions</span>
+                </div>
+                <span class="clinical-label text-uppercase fw-bold text-truncate text-danger" style="font-size: 10px; letter-spacing: 0.04em;">Pending Payments</span>
+                <div class="my-1">
+                    <span class="fw-bold font-mono text-truncate d-block text-danger" style="font-size: 18px; line-height: 1.2;">PKR {{ summary.pendingPayments | formatCurrency }}</span>
+                </div>
+                <span class="text-danger text-truncate" style="font-size: 10px; font-weight: 600;">Uncollected receivables</span>
+            </div>
+        </div>
+
+        <!-- Card 5: Paid Reports -->
+        <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+            <div class="clinical-card position-relative overflow-hidden p-3 d-flex flex-column justify-content-between h-100" style="background-color: #f1f5f9; border-radius: 12px; border: 1px solid #cbd5e1;">
+                <div class="position-absolute" style="top: 0.4rem; right: 0.5rem; opacity: 0.18; color: #0f172a; pointer-events: none;">
+                    <span class="material-symbols-outlined" style="font-size: 32px;">check_circle</span>
+                </div>
+                <span class="clinical-label text-uppercase fw-bold text-truncate text-slate-700" style="font-size: 10px; letter-spacing: 0.04em;">Paid Reports</span>
+                <div class="my-1">
+                    <span class="fw-bold font-mono text-truncate d-block text-slate-900" style="font-size: 20px; line-height: 1.2;">{{ summary.paidReportsCount }}</span>
+                </div>
+                <span class="text-emerald-700 text-truncate" style="font-size: 10px; font-weight: 600;">Completed receipts</span>
+            </div>
+        </div>
+
+        <!-- Card 6: Pending Reports -->
+        <div class="col-12 col-sm-6 col-md-4 col-xl-2">
+            <div class="clinical-card position-relative overflow-hidden p-3 d-flex flex-column justify-content-between h-100" style="background-color: #fff7ed; border-radius: 12px; border: 1px solid rgba(249, 115, 22, 0.3);">
+                <div class="position-absolute" style="top: 0.4rem; right: 0.5rem; opacity: 0.22; color: #c2410c; pointer-events: none;">
+                    <span class="material-symbols-outlined" style="font-size: 32px;">hourglass_empty</span>
+                </div>
+                <span class="clinical-label text-uppercase fw-bold text-truncate text-amber-800" style="font-size: 10px; letter-spacing: 0.04em;">Pending Reports</span>
+                <div class="my-1">
+                    <span class="fw-bold font-mono text-truncate d-block text-amber-900" style="font-size: 20px; line-height: 1.2;">{{ summary.pendingReportsCount }}</span>
+                </div>
+                <span class="text-amber-700 text-truncate" style="font-size: 10px; font-weight: 600;">Unpaid reports</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters Panel -->
+    <div class="clinical-card p-3 p-md-4 mb-4" style="background-color: #ffffff; border-radius: 12px; border: 1px solid #cbd5e1;">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <span class="material-symbols-outlined text-slate-600 fs-5">filter_alt</span>
+                <h2 class="h6 fw-bold mb-0 text-slate-800">Filter Payment Records</h2>
+            </div>
+            <button type="button" onclick="resetPaymentFilters()" class="btn btn-link text-decoration-none text-slate-500 hover:text-slate-800 p-0 d-flex align-items-center gap-1" style="font-size: 12px; font-weight: 600;">
+                <span class="material-symbols-outlined fs-6">restart_alt</span> Reset Filters
+            </button>
+        </div>
+
+        <!-- Preset Date Range Buttons -->
+        <div class="mb-3">
+            <label class="form-label text-slate-600 fw-semibold mb-1.5" style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.03em;">Date Presets</label>
+            <div class="d-flex flex-wrap gap-1.5">
+                <button type="button" class="btn btn-sm btn-preset active" data-preset="all" onclick="setPresetDate('all', this)">All Time</button>
+                <button type="button" class="btn btn-sm btn-preset" data-preset="today" onclick="setPresetDate('today', this)">Today</button>
+                <button type="button" class="btn btn-sm btn-preset" data-preset="yesterday" onclick="setPresetDate('yesterday', this)">Yesterday</button>
+                <button type="button" class="btn btn-sm btn-preset" data-preset="week" onclick="setPresetDate('week', this)">This Week</button>
+                <button type="button" class="btn btn-sm btn-preset" data-preset="month" onclick="setPresetDate('month', this)">This Month</button>
+                <button type="button" class="btn btn-sm btn-preset" data-preset="custom" onclick="setPresetDate('custom', this)">Custom Range</button>
+            </div>
+        </div>
+
+        <div class="row g-2.5">
+            <!-- Custom Date Range -->
+            <div class="col-12 col-sm-6 col-md-3">
+                <label class="form-label text-slate-600 fw-semibold mb-1" style="font-size: 11px;">From Date</label>
+                <input type="date" id="filter_from_date" class="form-control form-control-sm" onchange="applyPaymentFilters()">
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
+                <label class="form-label text-slate-600 fw-semibold mb-1" style="font-size: 11px;">To Date</label>
+                <input type="date" id="filter_to_date" class="form-control form-control-sm" onchange="applyPaymentFilters()">
+            </div>
+
+            <!-- Payment Status Filter -->
+            <div class="col-12 col-sm-4 col-md-2">
+                <label class="form-label text-slate-600 fw-semibold mb-1" style="font-size: 11px;">Payment Status</label>
+                <select id="filter_payment_status" class="form-select form-select-sm" onchange="applyPaymentFilters()">
+                    <option value="">All Statuses</option>
+                    <option value="Paid">Paid</option>
+                    <option value="Unpaid">Unpaid</option>
+                </select>
+            </div>
+
+            <!-- Reporting Doctor Filter -->
+            <div class="col-12 col-sm-4 col-md-2">
+                <label class="form-label text-slate-600 fw-semibold mb-1" style="font-size: 11px;">Reporting Doctor</label>
+                <select id="filter_doctor" class="form-select form-select-sm" onchange="applyPaymentFilters()">
+                    <option value="">All Doctors</option>
+                    {% for doc in doctors %}
+                    <option value="{{ doc.full_name }}">{{ doc.full_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Ultrasound Type Filter -->
+            <div class="col-12 col-sm-4 col-md-2">
+                <label class="form-label text-slate-600 fw-semibold mb-1" style="font-size: 11px;">Ultrasound Type</label>
+                <select id="filter_exam_type" class="form-select form-select-sm" onchange="applyPaymentFilters()">
+                    <option value="">All Types</option>
+                    {% for et in examTypes %}
+                    <option value="{{ et }}">{{ et }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Search Box -->
+            <div class="col-12 mt-2">
+                <div class="position-relative">
+                    <span class="material-symbols-outlined position-absolute text-slate-400" style="top: 50%; left: 0.75rem; transform: translateY(-50%); font-size: 18px;">search</span>
+                    <input type="text" id="payments_search" class="form-control form-control-sm ps-5" placeholder="Search by Patient Name, MR No (Patient Code), or Receipt No..." onkeyup="applyPaymentFilters()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payments Table Container -->
+    <div class="clinical-card p-0 overflow-hidden mb-4" style="border-radius: 12px; border: 1px solid #cbd5e1; background-color: #ffffff;">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0" id="paymentsTable">
+                <thead style="background-color: #f8fafc; border-bottom: 1px solid #cbd5e1;">
+                    <tr style="font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #475569;">
+                        <th class="py-3 px-3">Receipt No</th>
+                        <th class="py-3 px-3">Report Date</th>
+                        <th class="py-3 px-3">Patient ID</th>
+                        <th class="py-3 px-3">Patient Name</th>
+                        <th class="py-3 px-3">Ultrasound Type</th>
+                        <th class="py-3 px-3">Referring Doctor</th>
+                        <th class="py-3 px-3">Reporting Doctor</th>
+                        <th class="py-3 px-3 text-center">Payment Status</th>
+                        <th class="py-3 px-3 text-end">Amount (PKR)</th>
+                        <th class="py-3 px-3 text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100" style="font-size: 13px;">
+                    {% for report in reports %}
+                    <tr class="payment-row"
+                        data-id="{{ report.id }}"
+                        data-receipt="{{ report.receipt_number }}"
+                        data-date="{{ report.report_date or (report.created_at | formatDateDisplay) }}"
+                        data-patient-code="{{ report.patient_code }}"
+                        data-patient-name="{{ report.patient_name }}"
+                        data-exam="{{ report.exam_type or report.study }}"
+                        data-doctor="{{ report.reporting_doctor }}"
+                        data-status="{{ report.payment_status }}"
+                        data-amount="{{ report.payment_amount }}">
+                        
+                        <!-- Receipt No -->
+                        <td class="px-3 py-2.5 font-mono fw-bold text-primary text-nowrap">
+                            {{ report.receipt_number }}
+                        </td>
+
+                        <!-- Report Date -->
+                        <td class="px-3 py-2.5 text-nowrap text-slate-700">
+                            {{ report.report_date or (report.created_at | formatDateDisplay) }}
+                        </td>
+
+                        <!-- Patient ID -->
+                        <td class="px-3 py-2.5 font-mono fw-semibold text-slate-800 text-nowrap">
+                            {{ report.patient_code }}
+                        </td>
+
+                        <!-- Patient Name -->
+                        <td class="px-3 py-2.5 fw-semibold text-slate-900 text-nowrap">
+                            <a href="/patient/{{ report.patient_id }}" class="text-slate-900 text-decoration-none hover:text-primary">
+                                {{ report.patient_name }}
+                            </a>
+                        </td>
+
+                        <!-- Ultrasound Type -->
+                        <td class="px-3 py-2.5 text-nowrap text-slate-700">
+                            <span class="badge bg-slate-100 text-slate-700 font-mono fw-normal px-2 py-1" style="font-size: 11px;">
+                                {{ report.exam_type or report.study }}
+                            </span>
+                        </td>
+
+                        <!-- Referring Doctor -->
+                        <td class="px-3 py-2.5 text-nowrap text-slate-600">
+                            {{ report.referred_by or 'Self / Direct' }}
+                        </td>
+
+                        <!-- Reporting Doctor -->
+                        <td class="px-3 py-2.5 text-nowrap text-slate-800 fw-medium">
+                            {{ report.reporting_doctor }}
+                        </td>
+
+                        <!-- Payment Status -->
+                        <td class="px-3 py-2.5 text-center text-nowrap">
+                            {% if report.payment_status == 'Paid' %}
+                                <span class="badge bg-success-subtle text-success fw-semibold px-2.5 py-1" style="font-size: 11px; cursor: pointer;" onclick="openPaymentModal('{{ report.id }}', '{{ report.patient_name | replace("'", "\\'") }}', '{{ report.patient_code }}', '{{ report.exam_type | replace("'", "\\'") }}', '{{ report.payment_amount or report.report_fee or '' }}', 'Paid')" title="Click to update payment">🟢 Paid</span>
+                            {% else %}
+                                <span class="badge bg-danger-subtle text-danger fw-semibold px-2.5 py-1" style="font-size: 11px; cursor: pointer;" onclick="openPaymentModal('{{ report.id }}', '{{ report.patient_name | replace("'", "\\'") }}', '{{ report.patient_code }}', '{{ report.exam_type | replace("'", "\\'") }}', '{{ report.payment_amount or report.report_fee or '' }}', 'Unpaid')" title="Click to update payment">🔴 Unpaid</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Amount -->
+                        <td class="px-3 py-2.5 text-end font-mono fw-bold text-slate-900 text-nowrap">
+                            PKR {{ report.payment_amount | formatCurrency }}
+                        </td>
+
+                        <!-- Actions -->
+                        <td class="px-3 py-2.5 text-center text-nowrap">
+                            <div class="d-inline-flex align-items-center gap-1">
+                                <a href="/report/{{ report.id }}/pdf" class="btn btn-sm btn-outline-secondary px-2 py-1 d-inline-flex align-items-center gap-1" title="View Report" style="font-size: 12px;">
+                                    <span class="material-symbols-outlined" style="font-size: 15px;">visibility</span> View
+                                </a>
+                                <a href="/report/{{ report.id }}/print?autoprint=true" target="_blank" class="btn btn-sm btn-outline-primary px-2 py-1 d-inline-flex align-items-center gap-1" title="Print Receipt / Report" style="font-size: 12px;">
+                                    <span class="material-symbols-outlined" style="font-size: 15px;">print</span> Print
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr id="no_records_row">
+                        <td colspan="10" class="text-center py-5 text-slate-400">
+                            <span class="material-symbols-outlined fs-1 d-block mb-2">payments_off</span>
+                            <p class="mb-0 fw-medium">No payment records found matching your filters.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Totals Footer Summary -->
+        <div class="p-3 bg-slate-50 border-top border-slate-200" id="tableTotalsFooter">
+            <div class="row g-2 align-items-center font-mono" style="font-size: 12px;">
+                <div class="col-6 col-sm-3 text-slate-700">
+                    Total Reports: <strong id="total_reports_count" class="text-slate-900">0</strong>
+                </div>
+                <div class="col-6 col-sm-3 text-slate-700">
+                    Total Paid: <strong id="total_paid_count" class="text-emerald-700">0</strong>
+                </div>
+                <div class="col-6 col-sm-3 text-slate-700">
+                    Total Pending: <strong id="total_pending_count" class="text-danger">0</strong>
+                </div>
+                <div class="col-6 col-sm-3 text-end text-slate-900 fw-bold fs-6">
+                    Grand Total: <span id="grand_total_amount" class="text-emerald-800">PKR 0</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.btn-preset {
+    background-color: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #475569;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 0.25rem 0.65rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+.btn-preset:hover {
+    background-color: #e2e8f0;
+    color: #0f172a;
+}
+.btn-preset.active {
+    background-color: #123B7A !important;
+    border-color: #123B7A !important;
+    color: #ffffff !important;
+}
+@media print {
+    body {
+        background-color: #ffffff !important;
+    }
+    .sidebar, .top-navbar, .btn, .material-symbols-outlined, #sidebarBackdrop {
+        display: none !important;
+    }
+    .main-workspace, .app-container {
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+    .clinical-card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+}
+</style>
+
+<script>
+let currentPreset = 'all';
+
+function setPresetDate(preset, btnElement) {
+    currentPreset = preset;
+    document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+    if (btnElement) btnElement.classList.add('active');
+
+    const fromInput = document.getElementById('filter_from_date');
+    const toInput = document.getElementById('filter_to_date');
+
+    const today = new Date();
+    const todayStr = today.toISOString().split('T')[0];
+
+    if (preset === 'all') {
+        fromInput.value = '';
+        toInput.value = '';
+    } else if (preset === 'today') {
+        fromInput.value = todayStr;
+        toInput.value = todayStr;
+    } else if (preset === 'yesterday') {
+        const yest = new Date(today.getTime() - 24 * 60 * 60 * 1000);
+        const yestStr = yest.toISOString().split('T')[0];
+        fromInput.value = yestStr;
+        toInput.value = yestStr;
+    } else if (preset === 'week') {
+        const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
+        fromInput.value = weekAgo.toISOString().split('T')[0];
+        toInput.value = todayStr;
+    } else if (preset === 'month') {
+        const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+        fromInput.value = firstOfMonth.toISOString().split('T')[0];
+        toInput.value = todayStr;
+    }
+
+    applyPaymentFilters();
+}
+
+function resetPaymentFilters() {
+    document.getElementById('filter_from_date').value = '';
+    document.getElementById('filter_to_date').value = '';
+    document.getElementById('filter_payment_status').value = '';
+    document.getElementById('filter_doctor').value = '';
+    document.getElementById('filter_exam_type').value = '';
+    document.getElementById('payments_search').value = '';
+    setPresetDate('all', document.querySelector('.btn-preset[data-preset="all"]'));
+}
+
+function applyPaymentFilters() {
+    const fromDate = document.getElementById('filter_from_date').value;
+    const toDate = document.getElementById('filter_to_date').value;
+    const status = document.getElementById('filter_payment_status').value.toLowerCase();
+    const doctor = document.getElementById('filter_doctor').value.toLowerCase();
+    const examType = document.getElementById('filter_exam_type').value.toLowerCase();
+    const search = document.getElementById('payments_search').value.toLowerCase().trim();
+
+    const rows = document.querySelectorAll('.payment-row');
+    let totalReports = 0;
+    let totalPaid = 0;
+    let totalPending = 0;
+    let grandTotal = 0;
+
+    rows.forEach(row => {
+        const rowDate = row.getAttribute('data-date') || '';
+        const rowStatus = (row.getAttribute('data-status') || '').toLowerCase();
+        const rowDoctor = (row.getAttribute('data-doctor') || '').toLowerCase();
+        const rowExam = (row.getAttribute('data-exam') || '').toLowerCase();
+        const rowReceipt = (row.getAttribute('data-receipt') || '').toLowerCase();
+        const rowPatientCode = (row.getAttribute('data-patient-code') || '').toLowerCase();
+        const rowPatientName = (row.getAttribute('data-patient-name') || '').toLowerCase();
+        const rowAmount = parseFloat(row.getAttribute('data-amount')) || 0;
+
+        let visible = true;
+
+        // Date filter
+        if (fromDate && rowDate < fromDate) visible = false;
+        if (toDate && rowDate > toDate) visible = false;
+
+        // Status filter
+        if (status && rowStatus !== status) visible = false;
+
+        // Doctor filter
+        if (doctor && !rowDoctor.includes(doctor)) visible = false;
+
+        // Exam Type filter
+        if (examType && !rowExam.includes(examType)) visible = false;
+
+        // Search text
+        if (search) {
+            const matchesSearch = rowPatientName.includes(search) ||
+                                  rowPatientCode.includes(search) ||
+                                  rowReceipt.includes(search);
+            if (!matchesSearch) visible = false;
+        }
+
+        if (visible) {
+            row.style.display = '';
+            totalReports++;
+            if (rowStatus === 'paid') {
+                totalPaid++;
+            } else {
+                totalPending++;
+            }
+            grandTotal += rowAmount;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    document.getElementById('total_reports_count').innerText = totalReports;
+    document.getElementById('total_paid_count').innerText = totalPaid;
+    document.getElementById('total_pending_count').innerText = totalPending;
+    document.getElementById('grand_total_amount').innerText = 'PKR ' + grandTotal.toLocaleString('en-US');
+}
+
+function exportPaymentsCSV() {
+    const rows = document.querySelectorAll('.payment-row');
+    const csvData = [
+        ['Receipt No', 'Report Date', 'Patient ID', 'Patient Name', 'Ultrasound Type', 'Referring Doctor', 'Reporting Doctor', 'Payment Status', 'Amount (PKR)']
+    ];
+
+    rows.forEach(row => {
+        if (row.style.display !== 'none') {
+            const cols = [
+                row.getAttribute('data-receipt') || '',
+                row.getAttribute('data-date') || '',
+                row.getAttribute('data-patient-code') || '',
+                `"${(row.getAttribute('data-patient-name') || '').replace(/"/g, '""')}"`,
+                `"${(row.getAttribute('data-exam') || '').replace(/"/g, '""')}"`,
+                `"${(row.cells[5]?.innerText.trim() || '').replace(/"/g, '""')}"`,
+                `"${(row.getAttribute('data-doctor') || '').replace(/"/g, '""')}"`,
+                row.getAttribute('data-status') || '',
+                row.getAttribute('data-amount') || '0'
+            ];
+            csvData.push(cols);
+        }
+    });
+
+    const csvContent = "data:text/csv;charset=utf-8," + csvData.map(e => e.join(",")).join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    const today = new Date().toISOString().split('T')[0];
+    link.setAttribute("download", `MJ_Ultrasound_Payments_${today}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+function exportPaymentsPDF() {
+    window.print();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    applyPaymentFilters();
+});
+</script>
+{% endblock %}

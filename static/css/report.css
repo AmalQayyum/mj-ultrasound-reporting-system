@@ -1,0 +1,679 @@
+/* Hospital Radiology Ultrasound Report Stylesheet
+   Compatible with Official Clinic Letterhead Template (A4 Portrait)
+*/
+
+/* Reset & Page Dimensions for Printing (Physical Pre-printed Letterhead) */
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 18mm 12mm 15mm 12mm; /* Small top (18mm) and bottom (15mm) margins for physical stationery print */
+    }
+
+    *, *::before, *::after {
+        box-sizing: border-box !important;
+        text-shadow: none !important;
+        filter: none !important;
+    }
+
+    html, body {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        max-height: none !important;
+        background-color: transparent !important;
+        background-image: none !important;
+        color: #000000 !important;
+        font-family: Arial, Helvetica, sans-serif !important;
+        font-size: 13px !important;
+        line-height: 1.4 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        overflow: visible !important;
+        transform: none !important;
+        display: block !important;
+    }
+
+    /* Hide screen-only controls, navigation, action bars, banners, and pdf spacers */
+    .no-print, 
+    .report-action-bar, 
+    .top-action-bar,
+    .letterhead-guide-banner,
+    nav, 
+    header.site-header, 
+    footer.site-footer, 
+    .btn,
+    #report_notification_toast,
+    .pdf-page-break-spacer {
+        display: none !important;
+        height: 0 !important;
+        width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* Reset paper container for native printing */
+    .report-paper,
+    .report-container,
+    .report-paper.report-print-layout {
+        display: block !important;
+        flex: none !important;
+        float: none !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        background-color: transparent !important;
+        background-image: none !important; /* Pre-printed paper layout uses physical stationery */
+        min-height: auto !important;
+        height: auto !important;
+        max-height: none !important;
+        box-sizing: border-box !important;
+        overflow: visible !important;
+        transform: none !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Patient Details Section - Keep together on 1 page at top */
+    .patient-details-section {
+        margin-top: 0 !important;
+        margin-bottom: 6pt !important;
+        padding: 0 !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+        page-break-after: auto !important;
+        break-after: auto !important;
+    }
+
+    /* Reset negative margins that were set for screen preview */
+    #report_paper > section:nth-of-type(1) > div:nth-of-type(1),
+    div#report_paper > section:nth-of-type(1) > div:nth-of-type(1),
+    div#report_paper:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(1) {
+        margin-top: 0 !important;
+    }
+
+    /* Section titles & dividers */
+    .section-title {
+        font-size: 16px !important;
+        font-weight: 800 !important;
+        color: #000000 !important;
+        text-transform: uppercase !important;
+        margin-top: 6pt !important;
+        margin-bottom: 2pt !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+
+    .section-divider {
+        border-bottom: 2px solid #000000 !important;
+        margin-bottom: 4pt !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+
+    /* Findings, Organ Groups, Impression & Advice - allow natural page flow without artificial empty gaps */
+    .findings-container {
+        display: block !important;
+        flex-grow: 0 !important;
+        flex: none !important;
+        margin-top: 0 !important;
+        margin-bottom: 6pt !important;
+        padding: 0 !important;
+        height: auto !important;
+        min-height: auto !important;
+        max-height: none !important;
+        overflow: visible !important;
+        page-break-inside: auto !important;
+        break-inside: auto !important;
+    }
+
+    .organ-group,
+    .impression-section,
+    .advice-section,
+    .avoid-break {
+        display: block !important;
+        flex: none !important;
+        margin-top: 6pt !important;
+        margin-bottom: 6pt !important;
+        padding: 0 !important;
+        height: auto !important;
+        min-height: auto !important;
+        max-height: none !important;
+        page-break-before: auto !important;
+        break-before: auto !important;
+        page-break-after: auto !important;
+        break-after: auto !important;
+        page-break-inside: auto !important;
+        break-inside: auto !important;
+    }
+
+    .radiology-bullets li {
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    /* Signature area - keep block intact, no forced page break before it */
+    .report-bottom-area {
+        margin-top: 10pt !important;
+        margin-bottom: 0 !important;
+        padding-top: 4pt !important;
+        padding-bottom: 0 !important;
+        height: auto !important;
+        min-height: auto !important;
+        page-break-before: auto !important;
+        break-before: auto !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid !important;
+    }
+
+    .patient-info-box {
+        background-color: #f8fafc !important;
+        border: 1px solid #222222 !important;
+        border-radius: 3px !important;
+        padding: 2px 5px !important;
+        min-height: 24px !important;
+    }
+
+    .patient-info-box .box-label {
+        font-size: 8.5px !important;
+        font-weight: 700 !important;
+        color: #333333 !important;
+    }
+
+    .patient-info-box .box-value {
+        font-size: 12px !important;
+        font-weight: 700 !important;
+        color: #000000 !important;
+    }
+
+    .qr-code-box {
+        border: 1px solid #222222 !important;
+        border-radius: 3px !important;
+        width: 22mm !important;
+        height: 22mm !important;
+        min-width: 22mm !important;
+        min-height: 22mm !important;
+    }
+
+    .qr-code-right-wrapper {
+        width: 24mm !important;
+        min-width: 24mm !important;
+        margin-right: 4mm !important;
+    }
+}
+
+/* Screen Preview Canvas */
+body.report-preview-body {
+    background-color: #f1f5f9;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #0f172a;
+    margin: 0;
+    padding: 0;
+}
+
+/* Action Bar for Screen Preview */
+.report-action-bar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #0f172a;
+    color: #ffffff;
+    padding: 0.75rem 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Letterhead Visual Guide Banner (Screen Only) */
+.letterhead-guide-banner {
+    background-color: #eff6ff;
+    border: 1px dashed #3b82f6;
+    color: #1e40af;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    font-size: 9.5pt;
+    font-weight: 600;
+    border-radius: 6px;
+    text-align: center;
+}
+
+/* A4 Printable Paper Container (Base Styles) */
+.report-paper,
+.report-container {
+    width: 210mm;
+    max-width: 210mm;
+    min-height: 297mm;
+    margin: 1.2rem auto;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+    position: relative;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #000000;
+    font-size: 13px;
+    line-height: 1.4;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #ffffff;
+}
+
+/* Print Layout specific styling (For Pre-printed Letterhead Paper) */
+.report-paper.report-print-layout {
+    background-image: none !important;
+    padding: 18mm 12mm 15mm 12mm; /* Small top (18mm) and bottom (15mm) margins */
+}
+
+/* Download PDF Layout specific styling (With Digital Clinic Letterhead) */
+.report-paper.report-pdf-layout,
+.report-paper:not(.report-print-layout) {
+    background-image: url('/static/letterhead_page_1.png');
+    background-size: 210mm 297mm;
+    background-repeat: repeat-y;
+    background-position: top center;
+    padding: 48mm 12mm 25mm 12mm; /* Align content safely below header logo (48mm) & above footer (25mm) */
+}
+
+/* PDF Render Reset */
+.report-paper.pdf-rendering {
+    width: 210mm !important;
+    max-width: 210mm !important;
+    margin: 0 auto !important;
+    padding: 48mm 12mm 25mm 12mm !important;
+    box-shadow: none !important;
+    border: none !important;
+    min-height: 297mm !important;
+    height: auto !important;
+    background-color: #ffffff !important;
+    background-image: url('/static/letterhead_page_1.png') !important;
+    background-size: 210mm 297mm !important;
+    background-repeat: repeat-y !important;
+    background-position: top center !important;
+    box-sizing: border-box !important;
+}
+
+/* Page Break Spacer for Multi-Page Letterhead */
+.pdf-page-break-spacer {
+    display: block !important;
+    width: 100% !important;
+    clear: both !important;
+    page-break-before: always !important;
+    break-before: page !important;
+    background: transparent !important;
+}
+
+/* Letterhead Header Styling */
+.clinic-letterhead-header {
+    width: 100% !important;
+    margin-bottom: 8px !important;
+    box-sizing: border-box !important;
+    page-break-inside: avoid !important;
+}
+
+.header-content-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: 100% !important;
+    gap: 10px !important;
+}
+
+.header-brand-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+}
+
+.header-logo-svg {
+    flex-shrink: 0 !important;
+}
+
+.brand-text-col {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.brand-title-line {
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 16px !important;
+    font-weight: 900 !important;
+    color: #0A84A6 !important;
+    line-height: 1.1 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.brand-underline-bar {
+    height: 2.5px !important;
+    background-color: #0A84A6 !important;
+    margin-top: 2px !important;
+    width: 100% !important;
+}
+
+.header-center-title {
+    text-align: left !important;
+}
+
+.clinic-memorial-line {
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 18px !important;
+    font-weight: 900 !important;
+    color: #111111 !important;
+    line-height: 1.1 !important;
+    letter-spacing: 0.5px !important;
+}
+
+.header-urdu-right {
+    text-align: right !important;
+}
+
+.urdu-calligraphy {
+    font-family: 'Noto Nastaliq Urdu', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif !important;
+    font-size: 38px !important;
+    font-weight: bold !important;
+    color: #D92525 !important;
+    line-height: 1 !important;
+}
+
+.header-bottom-line {
+    width: 100% !important;
+    border-bottom: 1.5px solid #222222 !important;
+    margin-top: 6px !important;
+    margin-bottom: 8px !important;
+}
+
+/* Patient Details Section & Header Row Layout */
+#report_paper > section:nth-of-type(1) > div:nth-of-type(1),
+div#report_paper > section:nth-of-type(1) > div:nth-of-type(1) {
+    margin-top: -55px !important;
+}
+
+div#report_paper:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(1) {
+    margin-top: 13px !important;
+    margin-right: 0px !important;
+}
+
+.patient-details-section {
+    margin-bottom: 6pt;
+}
+
+.patient-header-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    width: 100% !important;
+}
+
+.patient-boxes-grid {
+    flex-grow: 1 !important;
+    min-width: 0 !important;
+}
+
+.patient-info-box {
+    height: 100% !important;
+    min-height: 24px !important;
+    padding: 2px 5px !important;
+    background-color: #f8fafc !important;
+    border: 1px solid #222222 !important;
+    border-radius: 3px !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+}
+
+.patient-info-box .box-label {
+    font-size: 8.5px !important;
+    color: #333333 !important;
+    text-transform: uppercase !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.2px !important;
+    margin-bottom: 0px !important;
+    line-height: 1.1 !important;
+}
+
+.patient-info-box .box-value {
+    font-size: 12px !important;
+    color: #000000 !important;
+    font-weight: 700 !important;
+    line-height: 1.15 !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+}
+
+/* QR Code Section - Compact, vertically centered with the 2 rows */
+.qr-code-right-wrapper {
+    width: 24mm !important;
+    min-width: 24mm !important;
+    max-width: 24mm !important;
+    flex-shrink: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-left: 4px !important;
+    margin-right: 4mm !important;
+    box-sizing: border-box !important;
+}
+
+.qr-code-box {
+    width: 22mm !important;
+    height: 22mm !important;
+    min-width: 22mm !important;
+    min-height: 22mm !important;
+    max-width: 22mm !important;
+    max-height: 22mm !important;
+    padding: 0 !important;
+    border: 1px solid #222222 !important;
+    border-radius: 3px !important;
+    background: #ffffff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+}
+
+.qr-code-box img {
+    width: 19mm !important;
+    height: 19mm !important;
+    max-width: 19mm !important;
+    max-height: 19mm !important;
+    display: block !important;
+    object-fit: contain !important;
+    margin: auto !important;
+}
+
+.qr-caption {
+    font-size: 8px !important;
+    color: #000000 !important;
+    font-weight: 700 !important;
+    margin-top: 1px !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+}
+
+/* Section Headings */
+.section-title {
+    font-size: 18px !important;
+    font-weight: 800 !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    color: #000000 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    margin-top: 6pt !important;
+    margin-bottom: 2pt !important;
+}
+
+.section-divider {
+    border-bottom: 2px solid #000000 !important;
+    margin-bottom: 4pt !important;
+}
+
+/* Clinical Info Section */
+.clinical-info-content {
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+    color: #000000 !important;
+    margin-bottom: 6pt !important;
+    padding-left: 2pt !important;
+}
+
+/* Radiology Findings Formatting */
+.findings-container {
+    margin-bottom: 6pt;
+    flex-grow: 1;
+}
+
+.organ-group {
+    margin-bottom: 5pt;
+    page-break-inside: avoid;
+}
+
+.organ-header {
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    font-family: Arial, Helvetica, sans-serif !important;
+    color: #000000 !important;
+    text-transform: uppercase !important;
+    margin-bottom: 2pt !important;
+}
+
+/* Radiology Bullet Lists */
+.radiology-bullets {
+    list-style-type: none !important;
+    padding-left: 0 !important;
+    margin-top: 2pt !important;
+    margin-bottom: 2pt !important;
+}
+
+.radiology-bullets li {
+    position: relative;
+    padding-left: 14pt;
+    margin-bottom: 2pt;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+    color: #000000 !important;
+}
+
+.radiology-bullets li::before {
+    content: "•";
+    position: absolute;
+    left: 2pt;
+    top: 0;
+    font-weight: bold;
+    font-size: 13px;
+    color: #000000;
+}
+
+/* Impression Section */
+.impression-section {
+    margin-top: 6pt;
+    margin-bottom: 6pt;
+    page-break-inside: avoid;
+}
+
+.impression-bullets li {
+    font-weight: bold !important;
+}
+
+/* Advice Section */
+.advice-section {
+    margin-top: 6pt;
+    margin-bottom: 6pt;
+    page-break-inside: avoid;
+}
+
+/* Signature Area */
+.report-bottom-area {
+    margin-top: 18px !important;
+    margin-bottom: 8px !important;
+    padding-top: 4pt;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    page-break-inside: avoid;
+}
+
+.doctor-signature-box {
+    width: 190px;
+    text-align: left;
+}
+
+.doctor-signature-box .sig-line {
+    border-top: 1.5px solid #000000;
+    width: 160px;
+    margin-bottom: 3pt;
+}
+
+.doctor-signature-box .doc-title {
+    font-size: 13px !important;
+    font-weight: bold !important;
+    color: #000000 !important;
+}
+
+.doctor-signature-box .doc-details {
+    font-size: 11.5px !important;
+    color: #333333 !important;
+}
+
+/* Letterhead Footer Styling */
+.clinic-letterhead-footer {
+    width: 100% !important;
+    margin-top: auto !important;
+    padding-top: 4px !important;
+    box-sizing: border-box !important;
+    page-break-inside: avoid !important;
+}
+
+.footer-top-line {
+    width: 100% !important;
+    border-top: 1px solid #222222 !important;
+    margin-bottom: 4px !important;
+}
+
+.footer-main-title {
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 900 !important;
+    color: #111111 !important;
+    text-align: center !important;
+    letter-spacing: 0.8px !important;
+    margin-bottom: 2px !important;
+}
+
+.footer-contact-row {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 16px !important;
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: #222222 !important;
+}
+
+.contact-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+}
+
+.footer-bottom-row {
+    display: flex !important;
+    align-items: flex-end !important;
+    justify-content: space-between !important;
+    margin-top: 2px !important;
+}
+
+.footer-legal-text {
+    font-size: 10px !important;
+    color: #999999 !important;
+    font-weight: 600 !important;
+}
+
+

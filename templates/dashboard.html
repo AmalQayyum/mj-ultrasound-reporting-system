@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - MJ Ultrasound Reporting System{% endblock %}
+
+{% block content %}
+<!-- Welcome Heading -->
+<div class="mb-4">
+    <h1 class="font-display fw-bold mb-1" style="color: #123B7A; font-size: 26px; letter-spacing: -0.02em;">Good Morning</h1>
+    <p class="text-secondary mb-0" style="font-size: 14px;">Here is your clinical overview for today.</p>
+</div>
+
+<!-- Bento Grid Stats Panel -->
+<div class="row g-3 mb-4">
+    <!-- Stat 1: Reports Today -->
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="clinical-card position-relative overflow-hidden p-3 d-flex flex-column justify-content-between h-100" style="background-color: #aed1d5; border-radius: 12px; border: 1px solid rgba(183, 25, 221, 0.2); min-height: 85px;">
+            <div class="position-absolute" style="top: 0.4rem; right: 0.5rem; opacity: 0.18; pointer-events: none;">
+                <span class="material-symbols-outlined" style="font-size: 36px; color: #b719dd;">description</span>
+            </div>
+            <div class="d-flex align-items-center justify-content-between">
+                <span class="clinical-label text-slate-700 text-truncate fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.03em;">Reports Today</span>
+            </div>
+            <div class="d-flex align-items-center my-1">
+                <span class="fw-bold text-indigo-900 font-mono" style="font-size: 22px; line-height: 1;">{{ reports_today }}</span>
+            </div>
+            <div class="d-flex align-items-center gap-1 font-mono text-emerald-700 text-truncate" style="font-size: 10px; font-weight: 600; line-height: 1.1;">
+                <span class="material-symbols-outlined text-emerald-600" style="font-size: 12px;">trending_up</span> Active session
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stat 2: New Patients -->
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="clinical-card position-relative overflow-hidden p-3 d-flex flex-column justify-content-between h-100" style="background-color: #a9c9fa; border-radius: 12px; border: 1px solid rgba(16, 20, 178, 0.2); min-height: 85px;">
+            <div class="position-absolute" style="top: 0.4rem; right: 0.5rem; opacity: 0.18; pointer-events: none;">
+                <span class="material-symbols-outlined" style="font-size: 36px; color: #1014b2;">person_add</span>
+            </div>
+            <div class="d-flex align-items-center justify-content-between">
+                <span class="clinical-label text-slate-700 text-truncate fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.03em;">New Patients</span>
+            </div>
+            <div class="d-flex align-items-center my-1">
+                <span class="fw-bold text-slate-900 font-mono" style="font-size: 22px; line-height: 1;">{{ new_patients_month }}</span>
+            </div>
+            <div class="text-slate-700 text-truncate" style="font-size: 10px; font-weight: 500; line-height: 1.1;">
+                Total registered
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat 3: Pending Signatures -->
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="clinical-card position-relative overflow-hidden p-3 d-flex flex-column justify-content-between h-100" style="background-color: #fee2e2; border-radius: 12px; border: 1px solid rgba(239, 68, 68, 0.3) !important; min-height: 85px;">
+            <div class="position-absolute" style="top: 0.4rem; right: 0.5rem; opacity: 0.2; color: var(--error-red); pointer-events: none;">
+                <span class="material-symbols-outlined" style="font-size: 36px;">draw</span>
+            </div>
+            <div class="d-flex align-items-center justify-content-between">
+                <span class="clinical-label text-danger d-flex align-items-center gap-1 text-truncate fw-bold text-uppercase" style="font-size: 11px; letter-spacing: 0.03em;">
+                    <span class="material-symbols-outlined text-danger" style="font-size: 12px;">warning</span> Pending Signatures
+                </span>
+            </div>
+            <div class="d-flex align-items-center my-1">
+                <span class="fw-bold text-danger font-mono" style="font-size: 22px; color: var(--error-red); line-height: 1;">{{ pending_signatures }}</span>
+            </div>
+            <div class="text-danger opacity-90 text-truncate" style="font-size: 10px; font-weight: 500; line-height: 1.1;">
+                Drafts requiring review
+            </div>
+        </div>
+    </div>
+
+    <!-- Stat 4: Total Payment Today -->
+    <div class="col-12 col-sm-6 col-lg-3">
+        <div class="clinical-card position-relative overflow-hidden p-3 d-flex flex-column justify-content-between h-100" style="background-color: #d1fae5; border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.3); min-height: 85px;">
+            <div class="position-absolute" style="top: 0.4rem; right: 0.5rem; opacity: 0.25; color: #047857; pointer-events: none;">
+                <span class="material-symbols-outlined" style="font-size: 36px;">payments</span>
+            </div>
+            <div class="d-flex align-items-center justify-content-between">
+                <span class="clinical-label text-uppercase fw-bold text-truncate" style="font-size: 11px; letter-spacing: 0.03em; color: #065f46;">TOTAL PAYMENT TODAY</span>
+            </div>
+            <div class="d-flex align-items-center my-1">
+                <span id="total-payment-today-val" class="fw-bold font-mono" style="font-size: 20px; line-height: 1; color: #064e3b;">PKR {{ total_payment_today | formatCurrency }}</span>
+            </div>
+            <div class="text-truncate" style="font-size: 10px; font-weight: 600; line-height: 1.1; color: #047857;">
+                Total collected today
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-3">
+    <!-- Main Data Area (Full width on desktop) -->
+    <div class="col-12 d-flex flex-column gap-3">
+        <!-- Recent Patients Table -->
+        <div class="clinical-card p-0 overflow-hidden bg-white" style="border-radius: 12px;">
+            <div class="card-header-clinical px-3 pt-3 pb-2 m-0 bg-light d-flex align-items-center justify-content-between" style="border-bottom: 1px solid var(--outline-variant);">
+                <h3 class="h6 mb-0 fw-bold text-slate-900 font-headline-md" style="font-size: 15px;">Recent Patient Reports</h3>
+                <a href="{{ url_for('main.patients') }}" class="btn btn-sm btn-action-btn btn-action-edit">View All</a>
+            </div>
+            <div class="table-responsive w-100 overflow-x-auto">
+                <table class="table table-hover align-middle mb-0 text-left w-100">
+                    <thead>
+                        <tr style="background-color: #F8FAFC; border-bottom: 1px solid var(--outline-variant);">
+                            <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em;">PATIENT NAME</th>
+                            <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em;">DATE ENTERED</th>
+                            <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em;">EXAM TYPE</th>
+                            <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em;">STATUS</th>
+                            <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em;">PAYMENT</th>
+                            <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700 text-end" style="font-size: 11px; background-color: #F8FAFC; letter-spacing: 0.05em;">ACTIONS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if recent_reports %}
+                            {% for report in recent_reports %}
+                                <tr style="border-bottom: 1px solid var(--outline-variant); cursor: pointer;" onclick="window.location='{{ url_for('main.patient_detail', id=report.patient.id) }}'">
+                                    <td class="px-3 py-2.5 text-nowrap">
+                                        <div class="fw-semibold text-slate-900" style="font-size: 14px;">{{ report.patient.full_name }}</div>
+                                        <div class="font-mono text-secondary" style="font-size: 11px;">ID: {{ report.patient.patient_code }}</div>
+                                    </td>
+                                    <td class="px-3 py-2.5 text-secondary text-nowrap" style="font-size: 12px;">
+                                        {{ report.created_at | strftime('%Y-%m-%d %H:%M') }}
+                                    </td>
+                                    <td class="px-3 py-2.5 text-slate-800 fw-medium text-nowrap" style="font-size: 12px;">
+                                        {{ report.exam_type }}
+                                    </td>
+                                    <td class="px-3 py-2.5 text-nowrap">
+                                        {% if report.status == 'Finalized' or report.status == 'Completed' %}
+                                            <span class="status-badge status-badge-finalized">
+                                                <span class="rounded-circle bg-secondary d-inline-block" style="width: 5px; height: 5px;"></span>
+                                                Finalized
+                                            </span>
+                                        {% elif report.status == 'Critical' %}
+                                            <span class="status-badge status-badge-critical">
+                                                <span class="rounded-circle bg-danger d-inline-block" style="width: 5px; height: 5px;"></span>
+                                                Critical
+                                            </span>
+                                        {% else %}
+                                            <span class="status-badge status-badge-draft">
+                                                <span class="rounded-circle bg-warning d-inline-block" style="width: 5px; height: 5px;"></span>
+                                                Pending
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-3 py-2.5 text-nowrap" onclick="event.stopPropagation()">
+                                        <div class="fw-bold font-mono text-slate-900 mb-0.5" style="font-size: 12px;">PKR {{ (report.payment_amount or report.report_fee or 0) | formatCurrency }}</div>
+                                        {% if report.payment_status == 'Paid' %}
+                                            <span class="badge bg-success-subtle text-success fw-semibold px-2 py-0.5" style="font-size: 10px; cursor: pointer;" onclick="openPaymentModal('{{ report.id }}', '{{ report.patient.full_name | replace("'", "\\'") }}', '{{ report.patient.patient_code }}', '{{ report.exam_type | replace("'", "\\'") }}', '{{ report.payment_amount or report.report_fee or '' }}', 'Paid')" title="Click to update payment">🟢 Paid</span>
+                                        {% else %}
+                                            <span class="badge bg-danger-subtle text-danger fw-semibold px-2 py-0.5" style="font-size: 10px; cursor: pointer;" onclick="openPaymentModal('{{ report.id }}', '{{ report.patient.full_name | replace("'", "\\'") }}', '{{ report.patient.patient_code }}', '{{ report.exam_type | replace("'", "\\'") }}', '{{ report.payment_amount or report.report_fee or '' }}', 'Unpaid')" title="Click to update payment">🔴 Unpaid</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-3 py-2.5 text-end text-nowrap" onclick="event.stopPropagation()">
+                                        <div class="table-action-group justify-content-end">
+                                            <a href="{{ url_for('main.report_edit', id=report.id) }}" class="btn btn-sm btn-action-btn btn-action-edit" title="Edit Report">
+                                                <span class="material-symbols-outlined action-icon">edit</span>
+                                                <span>Edit</span>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="px-3 py-4 text-center text-secondary" style="font-size: 13px;">
+                                    No recent reports recorded in system database.
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+async function refreshDashboardStats() {
+    try {
+        const res = await fetch('/api/dashboard/stats', {
+            headers: { 'Accept': 'application/json' }
+        });
+        if (res.ok) {
+            const contentType = res.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const data = await res.json();
+                if (data && data.success) {
+                    const el = document.getElementById('total-payment-today-val');
+                    if (el) {
+                        const formatted = data.total_payment_today_formatted || (`PKR ` + Number(data.total_payment_today || 0).toLocaleString('en-US'));
+                        el.textContent = formatted;
+                    }
+                }
+            }
+        }
+    } catch (err) {
+        // Silently catch fetch or session error without throwing console error
+        console.warn('Dashboard stats refresh skipped or unavailable:', err);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', refreshDashboardStats);
+window.addEventListener('pageshow', refreshDashboardStats);
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+        refreshDashboardStats();
+    }
+});
+</script>
+{% endblock %}

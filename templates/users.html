@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Users - MJ Ultrasound Reporting System{% endblock %}
+
+{% block content %}
+<div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">
+    <div>
+        <h1 class="font-display fw-bold mb-1 text-slate-900" style="font-size: 24px;">User Management</h1>
+        <p class="text-secondary mb-0" style="font-size: 13px;">Manage system users, assign roles, and control access permissions.</p>
+    </div>
+    <a href="{{ url_for('main.user_add') }}" class="btn btn-primary d-inline-flex align-items-center gap-1.5 px-3 py-2" style="font-size: 13px; border-radius: 6px; background-color: #022e67; border-color: #022e67;">
+        <span class="material-symbols-outlined fs-6">person_add</span>
+        Add New User
+    </a>
+</div>
+
+<div class="clinical-card p-0 overflow-hidden bg-white" style="border-radius: 12px;">
+    <div class="card-header-clinical px-3 pt-3 pb-2 m-0 bg-light d-flex align-items-center justify-content-between" style="border-bottom: 1px solid var(--outline-variant);">
+        <h3 class="h6 mb-0 fw-bold text-slate-900 font-headline-md" style="font-size: 15px;">System Users List</h3>
+        <span class="badge bg-indigo-100 text-indigo-700 font-mono px-2 py-1" style="font-size: 11px;">{{ users | length }} Total Users</span>
+    </div>
+    <div class="table-responsive w-100 overflow-x-auto">
+        <table class="table table-hover align-middle mb-0 text-left w-100">
+            <thead>
+                <tr style="background-color: #F8FAFC; border-bottom: 1px solid var(--outline-variant);">
+                    <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; letter-spacing: 0.05em;">USER</th>
+                    <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; letter-spacing: 0.05em;">USERNAME</th>
+                    <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; letter-spacing: 0.05em;">ROLE</th>
+                    <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700" style="font-size: 11px; letter-spacing: 0.05em;">STATUS</th>
+                    <th class="px-3 py-2.5 text-nowrap fw-bold text-slate-700 text-end" style="font-size: 11px; letter-spacing: 0.05em;">ACTIONS</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if users %}
+                    {% for user in users %}
+                        <tr style="border-bottom: 1px solid var(--outline-variant);">
+                            <td class="px-3 py-2.5 text-nowrap">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rounded-circle bg-indigo-100 text-indigo-700 d-flex align-items-center justify-content-center border flex-shrink-0" style="width: 32px; height: 32px; font-weight: 700; font-size: 11px;">
+                                        {{ user.initials }}
+                                    </div>
+                                    <div>
+                                        <div class="fw-semibold text-slate-900" style="font-size: 14px;">{{ user.full_name }}</div>
+                                        {% if user.id == current_user.id %}
+                                            <span class="text-indigo-600 fw-medium" style="font-size: 10px;">(You)</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-3 py-2.5 font-mono text-slate-800 text-nowrap" style="font-size: 13px;">
+                                {{ user.username }}
+                            </td>
+                            <td class="px-3 py-2.5 text-nowrap">
+                                {% if user.role == 'Admin' %}
+                                    <span class="badge bg-indigo-600 text-white px-2 py-1 fw-bold" style="font-size: 11px; border-radius: 4px;">
+                                        Admin
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-secondary text-white px-2 py-1 fw-medium" style="font-size: 11px; border-radius: 4px;">
+                                        User
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-3 py-2.5 text-nowrap">
+                                {% if user.is_active %}
+                                    <span class="status-badge status-badge-finalized" style="background-color: #d1fae5; color: #065f46;">
+                                        <span class="rounded-circle bg-success d-inline-block" style="width: 6px; height: 6px;"></span>
+                                        Active
+                                    </span>
+                                {% else %}
+                                    <span class="status-badge status-badge-critical">
+                                        <span class="rounded-circle bg-danger d-inline-block" style="width: 6px; height: 6px;"></span>
+                                        Deactivated
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-3 py-2.5 text-end text-nowrap">
+                                <div class="d-inline-flex gap-2">
+                                    <a href="{{ url_for('main.user_edit', id=user.id) }}" class="btn btn-secondary-clinical py-1 px-2.5 d-inline-flex align-items-center gap-1" style="font-size: 11px; border-radius: 4px;">
+                                        <span class="material-symbols-outlined fs-6" style="font-size: 14px;">edit</span>
+                                        Edit
+                                    </a>
+                                    {% if user.id != current_user.id %}
+                                        <form action="{{ url_for('main.user_toggle_status', id=user.id) }}" method="POST" class="d-inline">
+                                            {% if user.is_active %}
+                                                <button type="submit" class="btn btn-outline-danger py-1 px-2 d-inline-flex align-items-center gap-1" style="font-size: 11px; border-radius: 4px; border-color: #fca5a5; color: #dc2626;" onclick="return confirm('Are you sure you want to deactivate {{ user.username }}?')">
+                                                    <span class="material-symbols-outlined fs-6" style="font-size: 14px;">block</span>
+                                                    Deactivate
+                                                </button>
+                                            {% else %}
+                                                <button type="submit" class="btn btn-outline-success py-1 px-2 d-inline-flex align-items-center gap-1" style="font-size: 11px; border-radius: 4px; border-color: #86efac; color: #166534;" onclick="return confirm('Activate {{ user.username }}?')">
+                                                    <span class="material-symbols-outlined fs-6" style="font-size: 14px;">check_circle</span>
+                                                    Activate
+                                                </button>
+                                            {% endif %}
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="px-3 py-4 text-center text-secondary" style="font-size: 13px;">
+                            No users found.
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

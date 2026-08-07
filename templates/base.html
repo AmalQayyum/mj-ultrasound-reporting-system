@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>{% block title %} MJ Ultrasound Reporting System {% endblock %}</title>
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+    <!-- Material Symbols -->
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #123B7A;
+            --primary-dark: #0a2552;
+            --primary-light: #dbeafe;
+            --secondary: #475569;
+            --secondary-bg: #f8fafc;
+            --surface-low: #ffffff;
+            --surface-bright: #f8fafc;
+            --error-red: #dc2626;
+            --error-container: #fee2e2;
+            --success-green: #10b981;
+            --success-container: #d1fae5;
+            --warning-amber: #f59e0b;
+            --outline-variant: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            background-color: var(--surface-bright);
+            color: #1e293b;
+        }
+
+        /* Hide Select Patient for Report button via CSS */
+        a[title="Select a patient to create a new report"] {
+            display: none !important;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace !important;
+        }
+
+        /* Split-Pane Layout */
+        .app-container {
+            display: grid;
+            grid-template-columns: 240px 1fr; /* High density side nav width */
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            background-color: #b3b9bb !important;
+            border-right: 1px solid #1e3a8a;
+            display: flex;
+            flex-direction: column;
+            padding: 1.25rem 0.75rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .main-workspace {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Navigation styling */
+        .brand-header {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #0f172a;
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-section {
+            margin-top: 1rem;
+            flex: 1;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #334155;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 0 0.75rem;
+            margin-bottom: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.55rem 0.75rem;
+            border-radius: 6px;
+            color: #000000 !important;
+            background-color: transparent;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-item .material-symbols-outlined {
+            font-size: 1.25rem;
+            color: #000000 !important;
+            transition: color 0.3s ease;
+        }
+
+        .nav-item:hover {
+            background-color: #1E293B !important;
+            color: #FFFFFF !important;
+        }
+
+        .nav-item:hover .material-symbols-outlined {
+            color: #FFFFFF !important;
+        }
+
+        .nav-item.active {
+            background-color: #1E293B !important;
+            color: #FFFFFF !important;
+            font-weight: 600;
+            border-radius: 6px;
+        }
+
+        .nav-item.active .material-symbols-outlined {
+            color: #FFFFFF !important;
+        }
+
+        /* Top navbar */
+        .top-navbar {
+            height: 4rem;
+            background-color: #ffffff;
+            border-bottom: 1px solid var(--outline-variant);
+            padding: 0 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        /* Hide top navigation CREATE NEW REPORT button via CSS only */
+        .top-navbar a[href="/report/new"],
+        .top-create-report-btn {
+            display: none !important;
+        }
+
+        /* ==========================================================================
+           Unified Button & Action Design System
+           ========================================================================== */
+
+        /* Primary Button */
+        .btn-primary, 
+        .btn-action-primary,
+        .btn-detail-action.btn-primary {
+            background-color: #123B7A !important;
+            border-color: #123B7A !important;
+            color: #ffffff !important;
+            border-radius: 8px !important;
+            min-height: 40px !important;
+            padding: 0.5rem 1.25rem !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 0.5rem !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+            transition: all 0.2s ease-in-out !important;
+            text-decoration: none !important;
+        }
+
+        .btn-primary:hover, 
+        .btn-primary:focus, 
+        .btn-action-primary:hover,
+        .btn-action-primary:focus {
+            background-color: #0a2552 !important;
+            border-color: #0a2552 !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        /* Secondary Button */
+        .btn-secondary,
+        .btn-outline-primary,
+        .btn-outline-secondary,
+        .btn-secondary-clinical,
+        .btn-action-secondary,
+        .btn-detail-action.btn-outline-secondary {
+            background-color: #ffffff !important;
+            border: 1px solid #123B7A !important;
+            color: #123B7A !important;
+            border-radius: 8px !important;
+            min-height: 40px !important;
+            padding: 0.5rem 1.25rem !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 0.5rem !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+            transition: all 0.2s ease-in-out !important;
+            text-decoration: none !important;
+        }
+
+        .btn-secondary:hover, 
+        .btn-secondary:focus, 
+        .btn-outline-primary:hover, 
+        .btn-outline-secondary:hover,
+        .btn-secondary-clinical:hover,
+        .btn-action-secondary:hover {
+            background-color: #f0f4f9 !important;
+            border-color: #123B7A !important;
+            color: #0a2552 !important;
+        }
+
+        /* Danger Button */
+        .btn-danger,
+        .btn-danger-clinical,
+        .btn-detail-action.btn-danger {
+            background-color: #dc2626 !important;
+            border: 1px solid #dc2626 !important;
+            color: #ffffff !important;
+            border-radius: 8px !important;
+            min-height: 40px !important;
+            padding: 0.5rem 1.25rem !important;
+            font-size: 14px !important;
+            font-weight: 600 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 0.5rem !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+            transition: all 0.2s ease-in-out !important;
+            text-decoration: none !important;
+        }
+
+        .btn-danger:hover, 
+        .btn-danger:focus, 
+        .btn-danger-clinical:hover {
+            background-color: #b91c1c !important;
+            border-color: #b91c1c !important;
+            color: #ffffff !important;
+        }
+
+        /* Small Action Buttons (Tables & Action Bars) */
+        .table-action-group, .action-btn-group {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 6px !important;
+        }
+
+        .btn-action-btn, .btn-action-sm {
+            height: 32px !important;
+            min-height: 32px !important;
+            padding: 4px 10px !important;
+            border-radius: 6px !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 4px !important;
+            text-decoration: none !important;
+            transition: all 0.15s ease-in-out !important;
+            white-space: nowrap !important;
+            line-height: 1 !important;
+        }
+
+        .btn-action-btn .material-symbols-outlined,
+        .btn-action-sm .material-symbols-outlined,
+        .action-icon {
+            font-size: 16px !important;
+            line-height: 1 !important;
+            vertical-align: middle !important;
+        }
+
+        .btn-action-view,
+        .btn-action-edit {
+            background-color: #ffffff !important;
+            border: 1px solid #123B7A !important;
+            color: #123B7A !important;
+        }
+
+        .btn-action-view:hover,
+        .btn-action-edit:hover {
+            background-color: #f0f4f9 !important;
+            color: #0a2552 !important;
+        }
+
+        .btn-action-report {
+            background-color: #123B7A !important;
+            border: 1px solid #123B7A !important;
+            color: #ffffff !important;
+        }
+
+        .btn-action-report:hover {
+            background-color: #0a2552 !important;
+            border-color: #0a2552 !important;
+            color: #ffffff !important;
+        }
+
+        .btn-action-delete {
+            background-color: #ffffff !important;
+            border: 1px solid #dc2626 !important;
+            color: #dc2626 !important;
+        }
+
+        .btn-action-delete:hover {
+            background-color: #dc2626 !important;
+            color: #ffffff !important;
+        }
+
+        .btn-action-print {
+            background-color: #ffffff !important;
+            border: 1px solid #475569 !important;
+            color: #334155 !important;
+        }
+
+        .btn-action-print:hover {
+            background-color: #f8fafc !important;
+            color: #0f172a !important;
+        }
+
+        a.btn-link, button.btn-link {
+            text-decoration: none !important;
+        }
+
+        /* Standard Cards */
+        .clinical-card, .card {
+            border-radius: 12px !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03) !important;
+        }
+
+        /* Standard Tables */
+        .table {
+            margin-bottom: 0 !important;
+        }
+
+        .table thead th {
+            background-color: #f1f5f9 !important;
+            color: #334155 !important;
+            font-weight: 700 !important;
+            font-size: 11px !important;
+            letter-spacing: 0.05em !important;
+            text-transform: uppercase !important;
+            padding: 0.75rem 1rem !important;
+            border-bottom: 1px solid #e2e8f0 !important;
+        }
+
+        .table tbody tr {
+            transition: background-color 0.15s ease-in-out !important;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f8fafc !important;
+        }
+
+        .table tbody td {
+            padding: 0.75rem 1rem !important;
+            vertical-align: middle !important;
+            border-bottom: 1px solid #f1f5f9 !important;
+        }
+
+        /* Form Controls */
+        .form-control-clinical, .form-select-clinical {
+            border: 1px solid var(--outline-variant);
+            border-radius: 8px !important;
+            padding: 0.45rem 0.75rem;
+            font-size: 0.875rem;
+            height: 42px;
+            line-height: 1.5;
+            background-color: #ffffff;
+            width: 100%;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .form-control-clinical:focus, .form-select-clinical:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(18, 59, 122, 0.15);
+            background-color: #ffffff;
+        }
+
+        .clinical-label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #475569;
+        }
+
+        /* Status badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.125rem 0.5rem;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-badge-finalized {
+            background-color: var(--outline-variant);
+            color: #475569;
+        }
+
+        .status-badge-critical {
+            background-color: var(--error-container);
+            color: var(--error-red);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+        }
+
+        .status-badge-draft {
+            background-color: var(--secondary-bg);
+            color: #475569;
+        }
+
+        /* Custom Cards */
+        .clinical-card {
+            background-color: #ffffff;
+            border: 1px solid var(--outline-variant);
+            border-radius: 8px;
+            padding: 1.25rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+        }
+
+        .card-header-clinical {
+            border-bottom: 1px solid var(--outline-variant);
+            padding-bottom: 0.75rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Responsive Sidebar Drawer for Mobile & Tablet (< 992px) */
+        @media (max-width: 991.98px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                width: 260px;
+                height: 100vh;
+                z-index: 1050;
+                transform: translateX(-100%);
+                transition: transform 0.25s ease-in-out;
+                box-shadow: 4px 0 16px rgba(0, 0, 0, 0.3);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .sidebar-backdrop {
+                position: fixed;
+                inset: 0;
+                background-color: rgba(15, 23, 42, 0.6);
+                backdrop-filter: blur(2px);
+                z-index: 1040;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.25s ease-in-out;
+            }
+
+            .sidebar-backdrop.show {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .top-navbar {
+                padding: 0 1rem;
+            }
+        }
+
+        /* Color Utility Helper Classes */
+        .bg-indigo-600 { background-color: #4f46e5 !important; }
+        .bg-indigo-500 { background-color: #6366f1 !important; }
+        .bg-indigo-100 { background-color: #e0e7ff !important; }
+        .text-indigo-700 { color: #4338ca !important; }
+        .text-indigo-600 { color: #4f46e5 !important; }
+        .text-indigo-500 { color: #6366f1 !important; }
+        .text-slate-900 { color: #0f172a !important; }
+        .text-slate-800 { color: #1e293b !important; }
+        .text-slate-700 { color: #334155 !important; }
+        .text-slate-600 { color: #475569 !important; }
+        .text-slate-500 { color: #64748b !important; }
+        .text-slate-400 { color: #94a3b8 !important; }
+        .text-slate-200 { color: #e2e8f0 !important; }
+        .text-emerald-600 { color: #059669 !important; }
+
+        /* Chart Bar Hover Effect */
+        .chart-bar-item {
+            transition: all 0.25s ease-in-out;
+            cursor: pointer;
+        }
+        .chart-bar-item:hover {
+            transform: scaleY(1.05);
+            filter: brightness(1.1);
+        }
+
+        /* ==========================================================================
+           CSS Visual Hiding Rules (UI Customizations)
+           ========================================================================== */
+
+        /* 1. Notification (Bell) icon in top navbar */
+        .top-navbar button[title="Notifications"],
+        .top-navbar button[onclick*="notifications"],
+        button[title="Notifications"],
+        button[onclick*="No new notifications"] {
+            display: none !important;
+        }
+
+        /* 2. "Patient Portal" label/text */
+        header span.badge[style*="#8db1e1"],
+        header .badge.font-mono,
+        .patient-portal-badge {
+            display: none !important;
+        }
+
+        /* 3. Filter button */
+        button[onclick*="Filtered by latest entry"],
+        button[onclick*="resetPatientFilters"],
+        button[title*="Filter"],
+        button[title*="filter"],
+        .btn-filter,
+        #btn_filter {
+            display: none !important;
+        }
+
+        /* 4. Download button */
+        button[onclick*="Exporting clinical ultrasound logs"],
+        button[onclick*="downloadPDF"],
+        #btn_pdf_action,
+        a[title="Download PDF"],
+        a[title="Download"],
+        a[href*="autopdf=true"],
+        button[title="Download"] {
+            display: none !important;
+        }
+
+        /* 5. Support button from sidebar */
+        aside a[onclick*="Support"],
+        aside a[onclick*="MJ-ULTRASOUND"],
+        .sidebar a[onclick*="Support"],
+        a[onclick*="1-800-MJ-ULTRASOUND"] {
+            display: none !important;
+        }
+
+        /* 6. "View Full Archive" button/link & empty container spacing */
+        button[onclick*="Viewing comprehensive patient clinical folder history"],
+        button[onclick*="View Full Archives"],
+        button[onclick*="View Full Archive"],
+        a[onclick*="View Full Archive"] {
+            display: none !important;
+        }
+
+        /* Clean up layout gap if card footer only contained the archived button */
+        .clinical-card > .border-top.bg-light.text-center:has(> button[onclick*="Viewing comprehensive patient"]) {
+            display: none !important;
+        }
+
+        /* 7. Line/text above Google reCAPTCHA */
+        .recaptcha-container > *:not(.g-recaptcha):not(script):not(iframe),
+        .recaptcha-title,
+        .recaptcha-header,
+        .recaptcha-label,
+        .recaptcha-text,
+        .protected-by-recaptcha {
+            display: none !important;
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="h-full">
+
+    <!-- Mobile Navigation Backdrop Overlay -->
+    <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
+
+    <div class="app-container">
+        <!-- Side Navigation (Split-Pane Sidebar) -->
+        <aside class="sidebar d-flex flex-column">
+            <!-- Hub Branding (High Density Dark Header) -->
+            <div class="d-flex align-items-center justify-content-between mb-4 px-2 py-1" style="background-color: #82889a; margin: -1.25rem -0.75rem 1.5rem -0.75rem; padding: 1.25rem 1rem; border-bottom: 1px solid #1e3a8a;">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded d-flex align-items-center justify-center text-white flex-shrink-0" style="width: 36px; height: 36px; background-color: #022e67;">
+                        <span class="material-symbols-outlined fs-4" style="padding-left: 5px;">local_hospital</span>
+                    </div>
+                    <div>
+                        <h2 class="h6 mb-0 font-headline-md fw-bold text-white leading-tight" style="font-size: 14px; text-align: center;">MJ Ultrasound Reporting System</h2>
+                    </div>
+                </div>
+                <!-- Close Button on Mobile Drawer -->
+                <button id="sidebarClose" class="btn btn-link text-slate-400 p-0 d-lg-none" style="text-decoration: none;" aria-label="Close sidebar">
+                    <span class="material-symbols-outlined fs-5 text-slate-400">close</span>
+                </button>
+            </div>
+
+            <!-- Navigation Lists -->
+            <nav class="nav-section d-flex flex-column gap-1" style="margin-top: 0.5rem;">
+                <a href="{{ url_for('main.dashboard') }}" class="nav-item {% if request.endpoint == 'main.dashboard' %}active{% endif %}">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    Dashboard
+                </a>
+                <a href="{{ url_for('main.patients') }}" class="nav-item {% if request.endpoint == 'main.patients' or request.endpoint == 'main.patient_detail' %}active{% endif %}">
+                    <span class="material-symbols-outlined">person_search</span>
+                    Search Patient
+                </a>
+                {% if current_user.role == 'Admin' %}
+                <a href="/payments" class="nav-item {% if request.path == '/payments' or request.endpoint == 'main.payments' %}active{% endif %}">
+                    <span class="material-symbols-outlined">payments</span>
+                    Payments
+                </a>
+                <a href="/settings/users" class="nav-item {% if request.endpoint == 'main.manage_users' or request.endpoint == 'main.user_add' or request.endpoint == 'main.user_edit' %}active{% endif %}">
+                    <span class="material-symbols-outlined">manage_accounts</span>
+                    User Management
+                </a>
+                {% endif %}
+            </nav>
+
+            <!-- Footer Support / Logout -->
+            <div class="mt-auto pt-3 border-top d-flex flex-column gap-1" style="border-color: #cbd5e1 !important;">
+                <a href="/change-password" class="nav-item px-2 py-1">
+                    <span class="material-symbols-outlined">key</span>
+                    Change Password
+                </a>
+                <a href="#" class="nav-item px-2 py-1" onclick="alert('Clinic Support Hot Line: 1-800-MJ-ULTRASOUND')">
+                    <span class="material-symbols-outlined">contact_support</span>
+                    Support
+                </a>
+                <a href="{{ url_for('auth.logout') }}" class="nav-item px-2 py-1">
+                    <span class="material-symbols-outlined">logout</span>
+                    Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content Pane -->
+        <div class="main-workspace">
+            <!-- Top Navigation Bar -->
+            <header class="top-navbar px-3 px-md-4 py-2 flex-wrap flex-sm-nowrap">
+                <div class="d-flex align-items-center gap-2 gap-md-3">
+                    <!-- Hamburger Menu Button for Mobile/Tablet -->
+                    <button id="sidebarToggle" class="btn btn-link text-slate-800 p-1 d-lg-none text-decoration-none d-flex align-items-center justify-content-center" style="color: #0f172a;" aria-label="Toggle navigation menu">
+                        <span class="material-symbols-outlined fs-3">menu</span>
+                    </button>
+
+                    <nav class="d-flex align-items-center gap-3 gap-md-4 h-100">
+                        <a href="{{ url_for('main.dashboard') }}" class="text-decoration-none {% if request.endpoint == 'main.dashboard' %}text-primary fw-bold border-bottom border-primary pb-2{% else %}text-secondary{% endif %}" style="font-size: 14px;">Dashboard</a>
+                        <a href="{{ url_for('main.patients') }}" class="text-decoration-none {% if request.endpoint == 'main.patients' or request.endpoint == 'main.patient_detail' %}text-primary fw-bold border-bottom border-primary pb-2{% else %}text-secondary{% endif %}" style="font-size: 14px;">Patients</a>
+                        {% if current_user.role == 'Admin' %}
+                        <a href="/settings/users" class="text-decoration-none {% if request.endpoint == 'main.manage_users' %}text-primary fw-bold border-bottom border-primary pb-2{% else %}text-secondary{% endif %}" style="font-size: 14px;">User Management</a>
+                        {% endif %}
+                    </nav>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 gap-sm-3 ms-auto">
+                    <!-- Create Report Button (hidden on Dashboard and Patients) -->
+                    {% if current_user.role in ['Admin', 'Doctor', 'Radiologist', 'Technician'] and request.endpoint != 'main.dashboard' and request.endpoint != 'main.patients' %}
+                    <a href="/patients" class="btn btn-primary d-flex align-items-center justify-content-center gap-1.5 py-2 px-3 text-nowrap flex-shrink-0" style="font-size: 12px; font-weight: 600; background-color: #022e67; border-color: #022e67; white-space: nowrap; height: 38px;" title="Select a patient to create a new report">
+                        <span class="material-symbols-outlined fs-6">person_search</span>
+                        <span>Select Patient for Report</span>
+                    </a>
+                    {% endif %}
+
+                    <!-- Profile Avatar -->
+                    <div class="d-flex align-items-center border-start ps-2 ps-sm-3 gap-2">
+                        <button class="btn btn-link text-secondary p-1 d-none d-sm-inline-flex" onclick="alert('No new notifications.')" title="Notifications">
+                            <span class="material-symbols-outlined">notifications</span>
+                        </button>
+                        <div class="dropdown">
+                            <button class="btn p-0 border-0 d-flex align-items-center gap-1.5" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="rounded-circle bg-indigo-100 text-indigo-700 d-flex align-items-center justify-content-center border flex-shrink-0" style="width: 32px; height: 32px; font-weight: 700; font-size: 12px;">
+                                    {{ current_user.initials or 'U' }}
+                                </div>
+                                <span class="d-none d-md-inline small font-semibold text-slate-700 me-1">
+                                    Welcome, {{ current_user.full_name or 'User' }} ({{ current_user.role or 'Staff' }})
+                                </span>
+                                <span class="material-symbols-outlined fs-6 text-slate-400">expand_more</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm" style="font-size: 13px;">
+                                <li>
+                                    <div class="dropdown-header">
+                                        Signed in as <strong class="text-dark">{{ current_user.full_name or 'User' }}</strong>
+                                        {% if current_user.role %}
+                                            <div class="badge bg-indigo-100 text-indigo-700 font-mono mt-1" style="font-size: 10px;">{{ current_user.role }}</div>
+                                        {% endif %}
+                                    </div>
+                                </li>
+                                {% if current_user.role == 'Admin' %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" href="/settings/users">
+                                        <span class="material-symbols-outlined fs-6">manage_accounts</span> Settings → User Management
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" href="/settings/audit-logs">
+                                        <span class="material-symbols-outlined fs-6">history</span> Audit Logs
+                                    </a>
+                                </li>
+                                {% endif %}
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item d-flex align-items-center gap-2" href="/change-password">
+                                        <span class="material-symbols-outlined fs-6">key</span> Change Password
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item text-danger d-flex align-items-center gap-2" href="{{ url_for('auth.logout') }}">
+                                        <span class="material-symbols-outlined fs-6">logout</span> Sign Out
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Container with Flash Alerts -->
+            <main class="flex-grow-1 p-3 p-md-5">
+                <!-- Flash Alerts -->
+                {% set messages = get_flashed_messages({ with_categories: true }) %}
+                {% if messages and messages.length %}
+                    <div class="mb-4">
+                        {% for item in messages %}
+                            {% set category = item[0] %}
+                            {% set message = item[1] %}
+                            <div class="alert alert-{% if category == 'error' or category == 'danger' %}danger{% else %}{{ category }}{% endif %} alert-dismissible fade show shadow-sm" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% block content %}{% endblock %}
+            </main>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS CDN with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const closeBtn = document.getElementById('sidebarClose');
+            const sidebar = document.querySelector('.sidebar');
+            const backdrop = document.getElementById('sidebarBackdrop');
+
+            function openSidebar() {
+                if (sidebar) sidebar.classList.add('show');
+                if (backdrop) backdrop.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeSidebar() {
+                if (sidebar) sidebar.classList.remove('show');
+                if (backdrop) backdrop.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+
+            if (toggleBtn) toggleBtn.addEventListener('click', openSidebar);
+            if (closeBtn) closeBtn.addEventListener('click', closeSidebar);
+            if (backdrop) backdrop.addEventListener('click', closeSidebar);
+
+            // Close sidebar on menu item click on mobile
+            const navLinks = sidebar ? sidebar.querySelectorAll('a.nav-item') : [];
+            navLinks.forEach(function(link) {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 992) {
+                        closeSidebar();
+                    }
+                });
+            });
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+
+    <!-- Global Payment Status Modal -->
+    <div class="modal fade" id="globalPaymentModal" tabindex="-1" aria-labelledby="globalPaymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-primary text-white py-2.5 px-3">
+                    <h5 class="modal-title fw-bold" id="globalPaymentModalLabel" style="font-size: 16px;">Payment Status</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <input type="hidden" id="modal_payment_report_id">
+                    <div class="mb-3 p-3 bg-light rounded border">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-secondary" style="font-size: 13px;">Patient Name:</span>
+                            <strong id="modal_payment_patient_name" class="text-slate-900" style="font-size: 13px;">-</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-secondary" style="font-size: 13px;">MR No:</span>
+                            <strong id="modal_payment_mr_no" class="font-mono text-slate-900" style="font-size: 13px;">-</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="text-secondary" style="font-size: 13px;">Report Number:</span>
+                            <strong id="modal_payment_report_no" class="font-mono text-slate-900" style="font-size: 13px;">-</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-secondary" style="font-size: 13px;">Exam Type:</span>
+                            <strong id="modal_payment_exam_type" class="text-indigo-600" style="font-size: 13px;">-</strong>
+                        </div>
+                    </div>
+
+                    <!-- Payment Amount (PKR) - Required Field above Payment Status -->
+                    <div class="mb-3">
+                        <label for="modal_payment_amount" class="form-label fw-bold text-slate-700 mb-1" style="font-size: 13px;">
+                            Payment Amount (PKR) <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light text-slate-600 font-mono fw-bold" style="font-size: 13px;">PKR</span>
+                            <input type="number" step="any" min="0" class="form-control font-mono fw-semibold" id="modal_payment_amount" placeholder="e.g. 2500" style="font-size: 14px;">
+                        </div>
+                        <div id="modal_payment_amount_error" class="text-danger mt-1 fw-medium d-none" style="font-size: 12px;"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-slate-700 mb-1" style="font-size: 13px;">Payment Status</label>
+                        <div class="d-flex flex-column gap-2 p-3 border rounded bg-white">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="modal_payment_status_radio" id="payment_status_unpaid" value="Unpaid" checked>
+                                <label class="form-check-label text-danger fw-semibold" for="payment_status_unpaid" style="font-size: 14px;">
+                                    ○ Unpaid (Payment Pending)
+                                </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="modal_payment_status_radio" id="payment_status_paid" value="Paid">
+                                <label class="form-check-label text-success fw-semibold" for="payment_status_paid" style="font-size: 14px;">
+                                    ○ Paid (Payment Received)
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2 px-3">
+                    <button type="button" class="btn btn-outline-secondary px-3 py-1.5" data-bs-dismiss="modal" style="font-size: 13px;">Cancel</button>
+                    <button type="button" id="btn_save_payment_modal" onclick="saveGlobalPaymentStatus()" class="btn btn-primary px-4 py-1.5 fw-semibold" style="font-size: 13px;">Save Payment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Payment Warning Modal -->
+    <div class="modal fade" id="globalPaymentWarningModal" tabindex="-1" aria-labelledby="globalPaymentWarningModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+                <div class="modal-header bg-danger text-white py-2.5 px-3">
+                    <h5 class="modal-title fw-bold" id="globalPaymentWarningModalLabel" style="font-size: 16px;">Payment Required</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4 text-center">
+                    <div class="mb-3 text-danger">
+                        <span class="material-symbols-outlined" style="font-size: 48px;">payments</span>
+                    </div>
+                    <h6 class="fw-bold text-slate-900 mb-2" style="font-size: 15px;">Payment has not been received</h6>
+                    <p class="text-secondary mb-0" style="font-size: 13px; line-height: 1.5;">
+                        Payment has not been received. Please mark this report as Paid before printing or generating the PDF.
+                    </p>
+                </div>
+                <div class="modal-footer bg-light py-2 px-3 justify-content-center">
+                    <button type="button" class="btn btn-secondary px-4 py-1.5" data-bs-dismiss="modal" style="font-size: 13px;">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    let globalPaymentCallback = null;
+
+    function openPaymentModal(reportId, patientName, mrNo, examType, reportFeeOrAmount, currentStatus, callback) {
+        document.getElementById('modal_payment_report_id').value = reportId;
+        document.getElementById('modal_payment_patient_name').innerText = patientName || 'Walk-In Patient';
+        document.getElementById('modal_payment_mr_no').innerText = mrNo || 'PT-XXXX';
+        document.getElementById('modal_payment_report_no').innerText = '#' + reportId;
+        document.getElementById('modal_payment_exam_type').innerText = examType || 'Ultrasound Study';
+
+        const amountInput = document.getElementById('modal_payment_amount');
+        const errEl = document.getElementById('modal_payment_amount_error');
+        if (errEl) {
+            errEl.innerText = '';
+            errEl.classList.add('d-none');
+        }
+        if (amountInput) {
+            amountInput.classList.remove('is-invalid');
+        }
+
+        // Load saved payment amount if exists
+        let numVal = null;
+        if (reportFeeOrAmount !== undefined && reportFeeOrAmount !== null && reportFeeOrAmount !== '' && reportFeeOrAmount !== 'None' && reportFeeOrAmount !== 'null') {
+            const parsed = parseFloat(String(reportFeeOrAmount).replace(/,/g, ''));
+            if (!isNaN(parsed) && parsed > 0) {
+                numVal = parsed;
+            }
+        }
+
+        if (amountInput) {
+            amountInput.value = (numVal !== null) ? numVal : '';
+        }
+
+        const unpaidRadio = document.getElementById('payment_status_unpaid');
+        const paidRadio = document.getElementById('payment_status_paid');
+        if (currentStatus === 'Paid') {
+            paidRadio.checked = true;
+            unpaidRadio.checked = false;
+        } else {
+            unpaidRadio.checked = true;
+            paidRadio.checked = false;
+        }
+
+        globalPaymentCallback = callback;
+
+        const modalEl = document.getElementById('globalPaymentModal');
+        if (modalEl && typeof bootstrap !== 'undefined') {
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+        }
+    }
+
+    function openPaymentWarningModal() {
+        const modalEl = document.getElementById('globalPaymentWarningModal');
+        if (modalEl && typeof bootstrap !== 'undefined') {
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+        }
+    }
+
+    async function saveGlobalPaymentStatus() {
+        const reportId = document.getElementById('modal_payment_report_id').value;
+        const isPaid = document.getElementById('payment_status_paid').checked;
+        const paymentStatus = isPaid ? 'Paid' : 'Unpaid';
+
+        const amountInput = document.getElementById('modal_payment_amount');
+        const errEl = document.getElementById('modal_payment_amount_error');
+        const rawAmt = amountInput ? amountInput.value.trim() : '';
+
+        if (errEl) {
+            errEl.innerText = '';
+            errEl.classList.add('d-none');
+        }
+        if (amountInput) {
+            amountInput.classList.remove('is-invalid');
+        }
+
+        if (!rawAmt) {
+            if (errEl) {
+                errEl.innerText = isPaid
+                    ? 'Payment amount is required when marking as Paid.'
+                    : 'Payment amount is required.';
+                errEl.classList.remove('d-none');
+            }
+            if (amountInput) amountInput.classList.add('is-invalid');
+            return;
+        }
+
+        const numericAmount = parseFloat(rawAmt);
+        if (isNaN(numericAmount)) {
+            if (errEl) {
+                errEl.innerText = 'Please enter a valid numeric payment amount.';
+                errEl.classList.remove('d-none');
+            }
+            if (amountInput) amountInput.classList.add('is-invalid');
+            return;
+        }
+
+        if (numericAmount < 0) {
+            if (errEl) {
+                errEl.innerText = 'Payment amount cannot be negative.';
+                errEl.classList.remove('d-none');
+            }
+            if (amountInput) amountInput.classList.add('is-invalid');
+            return;
+        }
+
+        if (isPaid && numericAmount <= 0) {
+            if (errEl) {
+                errEl.innerText = 'Payment amount must be greater than 0 for Paid status.';
+                errEl.classList.remove('d-none');
+            }
+            if (amountInput) amountInput.classList.add('is-invalid');
+            return;
+        }
+
+        const saveBtn = document.getElementById('btn_save_payment_modal');
+        if (saveBtn) {
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Saving...`;
+        }
+
+        try {
+            const response = await fetch(`/api/report/${reportId}/payment`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    payment_status: paymentStatus,
+                    payment_amount: numericAmount,
+                    report_fee: numericAmount
+                })
+            });
+            const data = await response.json();
+            if (data.success) {
+                const modalEl = document.getElementById('globalPaymentModal');
+                if (modalEl && typeof bootstrap !== 'undefined') {
+                    const modal = bootstrap.Modal.getInstance(modalEl);
+                    if (modal) modal.hide();
+                }
+                if (typeof showNotification === 'function') {
+                    showNotification(`Payment saved: PKR ${numericAmount.toLocaleString('en-US')} (${paymentStatus})`, 'success');
+                }
+
+                if (typeof refreshDashboardStats === 'function') {
+                    refreshDashboardStats();
+                }
+
+                if (typeof globalPaymentCallback === 'function') {
+                    globalPaymentCallback(paymentStatus, data.report);
+                } else {
+                    window.location.reload();
+                }
+            } else {
+                alert(data.error || 'Failed to update payment status.');
+            }
+        } catch (err) {
+            console.error('Error updating payment:', err);
+            alert('Failed to update payment status.');
+        } finally {
+            if (saveBtn) {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = 'Save Payment';
+            }
+        }
+    }
+    </script>
+</body>
+</html>
