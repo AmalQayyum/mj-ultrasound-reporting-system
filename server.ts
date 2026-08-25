@@ -783,7 +783,7 @@ function calculateTotalPaymentToday(reports: any[], now: Date = new Date()): num
 
 // --- MAIN ROUTES ---
 app.get('/', (req, res) => {
-  res.redirect('/dashboard');
+  res.redirect('/login');
 });
 
 app.get('/dashboard', requireAuth, async (req, res) => {
