@@ -1,4 +1,4 @@
-# Maa Jee Ultrasound Reporting System
+# Maan Jee Ultrasound Reporting System
 
 A professional web-based healthcare application developed to streamline
 patient management and ultrasound reporting workflows in a clinical environment.
@@ -20,7 +20,8 @@ structured reporting, and report generation.
 - Patient search and history
 - Ultrasound study selection
 - Structured organ-wise ultrasound reporting
-- **Dynamic checkbox-based reporting:** Doctors can select predefined clinical findings, and the system automatically generates corresponding standardized report text
+  **Dynamic checkbox-based reporting:**
+-  Doctors can select predefined clinical findings, and the system automatically generates corresponding standardized report text
 - Predefined clinical findings for faster and more consistent reporting
 - Editable ultrasound report templates
 - PDF report generation
@@ -78,13 +79,13 @@ The system supports structured reporting for:
 
 ![Dashboard](screenshots/dashboard.png)
 
-### 3. Patient Profile & Management
-
-![Patient Profile](screenshots/patient-profile.png)
-
-### 4. Patient Registration
+### 3. Patient Registration
 
 ![Patient Registration](screenshots/patient-registration-form.png)
+
+### 4. Patient Profile & Management
+
+![Patient Profile](screenshots/patient-profile.png)
 
 ### 5. Ultrasound Reporting
 
