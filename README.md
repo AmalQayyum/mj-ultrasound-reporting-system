@@ -70,29 +70,36 @@ The system supports structured reporting for:
 
 ## Screenshots
 
-### 1. Login & Authentication
+### 1. Secure Login
 
-![Login](screenshots/login.png)
+![Secure Login](screenshots/login.png)
 
 ### 2. Dashboard
 
 ![Dashboard](screenshots/dashboard.png)
 
-### 3. Patient Management
+### 3. Patient Profile & Management
 
-![Patient Management](screenshots/patient-management.png)
+![Patient Profile](screenshots/patient-profile.png)
 
-### 4. Ultrasound Reporting Form
+### 4. Patient Registration
 
-![Ultrasound Reporting Form](screenshots/ultrasound-form.png)
+![Patient Registration](screenshots/patient-registration-form.png)
 
-### 5. Automatic Report Generation
+### 5. Ultrasound Reporting
 
-![Report Generation](screenshots/report-generation.png)
+![Ultrasound Reporting Form](screenshots/ultrasound-reporting-form.png)
 
-### 6. Final Ultrasound Report
+### 6. Generated PDF Report
 
-![Final Report](screenshots/final-report.png)
+![Generated PDF Report](screenshots/pdf.png)
+
+### 7. Print Preview
+
+![Print Preview](screenshots/print-view.png)
+
+
+
 
 ## Project Structure
 
