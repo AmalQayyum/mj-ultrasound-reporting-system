@@ -15,23 +15,21 @@ structured reporting, and report generation.
 
 - Secure Doctor and Admin authentication
 - Role-based access control
+- Google reCAPTCHA protection for authentication/security
 - Patient registration and management
 - Patient search and history
 - Ultrasound study selection
 - Structured organ-wise ultrasound reporting
-- Checkbox-based auto-generation of ultrasound findings
-- Predefined clinical findings for faster reporting
-- Automatic report text generation based on selected findings
-- Structured organ-wise reporting workflow
+- **Dynamic checkbox-based reporting:** Doctors can select predefined clinical findings, and the system automatically generates corresponding standardized report text
+- Predefined clinical findings for faster and more consistent reporting
+- Editable ultrasound report templates
 - PDF report generation
 - Professional report letterhead
 - Report printing
+- QR code generation and scanning functionality
 - Administrative management
 - Audit tracking
 - Responsive user interface
-- Google reCAPTCHA protection for authentication/security
-- QR code generation and scanning functionality
-- Secure authentication and role-based access
 - Production-ready clinical workflow
 
 ## Ultrasound Modules
