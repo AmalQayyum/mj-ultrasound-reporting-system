@@ -68,6 +68,32 @@ The system supports structured reporting for:
 7. Professional PDF report is generated
 8. Report can be printed for clinical use
 
+## Screenshots
+
+### 1. Login & Authentication
+
+![Login](screenshots/login.png)
+
+### 2. Dashboard
+
+![Dashboard](screenshots/dashboard.png)
+
+### 3. Patient Management
+
+![Patient Management](screenshots/patient-management.png)
+
+### 4. Ultrasound Reporting Form
+
+![Ultrasound Reporting Form](screenshots/ultrasound-form.png)
+
+### 5. Automatic Report Generation
+
+![Report Generation](screenshots/report-generation.png)
+
+### 6. Final Ultrasound Report
+
+![Final Report](screenshots/final-report.png)
+
 ## Project Structure
 
 ```text
