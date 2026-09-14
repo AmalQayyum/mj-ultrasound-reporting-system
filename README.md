@@ -1,20 +1,71 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Maa Jee Ultrasound Reporting System
 
-# Run and deploy your AI Studio app
+A professional web-based healthcare application developed to streamline
+patient management and ultrasound reporting workflows in a clinical environment.
 
-This contains everything you need to run your app locally.
+## Project Status
 
-View your app in AI Studio: https://ai.studio/apps/f14eb391-3c6c-4c6c-aa9d-be980478ea5b
+**Currently deployed and in use at Maa Jee Memorial Clinic.**
 
-## Run Locally
+The system was developed to support real-world clinical workflows,
+including patient management, ultrasound examination selection,
+structured reporting, and report generation.
 
-**Prerequisites:**  Node.js
+## Key Features
 
+- Secure Doctor and Admin authentication
+- Role-based access control
+- Patient registration and management
+- Patient search and history
+- Ultrasound study selection
+- Structured organ-wise ultrasound reporting
+- Editable ultrasound report templates
+- PDF report generation
+- Professional report letterhead
+- Report printing
+- Administrative management
+- Audit tracking
+- Responsive user interface
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## Ultrasound Modules
+
+The system supports structured reporting for:
+
+- Whole Abdomen
+- Upper Abdomen
+- KUB
+- Pelvic Ultrasound
+- Obstetric Ultrasound
+- Obstetric TVS / Early Pregnancy TVS
+
+## Technology Stack
+
+- **Backend:** Python, Flask
+- **Frontend:** HTML5, CSS3, JavaScript, Bootstrap
+- **Database:** SQLite
+- **Architecture:** Flask-based web application
+- **APIs:** REST APIs
+
+## Application Workflow
+
+1. Doctor/Admin logs into the system
+2. Patient information is registered or retrieved
+3. Ultrasound examination is selected
+4. Relevant reporting template is loaded
+5. Doctor enters and edits findings
+6. Report is saved to the database
+7. Professional PDF report is generated
+8. Report can be printed for clinical use
+
+## Project Structure
+
+```text
+mj-ultrasound-reporting-system/
+├── routes/
+├── src/
+├── static/
+├── templates/
+├── app.py
+├── config.py
+├── README.md
+└── requirements.txt
