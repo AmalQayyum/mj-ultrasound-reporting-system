@@ -26,6 +26,10 @@ structured reporting, and report generation.
 - Administrative management
 - Audit tracking
 - Responsive user interface
+- Google reCAPTCHA protection for authentication/security
+- QR code generation and scanning functionality
+- Secure authentication and role-based access
+- Production-ready clinical workflow
 
 ## Ultrasound Modules
 
@@ -45,6 +49,12 @@ The system supports structured reporting for:
 - **Database:** SQLite
 - **Architecture:** Flask-based web application
 - **APIs:** REST APIs
+ ## Security & Integrations
+
+- Google reCAPTCHA
+- QR Code functionality
+- Role-based authentication
+- PostgreSQL database hosted on Neon
 
 ## Application Workflow
 
