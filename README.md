@@ -19,7 +19,10 @@ structured reporting, and report generation.
 - Patient search and history
 - Ultrasound study selection
 - Structured organ-wise ultrasound reporting
-- Editable ultrasound report templates
+- Checkbox-based auto-generation of ultrasound findings
+- Predefined clinical findings for faster reporting
+- Automatic report text generation based on selected findings
+- Structured organ-wise reporting workflow
 - PDF report generation
 - Professional report letterhead
 - Report printing
@@ -46,7 +49,7 @@ The system supports structured reporting for:
 
 - **Backend:** Python, Flask
 - **Frontend:** HTML5, CSS3, JavaScript, Bootstrap
-- **Database:** SQLite
+- **Database:** neon postgresql
 - **Architecture:** Flask-based web application
 - **APIs:** REST APIs
  ## Security & Integrations
