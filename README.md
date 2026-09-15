@@ -5,7 +5,7 @@ patient management and ultrasound reporting workflows in a clinical environment.
 
 ## Project Status
 
-**Currently deployed and in use at Maa Jee Memorial Clinic.**
+**Currently deployed and in use at Maan Jee Memorial Clinic.**
 
 The system was developed to support real-world clinical workflows,
 including patient management, ultrasound examination selection,
