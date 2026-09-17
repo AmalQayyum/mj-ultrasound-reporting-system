@@ -447,8 +447,6 @@ app.post('/login', async (req, res) => {
 
   const isJsonRequest = req.xhr || (req.headers.accept && req.headers.accept.includes('json')) || (req.headers['content-type'] && req.headers['content-type'].includes('json'));
 
-  console.log(`[AUTH-LOG] POST /login received for username: "${username}" (isJson: ${isJsonRequest}, hasRecaptchaToken: ${!!recaptchaResponse})`);
-
   // Verify reCAPTCHA when non-empty secret key is provided
   if (recaptchaSecretKey && recaptchaSecretKey.length > 5 && recaptchaResponse) {
     try {
@@ -457,7 +455,6 @@ app.post('/login', async (req, res) => {
       });
       const verifyData: any = await verifyRes.json();
       if (!verifyData.success) {
-        console.warn('[AUTH-LOG] reCAPTCHA validation reported failure:', verifyData);
         if (isJsonRequest) {
           return res.status(400).json({ success: false, error: 'reCAPTCHA verification failed. Please try again.' });
         }
@@ -465,12 +462,11 @@ app.post('/login', async (req, res) => {
         return req.session ? req.session.save(() => res.render('login.html', { recaptcha_site_key: recaptchaSiteKey })) : res.render('login.html', { recaptcha_site_key: recaptchaSiteKey });
       }
     } catch (rcErr) {
-      console.warn('[AUTH-LOG] reCAPTCHA verify network check error:', rcErr);
+      // reCAPTCHA network verify caught
     }
   }
 
   if (!username || !password) {
-    console.log('[AUTH-LOG] Missing username or password in request body');
     if (isJsonRequest) {
       return res.status(400).json({ success: false, error: 'Please enter both username and password.' });
     }
@@ -481,7 +477,6 @@ app.post('/login', async (req, res) => {
   const user = await db.getUserByUsername(username);
 
   if (!user) {
-    console.log(`[AUTH-LOG] User not found in database for username: "${username}"`);
     if (isJsonRequest) {
       return res.status(400).json({ success: false, error: 'Invalid username or password.' });
     }
@@ -489,10 +484,7 @@ app.post('/login', async (req, res) => {
     return req.session ? req.session.save(() => res.render('login.html', { recaptcha_site_key: recaptchaSiteKey })) : res.render('login.html', { recaptcha_site_key: recaptchaSiteKey });
   }
 
-  console.log(`[AUTH-LOG] User found in database: id=${user.id}, username="${user.username}", status="${user.status}", role="${user.role}"`);
-
   if (user.status === 'Inactive') {
-    console.log(`[AUTH-LOG] User account is inactive: id=${user.id}`);
     if (isJsonRequest) {
       return res.status(400).json({ success: false, error: 'Your account has been deactivated. Please contact the administrator.' });
     }
@@ -505,45 +497,13 @@ app.post('/login', async (req, res) => {
   const cleanPass = rawPass.trim();
 
   try {
-    if (user.password_hash) {
-      if (user.password_hash.startsWith('$2a$') || user.password_hash.startsWith('$2b$') || user.password_hash.startsWith('$2y$')) {
-        isMatch = bcrypt.compareSync(rawPass, user.password_hash) ||
-                  bcrypt.compareSync(cleanPass, user.password_hash) ||
-                  bcrypt.compareSync(rawPass.toLowerCase(), user.password_hash) ||
-                  bcrypt.compareSync(cleanPass.toLowerCase(), user.password_hash);
-      } else {
-        isMatch = (user.password_hash === rawPass) || (user.password_hash === cleanPass) || (user.password_hash.toLowerCase() === cleanPass.toLowerCase());
-      }
+    if (user.password_hash && (user.password_hash.startsWith('$2a$') || user.password_hash.startsWith('$2b$') || user.password_hash.startsWith('$2y$'))) {
+      isMatch = bcrypt.compareSync(rawPass, user.password_hash) ||
+                bcrypt.compareSync(cleanPass, user.password_hash);
     }
   } catch (e) {
-    console.error('[AUTH-LOG] bcrypt compare error:', e);
+    // bcrypt comparison error caught
   }
-
-  // Support established clinic administrator and staff default credentials
-  if (!isMatch) {
-    const lowerUser = user.username.toLowerCase().trim();
-    const checkPass = cleanPass.toLowerCase();
-    const defaultClinicPasswords = ['mj26', 'mjm26', 'doctor', 'admin', 'admin123', 'doctor123', 'asma123', 'drasma', 'password', '123456', 'admin@123', 'admin1234', lowerUser];
-    if (lowerUser === 'admin' || user.id === 1) {
-      if (defaultClinicPasswords.includes(checkPass)) {
-        isMatch = true;
-      }
-    } else if (lowerUser === 'doctor' || user.id === 2) {
-      if (defaultClinicPasswords.includes(checkPass)) {
-        isMatch = true;
-      }
-    } else if (lowerUser === 'drasma' || user.id === 3) {
-      if (defaultClinicPasswords.includes(checkPass)) {
-        isMatch = true;
-      }
-    } else {
-      if (defaultClinicPasswords.includes(checkPass)) {
-        isMatch = true;
-      }
-    }
-  }
-
-  console.log(`[AUTH-LOG] Password verification result for user id=${user.id}: ${isMatch ? 'SUCCESS' : 'FAILED'}`);
 
   if (isMatch) {
     const sessionToken = generateUserToken(user.id);
@@ -573,11 +533,6 @@ app.post('/login', async (req, res) => {
 
     if (req.session) {
       return req.session.save((err) => {
-        if (err) {
-          console.error('[AUTH-LOG] Session save error:', err);
-        } else {
-          console.log(`[AUTH-LOG] Session saved successfully for userId=${user.id}. Token generated.`);
-        }
         if (isJsonRequest) {
           return res.json({ success: true, redirect: '/dashboard', token: sessionToken });
         }
@@ -590,7 +545,6 @@ app.post('/login', async (req, res) => {
       return res.redirect(`/dashboard?token=${encodeURIComponent(sessionToken)}`);
     }
   } else {
-    console.log(`[AUTH-LOG] Invalid password for user id=${user.id}`);
     if (isJsonRequest) {
       return res.status(400).json({ success: false, error: 'Invalid username or password.' });
     }

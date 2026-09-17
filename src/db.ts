@@ -1,6 +1,7 @@
 import pg from 'pg';
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 
@@ -118,9 +119,11 @@ function loadFallbackData(): FallbackData {
     }
   }
 
-  // Initial Seed Data
-  const adminHash = bcrypt.hashSync('mj26', 10);
-  const doctorHash = bcrypt.hashSync('mjm26', 10);
+  // Initial Seed Data (only created when fallback DB file does not exist)
+  const initialAdminPassword = process.env.INITIAL_ADMIN_PASSWORD || crypto.randomBytes(16).toString('hex');
+  const initialDoctorPassword = process.env.INITIAL_DOCTOR_PASSWORD || crypto.randomBytes(16).toString('hex');
+  const adminHash = bcrypt.hashSync(initialAdminPassword, 10);
+  const doctorHash = bcrypt.hashSync(initialDoctorPassword, 10);
   const defaultData: FallbackData = {
     users: [
       {
@@ -296,35 +299,33 @@ export async function initDb(): Promise<void> {
           // Sequence reset notice
         }
 
-        // Seed default admin user if missing
+        // Seed default admin user only if genuinely missing
         const adminCheck = await client.query("SELECT id FROM users WHERE LOWER(username) = 'admin'");
-        const adminHash = bcrypt.hashSync('mj26', 10);
         if (adminCheck.rows.length === 0) {
+          const initialAdminPassword = process.env.INITIAL_ADMIN_PASSWORD || crypto.randomBytes(16).toString('hex');
+          const adminHash = bcrypt.hashSync(initialAdminPassword, 10);
           await client.query(`
             INSERT INTO users (full_name, username, password_hash, phone, email, designation, role, status)
             VALUES ('System Admin', 'admin', $1, '03001234567', 'admin@mjultrasound.com', 'System Administrator', 'Admin', 'Active')
           `, [adminHash]);
-        } else {
-          await client.query("UPDATE users SET password_hash = $1, role = 'Admin', status = 'Active' WHERE LOWER(username) = 'admin'", [adminHash]);
         }
 
-        // Seed default doctor user if missing
+        // Seed default doctor user only if genuinely missing
         const doctorCheck = await client.query("SELECT id FROM users WHERE LOWER(username) = 'doctor'");
         if (doctorCheck.rows.length === 0) {
-          const doctorHash = bcrypt.hashSync('mjm26', 10);
+          const initialDoctorPassword = process.env.INITIAL_DOCTOR_PASSWORD || crypto.randomBytes(16).toString('hex');
+          const doctorHash = bcrypt.hashSync(initialDoctorPassword, 10);
           await client.query(`
             INSERT INTO users (full_name, username, password_hash, phone, email, designation, role, status)
             VALUES ('Dr. Smith', 'doctor', $1, '03009876543', 'doctor@mjultrasound.com', 'Consultant Sonologist', 'Doctor', 'Active')
           `, [doctorHash]);
-        } else {
-          const doctorHash = bcrypt.hashSync('mjm26', 10);
-          await client.query("UPDATE users SET password_hash = $1, role = 'Doctor', status = 'Active' WHERE LOWER(username) = 'doctor'", [doctorHash]);
         }
 
-        // Seed Dr. Asma doctor user if missing
+        // Seed Dr. Asma doctor user only if genuinely missing
         const drAsmaCheck = await client.query("SELECT id FROM users WHERE LOWER(full_name) LIKE '%asma%' OR LOWER(username) = 'drasma'");
         if (drAsmaCheck.rows.length === 0) {
-          const drAsmaHash = bcrypt.hashSync('mjm26', 10);
+          const initialDoctorPassword = process.env.INITIAL_DOCTOR_PASSWORD || crypto.randomBytes(16).toString('hex');
+          const drAsmaHash = bcrypt.hashSync(initialDoctorPassword, 10);
           await client.query(`
             INSERT INTO users (full_name, username, password_hash, phone, email, designation, role, status)
             VALUES ('Dr. Asma', 'drasma', $1, '03001112233', 'drasma@mjultrasound.com', 'Consultant Radiologist', 'Doctor', 'Active')
