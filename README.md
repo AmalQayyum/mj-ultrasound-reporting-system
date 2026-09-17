@@ -136,30 +136,24 @@ INITIAL_DOCTOR_PASSWORD=your_initial_doctor_password
 - **PostgreSQL** database instance
 
 ### Quick Start
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/amal-qayyum/maan-jee-ultrasound-reporting-system.git
-   cd maan-jee-ultrasound-reporting-system
-   ```
-
-2. **Install dependencies:**
+1. **Install dependencies:**
    ```bash
    npm install
    ```
 
-3. **Configure environment:**
+2. **Configure environment:**
    ```bash
    cp .env.example .env
    # Edit .env with your PostgreSQL database credentials
    ```
 
-4. **Start the development server:**
+3. **Start the development server:**
    ```bash
    npm run dev
    ```
    The application will bind to `http://localhost:3000`.
 
-5. **Build and start for production:**
+4. **Build and start for production:**
    ```bash
    npm run build
    npm start
@@ -171,7 +165,6 @@ INITIAL_DOCTOR_PASSWORD=your_initial_doctor_password
 
 - **Host Organization**: MAAN JEE Memorial Clinic, Islamabad, Pakistan
 - **System Name**: Maan Jee Ultrasound Reporting System
-- **GitHub Repository**: [Maan Jee Ultrasound Reporting System](https://github.com/amal-qayyum/maan-jee-ultrasound-reporting-system)
 - **Live Clinical Portal**: Production deployed instance on Cloud Run
 
 ---
