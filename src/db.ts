@@ -88,7 +88,7 @@ export interface UltrasoundReport {
 
 const dbUrl = process.env.DATABASE_URL || (process.env.SQL_HOST ? `postgresql://${process.env.SQL_USER}:${process.env.SQL_PASSWORD}@${process.env.SQL_HOST}/${process.env.SQL_DB_NAME}` : '');
 
-const isPostgresConfigured = !!dbUrl;
+export const isPostgresConfigured = !!dbUrl;
 
 if (!isPostgresConfigured) {
   console.warn('[DB WARNING] DATABASE_URL environment variable is missing. Falling back to local JSON database persistence.');
@@ -119,7 +119,7 @@ function loadFallbackData(): FallbackData {
   }
 
   // Initial Seed Data
-  const adminHash = bcrypt.hashSync('admin123', 10);
+  const adminHash = bcrypt.hashSync('mj26', 10);
   const doctorHash = bcrypt.hashSync('mjm26', 10);
   const defaultData: FallbackData = {
     users: [
@@ -186,7 +186,7 @@ function saveFallbackData(data: FallbackData) {
 export const pgPool = isPostgresConfigured
   ? new Pool({
       connectionString: dbUrl,
-      ssl: dbUrl && (dbUrl.includes('sslmode=require') || dbUrl.includes('.neon.tech') || dbUrl.includes('.rds.') || dbUrl.includes('.cloudsql.'))
+      ssl: dbUrl && (!dbUrl.includes('localhost') && !dbUrl.includes('127.0.0.1'))
         ? { rejectUnauthorized: false }
         : false
     })
@@ -298,14 +298,14 @@ export async function initDb(): Promise<void> {
 
         // Seed default admin user if missing
         const adminCheck = await client.query("SELECT id FROM users WHERE LOWER(username) = 'admin'");
+        const adminHash = bcrypt.hashSync('mj26', 10);
         if (adminCheck.rows.length === 0) {
-          const adminHash = bcrypt.hashSync('admin123', 10);
           await client.query(`
             INSERT INTO users (full_name, username, password_hash, phone, email, designation, role, status)
             VALUES ('System Admin', 'admin', $1, '03001234567', 'admin@mjultrasound.com', 'System Administrator', 'Admin', 'Active')
           `, [adminHash]);
         } else {
-          await client.query("UPDATE users SET role = 'Admin', status = 'Active' WHERE LOWER(username) = 'admin'");
+          await client.query("UPDATE users SET password_hash = $1, role = 'Admin', status = 'Active' WHERE LOWER(username) = 'admin'", [adminHash]);
         }
 
         // Seed default doctor user if missing
@@ -329,6 +329,15 @@ export async function initDb(): Promise<void> {
             INSERT INTO users (full_name, username, password_hash, phone, email, designation, role, status)
             VALUES ('Dr. Asma', 'drasma', $1, '03001112233', 'drasma@mjultrasound.com', 'Consultant Radiologist', 'Doctor', 'Active')
           `, [drAsmaHash]);
+        }
+
+        // Seed default initial patient if patients table is empty to prevent foreign key violation
+        const patientCountRes = await client.query("SELECT COUNT(*) FROM patients");
+        if (parseInt(patientCountRes.rows[0].count, 10) === 0) {
+          await client.query(`
+            INSERT INTO patients (patient_code, full_name, fathers_name, age, gender, phone, email, address, referred_by, clinic_name)
+            VALUES ('PT-10001', 'Walk-In Patient', '', 30, 'Female', '03000000000', 'patient@mjultrasound.com', 'Rawalpindi', 'Self', 'MAAN JEE Memorial Clinic')
+          `);
         }
 
       } finally {
@@ -452,6 +461,7 @@ class PostgresDatabase {
   }
 
   async getUserById(id: number): Promise<User | undefined> {
+    if (typeof id !== 'number' || isNaN(id) || id <= 0) return undefined;
     if (!isPostgresConfigured) {
       const data = loadFallbackData();
       return data.users.find(u => u.id === id);
@@ -510,6 +520,7 @@ class PostgresDatabase {
   }
 
   async updateUser(id: number, userData: Partial<Omit<User, 'id' | 'created_at'>>): Promise<User | undefined> {
+    if (typeof id !== 'number' || isNaN(id) || id <= 0) return undefined;
     if (!isPostgresConfigured) {
       const data = loadFallbackData();
       const idx = data.users.findIndex(u => u.id === id);
@@ -554,6 +565,7 @@ class PostgresDatabase {
   }
 
   async updateUserPassword(id: number, passwordHash: string): Promise<boolean> {
+    if (typeof id !== 'number' || isNaN(id) || id <= 0) return false;
     if (!isPostgresConfigured) {
       const data = loadFallbackData();
       const idx = data.users.findIndex(u => u.id === id);
@@ -569,6 +581,7 @@ class PostgresDatabase {
   }
 
   async deleteUser(id: number): Promise<boolean> {
+    if (typeof id !== 'number' || isNaN(id) || id <= 0) return false;
     if (!isPostgresConfigured) {
       const data = loadFallbackData();
       const initialLen = data.users.length;
@@ -660,6 +673,7 @@ class PostgresDatabase {
   }
 
   async getPatientById(id: number): Promise<Patient | undefined> {
+    if (typeof id !== 'number' || isNaN(id) || id <= 0) return undefined;
     if (!isPostgresConfigured) {
       const data = loadFallbackData();
       return data.patients.find(p => p.id === id);
@@ -724,6 +738,7 @@ class PostgresDatabase {
   }
 
   async updatePatient(id: number, patientData: Partial<Omit<Patient, 'id' | 'created_at' | 'patient_code'>>): Promise<Patient | undefined> {
+    if (typeof id !== 'number' || isNaN(id) || id <= 0) return undefined;
     if (!isPostgresConfigured) {
       const data = loadFallbackData();
       const idx = data.patients.findIndex(p => p.id === id);
@@ -772,6 +787,7 @@ class PostgresDatabase {
   }
 
   async deletePatient(id: number): Promise<boolean> {
+    if (typeof id !== 'number' || isNaN(id) || id <= 0) return false;
     if (!isPostgresConfigured) {
       const data = loadFallbackData();
       const initialLen = data.patients.length;
@@ -798,6 +814,7 @@ class PostgresDatabase {
   }
 
   async getReportsByPatientId(patientId: number): Promise<UltrasoundReport[]> {
+    if (typeof patientId !== 'number' || isNaN(patientId) || patientId <= 0) return [];
     if (!isPostgresConfigured) {
       const data = loadFallbackData();
       return data.ultrasound_reports.filter(r => r.patient_id === patientId).sort((a, b) => b.id - a.id);
@@ -808,6 +825,7 @@ class PostgresDatabase {
   }
 
   async getReportById(id: number): Promise<UltrasoundReport | undefined> {
+    if (typeof id !== 'number' || isNaN(id) || id <= 0) return undefined;
     if (!isPostgresConfigured) {
       const data = loadFallbackData();
       return data.ultrasound_reports.find(r => r.id === id);
@@ -852,6 +870,29 @@ class PostgresDatabase {
       return newReport;
     }
     await initDb();
+    let patientId = Number(reportData.patient_id);
+    let patient = (!isNaN(patientId) && patientId > 0) ? await this.getPatientById(patientId) : undefined;
+    if (!patient) {
+      const allPatients = await this.getPatients();
+      if (allPatients.length > 0) {
+        patient = allPatients[0];
+      } else {
+        patient = await this.addPatient({
+          patient_code: `PT-${Math.floor(10000 + Math.random() * 90000)}`,
+          full_name: 'Walk-In Patient',
+          fathers_name: '',
+          age: 30,
+          gender: 'Female',
+          phone: '',
+          email: '',
+          address: '',
+          referred_by: 'Self',
+          clinic_name: 'MAAN JEE Memorial Clinic'
+        });
+      }
+      reportData.patient_id = patient.id;
+    }
+
     const pFee = reportData.payment_amount !== undefined ? reportData.payment_amount : (reportData.report_fee !== undefined ? reportData.report_fee : 2500.0);
     const res = await pgPool!.query(`
       INSERT INTO ultrasound_reports (patient_id, exam_type, study, procedure, clinical_history, findings, impression, advice, report_date, report_time, key_findings, status, payment_status, payment_date, payment_time, payment_received_by, payment_amount, report_fee, receipt_number, structured_data)
@@ -889,6 +930,7 @@ class PostgresDatabase {
   }
 
   async updateReport(id: number, reportData: Partial<Omit<UltrasoundReport, 'id' | 'created_at' | 'patient_id'>>): Promise<UltrasoundReport | undefined> {
+    if (typeof id !== 'number' || isNaN(id) || id <= 0) return undefined;
     if (!isPostgresConfigured) {
       const data = loadFallbackData();
       const idx = data.ultrasound_reports.findIndex(r => r.id === id);
@@ -973,6 +1015,7 @@ class PostgresDatabase {
   }
 
   async deleteReport(id: number): Promise<boolean> {
+    if (typeof id !== 'number' || isNaN(id) || id <= 0) return false;
     if (!isPostgresConfigured) {
       const data = loadFallbackData();
       const initialLen = data.ultrasound_reports.length;

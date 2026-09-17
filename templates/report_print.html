@@ -15,8 +15,86 @@
     <!-- Report Stylesheet -->
     <link rel="stylesheet" href="/static/css/report.css">
 
-    <!-- html2pdf.js CDN for PDF export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 32mm 12mm 15mm 12mm; /* Leave blank space ONLY at top for physical pre-printed letterhead */
+            }
+            html, body {
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+                background-color: transparent !important;
+                background-image: none !important;
+                color: #000000 !important;
+                font-family: Arial, Helvetica, sans-serif !important;
+                font-size: 13px !important;
+                line-height: 1.4 !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            header,
+            nav,
+            aside,
+            footer,
+            .top-navbar,
+            .sidebar,
+            .sidebar-backdrop,
+            .report-action-bar,
+            .top-action-bar,
+            .patient-details-actions,
+            .no-print,
+            .btn,
+            button,
+            .modal,
+            .modal-backdrop,
+            .toast,
+            .alert,
+            .dropdown,
+            .dropdown-menu,
+            #report_notification_toast,
+            .pdf-page-break-spacer,
+            [class*="remix" i],
+            [class*="device" i],
+            [id*="remix" i],
+            [id*="device" i],
+            [aria-label*="remix" i],
+            [aria-label*="device" i],
+            [title*="remix" i],
+            [title*="device" i],
+            [data-testid*="remix" i],
+            [data-testid*="device" i],
+            [class*="preview-header" i],
+            [class*="preview-bar" i],
+            [class*="app-header" i],
+            [class*="toolbar" i],
+            [class*="banner" i],
+            [class*="controls" i] {
+                display: none !important;
+                visibility: hidden !important;
+                height: 0 !important;
+                width: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+            }
+            #report_paper {
+                display: block !important;
+                visibility: visible !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+                border: none !important;
+                background: transparent !important;
+                background-color: transparent !important;
+                background-image: none !important;
+            }
+        }
+    </style>
 </head>
 <body class="report-preview-body">
 
@@ -34,15 +112,15 @@
         </div>
 
         <div class="d-flex align-items-center gap-2">
-            <button type="button" id="btn_print_action" onclick="triggerPrint()" class="btn btn-primary btn-sm d-flex align-items-center gap-1.5 px-3 py-1.5" style="font-size: 12px; font-weight: 700; background-color: #2563eb; border-color: #2563eb;">
-                <span class="material-symbols-outlined fs-6">print</span>
-                Print Report
+            <button type="button" id="btn_print_action" onclick="triggerPrint()" class="btn btn-primary btn-sm d-flex align-items-center gap-1.5 px-3 py-1.5" style="font-size: 12px; font-weight: 700; background-color: #2563eb; border-color: #2563eb; cursor: pointer; user-select: none;">
+                <span class="material-symbols-outlined fs-6" style="pointer-events: none;">print</span>
+                <span style="pointer-events: none;">Print Report</span>
             </button>
 
-            <a href="/report/{{ report.id }}/pdf" id="btn_pdf_action" class="btn btn-danger btn-sm d-flex align-items-center gap-1.5 px-3 py-1.5" style="font-size: 12px; font-weight: 700; background-color: #dc2626; border-color: #dc2626;">
+            <button type="button" id="btn_pdf_action" onclick="downloadPDF()" class="btn btn-danger btn-sm d-flex align-items-center gap-1.5 px-3 py-1.5" style="font-size: 12px; font-weight: 700; background-color: #dc2626; border-color: #dc2626; cursor: pointer;">
                 <span class="material-symbols-outlined fs-6">picture_as_pdf</span>
                 Download PDF
-            </a>
+            </button>
 
             <a href="/report/{{ report.id }}/edit" class="btn btn-outline-light btn-sm d-flex align-items-center gap-1 px-3 py-1.5" style="font-size: 12px; font-weight: 600;">
                 <span class="material-symbols-outlined fs-6">edit</span>

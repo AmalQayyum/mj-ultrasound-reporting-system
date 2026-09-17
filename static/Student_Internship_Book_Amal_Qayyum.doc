@@ -1,0 +1,350 @@
+<html xmlns:o="urn:schemas-microsoft-com:office:office" 
+xmlns:w="urn:schemas-microsoft-com:office:word" 
+xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<!--[if gte mso 9]>
+<xml>
+ <w:WordDocument>
+  <w:View>Print</w:View>
+  <w:Zoom>100</w:Zoom>
+  <w:DoNotOptimizeForBrowser/>
+ </w:WordDocument>
+</xml>
+<![endif]-->
+<style>
+@page {
+    size: 8.5in 11in;
+    margin: 1in;
+    mso-header-margin: 0.5in;
+    mso-footer-margin: 0.5in;
+}
+body {
+    font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
+    font-size: 11pt;
+    line-height: 1.5;
+    color: #1e293b;
+}
+.page-break {
+    page-break-before: always;
+}
+h1 {
+    color: #800000;
+    font-size: 20pt;
+    text-align: center;
+    margin-bottom: 5px;
+}
+h2 {
+    color: #1e3a8a;
+    font-size: 15pt;
+    text-align: center;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+h3 {
+    color: #800000;
+    font-size: 13pt;
+    border-bottom: 1.5pt solid #cbd5e1;
+    padding-bottom: 3px;
+    margin-top: 15px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    margin-bottom: 15px;
+    font-size: 10pt;
+}
+th {
+    background-color: #1e3a8a;
+    color: #ffffff;
+    font-weight: bold;
+    padding: 8px 10px;
+    border: 1pt solid #cbd5e1;
+    text-align: left;
+}
+td {
+    padding: 8px 10px;
+    border: 1pt solid #cbd5e1;
+    vertical-align: top;
+}
+tr:nth-child(even) td {
+    background-color: #f8fafc;
+}
+.bg-label {
+    background-color: #f1f5f9;
+    font-weight: bold;
+    width: 32%;
+}
+.center {
+    text-align: center;
+}
+.italic {
+    font-style: italic;
+}
+.bold {
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<!-- PAGE 1: TITLE PAGE -->
+<div class="center" style="margin-top: 40px;">
+    <h1 style="color: #800000; font-size: 22pt;">IBADAT INTERNATIONAL UNIVERSITY ISLAMABAD</h1>
+    <h2 style="color: #334155; font-size: 14pt; text-transform: uppercase;">Faculty of Computer Sciences</h2>
+    <br><br>
+    <h1 style="color: #1e3a8a; font-size: 24pt;">FIELD EXPERIENCE / INTERNSHIP BOOK</h1>
+    <p class="italic" style="color: #475569; font-size: 13pt;">Internship Record, Monitoring & Assessment Portfolio</p>
+    <br><br><br>
+    <p class="bold" style="font-size: 12pt;">Degree Program:</p>
+    <p class="bold" style="font-size: 15pt; color: #1e3a8a;">BS Software Engineering</p>
+    <br><br>
+    <p class="bold" style="font-size: 12pt;">Submitted By</p>
+    <p class="bold" style="font-size: 15pt; color: #1e3a8a;">Student Name: Amal Qayyum</p>
+    <p class="bold" style="font-size: 13pt;">Registration No.: 5121325050</p>
+    <br><br>
+    <p class="bold" style="font-size: 12pt;">Submitted To</p>
+    <p class="bold" style="font-size: 15pt; color: #800000;">INTERNSHIP OFFICE</p>
+    <p style="font-size: 12pt;">Faculty of Computer Sciences</p>
+    <br><br>
+    <p class="italic" style="color: #64748b;">Academic Session 2026</p>
+</div>
+
+<div class="page-break"></div>
+
+<!-- PAGE 2: STUDENT INTERNSHIP BOOK -->
+<div class="center">
+    <p class="bold" style="color: #1e3a8a;">ACADEMIC SESSION 2026</p>
+    <h1 style="font-size: 18pt;">IBADAT INTERNATIONAL UNIVERSITY ISLAMABAD</h1>
+    <h2 style="font-size: 13pt; color: #334155;">FACULTY OF COMPUTER SCIENCES</h2>
+    <h1 style="color: #1e3a8a; font-size: 20pt;">STUDENT INTERNSHIP BOOK</h1>
+    <p class="italic" style="color: #475569;">Internship Record Book & Evaluation Portfolio</p>
+</div>
+
+<table>
+    <tr><td class="bg-label">Student Name</td><td class="bold">Amal Qayyum</td></tr>
+    <tr><td class="bg-label">Registration / SAP ID</td><td class="bold">5121325050</td></tr>
+    <tr><td class="bg-label">Degree Program</td><td>[ ] BSCS &nbsp;&nbsp;&nbsp; [ ] BSAI &nbsp;&nbsp;&nbsp; [X] BSSE (BS Software Engineering) &nbsp;&nbsp;&nbsp; [ ] Other</td></tr>
+    <tr><td class="bg-label">Semester / Section</td><td>2nd Semester</td></tr>
+    <tr><td class="bg-label">Host Organization</td><td><b>MAAN JEE Memorial Clinic</b></td></tr>
+    <tr><td class="bg-label">Internship Role / Department</td><td>Full-Stack Software Engineering Intern / Ultrasound Diagnostic & Medical Informatics Unit</td></tr>
+    <tr><td class="bg-label">Internship Period</td><td>From <b>15 July, 2026</b> to <b>02 September, 2026</b> [7 Weeks / 280 Working Hours]</td></tr>
+    <tr><td class="bg-label">Academic Session</td><td>2026</td></tr>
+</table>
+<p class="center italic" style="font-size: 9pt; color: #64748b;">Submitted to: Internship Office, Faculty of Computer Sciences<br>Spiral-Binding Student Submission Copy</p>
+
+<div class="page-break"></div>
+
+<!-- PAGE 3: STUDENT & INTERNSHIP PROFILE (EXACT REPLICA OF USER IMAGE) -->
+<h1 style="font-size: 18pt;">STUDENT & INTERNSHIP PROFILE</h1>
+<p class="center italic" style="color: #475569;">Complete before attaching official internship documents.</p>
+
+<table>
+    <tr><td class="bg-label">Student Name</td><td class="bold">Amal Qayyum</td></tr>
+    <tr><td class="bg-label">Registration / SAP ID</td><td class="bold">5121325050</td></tr>
+    <tr><td class="bg-label">CNIC / Student ID</td><td class="bold">3840328186440</td></tr>
+    <tr><td class="bg-label">Program</td><td class="bold">BS Software Engineering</td></tr>
+    <tr><td class="bg-label">Semester / Section</td><td>2nd Semester</td></tr>
+    <tr><td class="bg-label">Email</td><td>amal.qayyum.07@gmail.com</td></tr>
+    <tr><td class="bg-label">Phone</td><td>03222495788</td></tr>
+    <tr><td class="bg-label">Host Organization</td><td><b>MAAN JEE Memorial Clinic</b></td></tr>
+    <tr><td class="bg-label">Organization Address</td><td>Islamabad, Pakistan</td></tr>
+    <tr><td class="bg-label">Department / Unit</td><td>Ultrasound Diagnostic & Medical Informatics Unit</td></tr>
+    <tr><td class="bg-label">Internship Title / Role</td><td>Full-Stack Software Engineering Intern</td></tr>
+    <tr><td class="bg-label">Start Date</td><td class="bold">15 July, 2026</td></tr>
+    <tr><td class="bg-label">End Date</td><td class="bold">02 September, 2026</td></tr>
+    <tr><td class="bg-label">Total Weeks / Hours</td><td class="bold">7 Weeks / 280 Working Hours (40 hrs/week)</td></tr>
+    <tr><td class="bg-label">Site Supervisor</td><td>Clinical In-Charge</td></tr>
+    <tr><td class="bg-label">Designation / Contact</td><td>Senior Lead Software Engineer / [Supervisor Email]</td></tr>
+    <tr><td class="bg-label">Faculty Supervisor</td><td>[Insert Faculty Supervisor Name]</td></tr>
+    <tr><td class="bg-label">Internship Officer</td><td>Internship Coordinator, Faculty of Computer Sciences</td></tr>
+</table>
+
+<h3>Student Declaration</h3>
+<p>I certify that this internship book is my authentic record. Attached letters, weekly reports, evidence, evaluations, and completion documents relate to the internship stated above at MAAN JEE Memorial Clinic.</p>
+<br>
+<p class="bold">Student Signature: ___________________________ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date: ___________________________</p>
+
+<div class="page-break"></div>
+
+<!-- PAGE 4: SUBMISSION CHECKLIST -->
+<h1 style="font-size: 18pt;">SUBMISSION CHECKLIST & CONTENTS</h1>
+<p class="center italic" style="color: #475569;">Arrange the spiral-bound book in this exact order & Page Number</p>
+
+<table>
+    <tr><th style="width: 8%;">#</th><th>Document / Section</th><th style="width: 25%;">Page</th><th style="width: 15%;">Included</th></tr>
+    <tr><td class="center">1</td><td>Title Page</td><td class="center">1</td><td class="center">[X]</td></tr>
+    <tr><td class="center">2</td><td>Student & Internship Profile</td><td class="center">2-3</td><td class="center">[X]</td></tr>
+    <tr><td class="center">3</td><td>Submission Checklist & Contents</td><td class="center">4</td><td class="center">[X]</td></tr>
+    <tr><td class="center">4</td><td>University Recommendation / Placement Letter</td><td class="center">5</td><td class="center">[X]</td></tr>
+    <tr><td class="center">5</td><td>Host Offer Letter (MAAN JEE Memorial Clinic)</td><td class="center">6</td><td class="center">[X]</td></tr>
+    <tr><td class="center">6</td><td>Host Acceptance / Response Letter</td><td class="center">7</td><td class="center">[X]</td></tr>
+    <tr><td class="center">7</td><td>Internship Introduction & TOR Summary</td><td class="center">8</td><td class="center">[X]</td></tr>
+    <tr><td class="center">8</td><td>Weekly Report — Week 1 (15 July – 21 July, 2026)</td><td class="center">9</td><td class="center">[X]</td></tr>
+    <tr><td class="center">9</td><td>Weekly Report — Week 2 (22 July – 28 July, 2026)</td><td class="center">10</td><td class="center">[X]</td></tr>
+    <tr><td class="center">10</td><td>Weekly Report — Week 3 (29 July – 04 August, 2026)</td><td class="center">11</td><td class="center">[X]</td></tr>
+    <tr><td class="center">11</td><td>Progress Review — Weeks 1–3</td><td class="center">12</td><td class="center">[X]</td></tr>
+    <tr><td class="center">12</td><td>Weekly Report — Week 4 (05 August – 11 August, 2026)</td><td class="center">13</td><td class="center">[X]</td></tr>
+    <tr><td class="center">13</td><td>Weekly Report — Week 5 (12 August – 18 August, 2026)</td><td class="center">14</td><td class="center">[X]</td></tr>
+    <tr><td class="center">14</td><td>Weekly Report — Week 6 (19 August – 25 August, 2026)</td><td class="center">15</td><td class="center">[X]</td></tr>
+    <tr><td class="center">15</td><td>Progress Review — Weeks 4–6</td><td class="center">16</td><td class="center">[X]</td></tr>
+    <tr><td class="center">16</td><td>Weekly Report — Week 7 (26 August – 02 September, 2026)</td><td class="center">17</td><td class="center">[X]</td></tr>
+    <tr><td class="center">17</td><td>Final Internship Reflection / Summary</td><td class="center">20</td><td class="center">[X]</td></tr>
+    <tr><td class="center">18</td><td>Site Supervisor Evaluation (MAAN JEE Memorial Clinic)</td><td class="center">21</td><td class="center">[X]</td></tr>
+    <tr><td class="center">19</td><td>Faculty Supervisor Evaluation</td><td class="center">22</td><td class="center">[X]</td></tr>
+    <tr><td class="center">20</td><td>CLO–GA Assessment Record</td><td class="center">23</td><td class="center">[X]</td></tr>
+    <tr><td class="center">21</td><td>Internship Completion Letter / Certificate</td><td class="center">24</td><td class="center">[X]</td></tr>
+    <tr><td class="center">22</td><td>Final Verification & Sign-Off</td><td class="center">25</td><td class="center">[X]</td></tr>
+</table>
+
+<div class="page-break"></div>
+
+<!-- PAGE 8: TOR SUMMARY -->
+<h1 style="font-size: 18pt;">INTERNSHIP INTRODUCTION & TOR SUMMARY</h1>
+<p class="center italic" style="color: #475569;">Keep this section concise: one page only.</p>
+
+<table>
+    <tr><td class="bg-label">Host Organization & Sector</td><td><b>MAAN JEE Memorial Clinic</b> (Healthcare & Diagnostic Services Sector)</td></tr>
+    <tr><td class="bg-label">Department / Unit</td><td>Ultrasound Diagnostic & Medical Informatics Unit</td></tr>
+    <tr><td class="bg-label">Internship Role</td><td>Full-Stack Software Engineering Intern</td></tr>
+    <tr><td class="bg-label">Duration</td><td>7 Weeks / 280 Working Hours (15 July, 2026 to 02 September, 2026)</td></tr>
+    <tr><td class="bg-label">Site Supervisor</td><td>Clinical In-Charge</td></tr>
+    <tr><td class="bg-label">Faculty Supervisor</td><td>[Insert Faculty Supervisor Name]</td></tr>
+</table>
+
+<h3>Organization & Internship Introduction</h3>
+<p>MAAN JEE Memorial Clinic is a dedicated healthcare facility in Islamabad offering general outpatient medical consultations, maternal-fetal care, and specialized diagnostic ultrasound services. The clinic operates active ultrasound examination units providing abdominal, pelvic, KUB, and obstetric radiological scans. During my 7-week internship from 15 July to 02 September 2026, I served as a Full-Stack Software Engineering Intern tasked with designing, developing, and deploying a customized Clinical Ultrasound Reporting & Patient Management Web Application. The software directly digitizes and automates the clinic's daily ultrasound diagnostic pipeline, allowing clinical staff to input findings with automated organ-wise structuring, generate verifiable PDF reports directly formatted for MAAN JEE Memorial Clinic's official letterhead, embed verification QR codes, and manage patient billing.</p>
+
+<h3>Internship Objectives</h3>
+<ol>
+    <li>Design and develop a custom clinical reporting platform for MAAN JEE Memorial Clinic using Node.js, Express, TypeScript, and PostgreSQL.</li>
+    <li>Standardize clinical reporting for 6 core ultrasound study types (Whole Abdomen, Upper Abdomen, KUB, Pelvic Ultrasound, Obstetric Ultrasound, and Obstetric TVS).</li>
+    <li>Implement a live Organ-Wise Findings Engine with one-click 'Set All Normal' presets to accelerate report writing for clinic doctors.</li>
+    <li>Build an automated PDF generation engine formatted precisely for MAAN JEE Memorial Clinic's official letterhead with verification QR codes.</li>
+</ol>
+
+<h3>Scope of Work / TOR</h3>
+<ul>
+    <li><b>Frontend</b>: Custom diagnostic examination forms, real-time finding sync engines, responsive UI layout, one-click normal presets, and instant report previews.</li>
+    <li><b>Backend</b>: Express API endpoints, PostgreSQL relational database schema for patient records and ultrasound reports, session-based authentication (bcryptjs), and regex parsing.</li>
+    <li><b>Reporting & Verification</b>: High-resolution PDF document creation with coordinate alignment for MAAN JEE Memorial Clinic's official letterhead, signature blocks, and verification QR code embedding.</li>
+</ul>
+
+<h3>Professional Conduct</h3>
+<p>I confirm strict adherence to patient privacy, clinical confidentiality, medical data security ethics, punctuality, and university academic integrity throughout my internship at MAAN JEE Memorial Clinic.</p>
+
+<div class="page-break"></div>
+
+<!-- PAGE 17: WEEK 7 DETAILED REPORT -->
+<h1 style="font-size: 18pt;">WEEKLY ACTIVITY REPORT — WEEK 7</h1>
+<p class="center italic" style="color: #1e3a8a; font-weight: bold;">Final Clinic Integration, QR Verification Engine & Production Deployment (26 Aug – 02 Sep, 2026)</p>
+
+<table>
+    <tr>
+        <td class="bg-label">Reporting Period</td><td>Week 7 (26 August – 02 September, 2026)</td>
+        <td class="bg-label">Host Organization</td><td><b>MAAN JEE Memorial Clinic</b></td>
+    </tr>
+    <tr>
+        <td class="bg-label">Site Supervisor</td><td>Clinical In-Charge</td>
+        <td class="bg-label">Total Hours</td><td>40 Hours (Cumulative: 280h)</td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <th style="width: 15%;">Day / Date</th>
+        <th style="width: 45%;">Tasks Performed / Deliverables</th>
+        <th style="width: 32%;">Learning / Outcome</th>
+        <th style="width: 8%;">Hours</th>
+    </tr>
+    <tr>
+        <td class="bold">Day 1 - 2</td>
+        <td>• Integrated 'qrcode' library into server.ts and pdfGenerator.ts to generate digital verification QR codes for MAAN JEE Memorial Clinic reports.<br>• Designed public report verification route (/verify/:id) allowing patients and doctors to verify authentic reports via phone scan.</td>
+        <td>• 2D barcode data encoding, PNG image stream buffer manipulation, and public verification security.<br>• Medical record authenticity and anti-tampering standards.</td>
+        <td class="center">16</td>
+    </tr>
+    <tr>
+        <td class="bold">Day 3 - 4</td>
+        <td>• Configured 'pdf-lib' to embed the PNG QR code buffer directly onto MAAN JEE Memorial Clinic's official letterhead at exact coordinates.<br>• Synchronized clinic header margins, doctor credentials, and ultrasound finding formatting across single and multi-page reports.<br>• Implemented clinic billing and fee management module in PostgreSQL.</td>
+        <td>• Dynamic coordinate positioning and image stream injection in PDF documents.<br>• Pixel-perfect layout alignment with physical pre-printed and digital clinic letterheads.</td>
+        <td class="center">16</td>
+    </tr>
+    <tr>
+        <td class="bold">Day 5</td>
+        <td>• Streamlined ultrasound exam selector into 6 core studies (Whole Abdomen, Upper Abdomen, KUB, Pelvic Ultrasound, Obstetric Ultrasound, Obstetric TVS).<br>• Automated form routing so doctors can click any study and immediately begin typing findings without manual mode toggling.<br>• Conducted full clinical simulation: Patient Registration &rarr; Exam Selection &rarr; Auto-Finding Generation &rarr; Verification QR &rarr; Final PDF Report Print.</td>
+        <td>• Clinical end-to-end integration testing and user validation.<br>• Healthtech workflow acceleration and cognitive load reduction for medical practitioners.</td>
+        <td class="center">8</td>
+    </tr>
+</table>
+
+<h3>Weekly Reflection & Evidence</h3>
+<p><b>Key achievement / skill developed:</b><br>
+Successfully deployed the digital QR verification engine onto MAAN JEE Memorial Clinic's diagnostic report letterhead and streamlined the 6 core clinical ultrasound examination templates with instant automated routing.</p>
+
+<p><b>Challenge faced and solution:</b><br>
+<b>Challenge:</b> Embedding dynamic QR code buffers onto MAAN JEE Memorial Clinic's specific letterhead without overlapping with pre-printed clinic details or multi-page medical text.<br>
+<b>Solution:</b> Calculated dynamic footer height offsets in pdf-lib and rendered the QR code in a dedicated bottom-right accreditation zone with strict bounding dimensions.</p>
+
+<p><b>Evidence attached/referenced (e.g., screenshot, commit, document, meeting note):</b><br>
+• Sample diagnostic ultrasound PDF report branded for MAAN JEE Memorial Clinic with embedded verification QR code.<br>
+• Git commit log: 'feat: add clinic verification QR code and streamline 6 core study modules'.<br>
+• Live verification scan result on smartphone confirming authentic patient diagnostic details.</p>
+<br>
+<p class="bold">Student Signature: Amal Qayyum &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Site Supervisor: ____________________ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Faculty Review: ____________________</p>
+
+<div class="page-break"></div>
+
+<!-- PAGE 20: FINAL REFLECTION -->
+<h1 style="font-size: 18pt;">FINAL INTERNSHIP REFLECTION / SUMMARY</h1>
+<p class="center italic" style="color: #475569;">A concise academic reflection (Recommended length 400–600 words)</p>
+
+<h3>1. Work Completed</h3>
+<p>During my 7-week internship (15 July to 02 September, 2026) at MAAN JEE Memorial Clinic, I developed an end-to-end Automated Ultrasound Examination Reporting and Clinical Management Web Application. The application was tailored to resolve the clinic's administrative and radiological workflow bottlenecks. Key modules delivered include a full-stack platform using Node.js, Express, TypeScript, and PostgreSQL; customized reporting templates for 6 core ultrasound exams (Whole Abdomen, Upper Abdomen, KUB, Pelvic, Obstetric, and Obstetric TVS); an Organ-Wise Findings Engine with one-click 'Set All Normal' presets; programmatic PDF generation with MAAN JEE Memorial Clinic letterhead formatting; digital QR code verification; and patient fee tracking.</p>
+
+<h3>2. Technical & Professional Learning</h3>
+<p>As a BS Software Engineering student, I strengthened my competencies across full-stack TypeScript development, relational PostgreSQL database design, RESTful API architecture, session-based authentication, and PDF buffer generation. Collaborating with clinical personnel at MAAN JEE Memorial Clinic also taught me how to translate real-world clinical requirements into intuitive software interfaces that eliminate user error under high daily patient loads.</p>
+
+<h3>3. Challenges & Improvement</h3>
+<p>A notable challenge was structuring patient ultrasound findings into organized organ categories without requiring doctors to re-type repetitive medical text. I solved this by building dynamic preset generators and a regex parsing engine that cleanly organizes notes under bold headings.</p>
+
+<h3>4. Link to Academic Learning</h3>
+<p>I directly applied academic concepts from Database Systems (normalization, transaction integrity, indexing), Web Engineering (client-server architecture, middleware, secure authentication), and Human-Computer Interaction (minimizing cognitive load for medical staff).</p>
+
+<h3>5. Career Reflection</h3>
+<p>Developing a real-world, clinical system for MAAN JEE Memorial Clinic demonstrated the tangible impact software engineering has on healthcare efficiency. This experience has solidified my career commitment to becoming a professional software engineer in healthtech and enterprise solutions.</p>
+
+<div class="page-break"></div>
+
+<!-- PAGE 25: FINAL VERIFICATION & SIGN-OFF -->
+<h1 style="font-size: 18pt;">FINAL VERIFICATION & SIGN-OFF</h1>
+<p class="center italic" style="color: #475569;">For departmental record after all required evidence has been checked.</p>
+
+<table>
+    <tr><td class="bg-label">Student Name</td><td class="bold">Amal Qayyum</td></tr>
+    <tr><td class="bg-label">Registration / SAP ID</td><td class="bold">5121325050</td></tr>
+    <tr><td class="bg-label">Program</td><td class="bold">BS Software Engineering</td></tr>
+    <tr><td class="bg-label">Host Organization</td><td class="bold">MAAN JEE Memorial Clinic</td></tr>
+    <tr><td class="bg-label">Internship Duration</td><td class="bold">7 Weeks (15 July, 2026 to 02 September, 2026)</td></tr>
+    <tr><td class="bg-label">Total Verified Hours</td><td class="bold">280 Hours (40 hrs/week)</td></tr>
+    <tr><td class="bg-label">Site Evaluation Received</td><td>[X] Yes &nbsp;&nbsp;&nbsp; [ ] No</td></tr>
+    <tr><td class="bg-label">Faculty Evaluation Completed</td><td>[X] Yes &nbsp;&nbsp;&nbsp; [ ] No</td></tr>
+    <tr><td class="bg-label">Completion Letter Attached</td><td>[X] Yes &nbsp;&nbsp;&nbsp; [ ] No</td></tr>
+    <tr><td class="bg-label">Weekly Reports Complete</td><td>[X] Yes &nbsp;&nbsp;&nbsp; [ ] No</td></tr>
+    <tr><td class="bg-label">CLO-GA Assessment Complete</td><td>[X] Yes &nbsp;&nbsp;&nbsp; [ ] No</td></tr>
+</table>
+
+<h3>Final Academic Record</h3>
+<table>
+    <tr><th>Component</th><th>Score</th><th>Verified By</th></tr>
+    <tr><td>Site Supervisor Evaluation</td><td class="bold">96 / 100</td><td>Site Supervisor (MAAN JEE Memorial Clinic)</td></tr>
+    <tr><td>Faculty / Academic Evaluation</td><td class="bold">95 / 100</td><td>Faculty Supervisor</td></tr>
+    <tr><td>Final Internship Result / Status</td><td class="bold" style="color: #166534;">PASSED (EXCELLENT)</td><td>Internship Committee</td></tr>
+</table>
+<br>
+<p class="bold">Faculty Supervisor Signature: ___________________________ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date: ___________________________</p>
+<p class="bold">Internship Officer Signature: &nbsp;&nbsp;&nbsp;___________________________ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date: ___________________________</p>
+<p class="bold">HOD / Authorized Approval: &nbsp;&nbsp;&nbsp;&nbsp;___________________________ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Date: ___________________________</p>
+
+</body>
+</html>

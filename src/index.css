@@ -1,1 +1,54 @@
 @import "tailwindcss";
+
+@media print {
+    @page {
+        size: A4 portrait;
+        margin: 32mm 12mm 15mm 12mm;
+    }
+    header,
+    nav,
+    aside,
+    footer,
+    .top-navbar,
+    .sidebar,
+    .sidebar-backdrop,
+    .report-action-bar,
+    .top-action-bar,
+    .patient-details-actions,
+    .no-print,
+    .btn,
+    button,
+    .modal,
+    .modal-backdrop,
+    .toast,
+    .alert,
+    .dropdown,
+    .dropdown-menu,
+    [class*="remix" i],
+    [class*="device" i],
+    [id*="remix" i],
+    [id*="device" i],
+    [aria-label*="remix" i],
+    [aria-label*="device" i],
+    [title*="remix" i],
+    [title*="device" i],
+    [data-testid*="remix" i],
+    [data-testid*="device" i],
+    [class*="preview-header" i],
+    [class*="preview-bar" i],
+    [class*="app-header" i],
+    [class*="toolbar" i],
+    [class*="banner" i],
+    [class*="controls" i],
+    [id*="header" i]:not(.patient-header-row):not(.organ-header),
+    [class*="header" i]:not(.patient-header-row):not(.organ-header) {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        width: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+}

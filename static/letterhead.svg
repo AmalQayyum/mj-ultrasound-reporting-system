@@ -1,0 +1,68 @@
+<svg width="794" height="1123" viewBox="0 0 794 1123" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .brand-title { font-family: Arial, sans-serif; font-weight: 900; font-size: 22px; fill: #0A84A6; letter-spacing: 0.5px; }
+    .clinic-title { font-family: Arial, sans-serif; font-weight: 900; font-size: 24px; fill: #111111; letter-spacing: 0.5px; }
+    .urdu-title { font-family: 'Noto Nastaliq Urdu', 'Scheherazade New', 'Amiri', 'Traditional Arabic', serif; font-weight: bold; font-size: 50px; fill: #D92525; }
+    .footer-heading { font-family: Arial, sans-serif; font-weight: 900; font-size: 16px; fill: #111111; letter-spacing: 0.8px; }
+    .footer-text { font-family: Arial, sans-serif; font-weight: 700; font-size: 12px; fill: #222222; }
+    .legal-text { font-family: Arial, sans-serif; font-weight: 600; font-size: 10.5px; fill: #AAAAAA; }
+  </style>
+
+  <!-- HEADER -->
+  <g id="header">
+    <!-- Double M Logo (Left) -->
+    <g transform="translate(24, 18)">
+      <path d="M0 42L14 0H24L10 42H0Z" fill="#0A84A6"/>
+      <path d="M14 0L28 42H18L4 0H14Z" fill="#0A84A6"/>
+      <path d="M24 42L38 0H48L34 42H24Z" fill="#D92525"/>
+      <path d="M38 0L52 42H42L28 0H38Z" fill="#D92525"/>
+    </g>
+
+    <!-- Brand Name (Left) -->
+    <text x="88" y="38" class="brand-title">MAAN JEE</text>
+    <text x="88" y="60" class="brand-title">RESEARCH LABS</text>
+    <line x1="24" y1="68" x2="350" y2="68" stroke="#0A84A6" stroke-width="2.5"/>
+
+    <!-- Center Clinic Title -->
+    <text x="430" y="38" class="clinic-title">MEMORIAL</text>
+    <text x="430" y="60" class="clinic-title">CLINIC</text>
+
+    <!-- Right Urdu Calligraphy -->
+    <text x="770" y="58" class="urdu-title" text-anchor="end">ماں جی</text>
+
+    <!-- Header Underline Divider -->
+    <line x1="24" y1="80" x2="770" y2="80" stroke="#222222" stroke-width="1.5"/>
+  </g>
+
+  <!-- FOOTER -->
+  <g id="footer">
+    <line x1="24" y1="1055" x2="770" y2="1055" stroke="#CCCCCC" stroke-width="1"/>
+
+    <!-- Center Footer Title -->
+    <text x="397" y="1076" class="footer-heading" text-anchor="middle">MAAN JEE MEMORIAL CLINIC</text>
+
+    <!-- Address / Contacts Row -->
+    <!-- Pin Icon -->
+    <path d="M40 1090 C38 1090 36 1092 36 1094 C36 1097 40 1102 40 1102 C40 1102 44 1097 44 1094 C44 1092 42 1090 40 1090 Z" fill="#D92525"/>
+    <text x="48" y="1096" class="footer-text">Al-Ghani Market, Sector 3, AECHS RWP.</text>
+
+    <!-- WhatsApp Icon -->
+    <circle cx="340" cy="1093" r="6" fill="#25D366"/>
+    <text x="350" y="1096" class="footer-text">0342-5010712</text>
+
+    <!-- Facebook Icon -->
+    <circle cx="480" cy="1093" r="6" fill="#1877F2"/>
+    <text x="490" y="1096" class="footer-text">www.facebook.com/mjmclinic</text>
+
+    <!-- Legal Text (Bottom Left) -->
+    <text x="24" y="1114" class="legal-text">Not Valid For Court</text>
+
+    <!-- Mini Double M Icon (Bottom Right) -->
+    <g transform="translate(735, 1103) scale(0.4)">
+      <path d="M0 28L9 0H16L7 28H0Z" fill="#0A84A6"/>
+      <path d="M9 0L18 28H11L2 0H9Z" fill="#0A84A6"/>
+      <path d="M16 28L25 0H32L23 28H16Z" fill="#D92525"/>
+      <path d="M25 0L34 28H27L18 0H25Z" fill="#D92525"/>
+    </g>
+  </g>
+</svg>

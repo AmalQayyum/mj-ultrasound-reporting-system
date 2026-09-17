@@ -32,7 +32,7 @@
             <div class="row g-3 mb-3">
                 <div class="col-12 col-sm-6 col-md-4">
                     <label for="full_name" class="clinical-label" style="background-color: #8db1e1; color: #ffffff; padding: 4px 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; border-radius: 4px 4px 0 0; height: 32px; min-height: 32px; margin-bottom: 0;">Name *</label>
-                    <input type="text" id="full_name" name="full_name" class="form-control form-control-clinical" placeholder="e.g. Jane Doe" value="{% if patient %}{{ patient.full_name }}{% elif initial_name %}{{ initial_name }}{% endif %}" style="background-color: #ffffff; height: 38px; font-size: 14px; border-radius: 0 0 4px 4px;" required>
+                    <input type="text" id="full_name" name="full_name" class="form-control form-control-clinical" placeholder="e.g. Jane Doe" value="{% if patient %}{{ patient.full_name }}{% elif initial_name %}{{ initial_name }}{% endif %}" style="background-color: #ffffff; height: 38px; font-size: 14px; border-radius: 0 0 4px 4px; text-transform: capitalize;" oninput="autoCapitalizeNameInput(this)" onblur="autoCapitalizeNameInput(this)" required>
                 </div>
 
                 <div class="col-12 col-sm-6 col-md-4">
@@ -105,4 +105,22 @@
         </form>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function autoCapitalizeNameInput(input) {
+        if (!input) return;
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        const val = input.value;
+        const capitalized = val.replace(/\b\w/g, c => c.toUpperCase());
+        if (val !== capitalized) {
+            input.value = capitalized;
+            if (start !== null && end !== null) {
+                input.setSelectionRange(start, end);
+            }
+        }
+    }
+</script>
 {% endblock %}

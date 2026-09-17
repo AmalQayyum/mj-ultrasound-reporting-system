@@ -14,9 +14,6 @@
     
     <!-- Report Stylesheet -->
     <link rel="stylesheet" href="/static/css/report.css">
-
-    <!-- html2pdf.js CDN for PDF export -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body class="report-preview-body">
 
@@ -39,7 +36,7 @@
                 Print Report
             </a>
 
-            <button type="button" id="btn_pdf_action" onclick="downloadPDF()" class="btn btn-danger btn-sm d-flex align-items-center gap-1.5 px-3 py-1.5" style="font-size: 12px; font-weight: 700; background-color: #dc2626; border-color: #dc2626;">
+            <button type="button" id="btn_pdf_action" onclick="downloadPDF()" class="btn btn-danger btn-sm d-flex align-items-center gap-1.5 px-3 py-1.5" style="font-size: 12px; font-weight: 700; background-color: #dc2626; border-color: #dc2626; cursor: pointer;">
                 <span class="material-symbols-outlined fs-6">picture_as_pdf</span>
                 Download PDF
             </button>
@@ -218,11 +215,13 @@
     <script src="/static/js/print.js"></script>
 
     <script>
-        // Auto trigger downloadPDF or window.print on load
         document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(function() {
-                downloadPDF();
-            }, 400);
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('autopdf') === 'true') {
+                setTimeout(function() {
+                    downloadPDF();
+                }, 400);
+            }
         });
     </script>
 </body>

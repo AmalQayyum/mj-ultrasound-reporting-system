@@ -30,6 +30,107 @@ interface ReportData {
   time?: string;
 }
 
+interface OrganFinding {
+  organ: string;
+  bullets: string[];
+}
+
+const ORGAN_KEYWORD_MAP: Array<{ regex: RegExp; organName: string }> = [
+  { regex: /^(the\s+)?liver\b/i, organName: 'LIVER' },
+  { regex: /^(the\s+)?gall\s*bladder\b|^(the\s+)?cbd\b|^(the\s+)?biliary\b/i, organName: 'GALL BLADDER & BILIARY TRACT' },
+  { regex: /^(the\s+)?pancreas\b/i, organName: 'PANCREAS' },
+  { regex: /^(the\s+)?spleen\b|^(the\s+)?splenic\b/i, organName: 'SPLEEN' },
+  { regex: /^right\s+kidney\b|^right\s+renal\b/i, organName: 'RIGHT KIDNEY' },
+  { regex: /^left\s+kidney\b|^left\s+renal\b/i, organName: 'LEFT KIDNEY' },
+  { regex: /^both\s+kidneys\b|^bilateral\s+kidneys\b|^kidneys\b/i, organName: 'KIDNEYS' },
+  { regex: /^(the\s+)?ureter(s)?\b|^bilateral\s+ureters\b/i, organName: 'URETERS' },
+  { regex: /^(the\s+)?urinary\s+bladder\b|^(the\s+)?bladder\b/i, organName: 'URINARY BLADDER' },
+  { regex: /^(the\s+)?prostate\b|^(the\s+)?seminal\s+vesicles\b/i, organName: 'PROSTATE' },
+  { regex: /^(the\s+)?uterus\b|^(the\s+)?myometrium\b|^(the\s+)?endometrium\b/i, organName: 'UTERUS' },
+  { regex: /^right\s+ovary\b/i, organName: 'RIGHT OVARY' },
+  { regex: /^left\s+ovary\b/i, organName: 'LEFT OVARY' },
+  { regex: /^(both\s+)?ovaries\b|^ovarian\b/i, organName: 'OVARIES' },
+  { regex: /^(the\s+)?adnexa\b|^adnexal\b/i, organName: 'ADNEXA' },
+  { regex: /^(the\s+)?pouch\s+of\s+douglas\b|^(the\s+)?cul-de-sac\b|^pelvic\s+free\s+fluid\b/i, organName: 'POUCH OF DOUGLAS' },
+  { regex: /^(the\s+)?gestational\s+sac\b|^g-sac\b/i, organName: 'GESTATIONAL SAC & UTERUS' },
+  { regex: /^(the\s+)?yolk\s+sac\b/i, organName: 'YOLK SAC' },
+  { regex: /^(the\s+)?embryo\b|^(fetal\s+pole)\b/i, organName: 'EMBRYO / FETAL POLE' },
+  { regex: /^(a\s+)?(single\s+|multiple\s+)?(intrauterine\s+)?fetus\b|^fetal\b/i, organName: 'FETAL BIOMETRY & VIABILITY' },
+  { regex: /^(the\s+)?placenta\b/i, organName: 'PLACENTA' },
+  { regex: /^(the\s+)?amniotic\s+fluid\b|^(the\s+)?liquor\b|^afi\b/i, organName: 'AMNIOTIC FLUID' },
+  { regex: /^expected\s+date\s+of\s+delivery\b|^edd\b/i, organName: 'EXPECTED DATE OF DELIVERY (EDD)' },
+  { regex: /^(the\s+)?thyroid\b|^(the\s+)?neck\b/i, organName: 'THYROID & NECK' },
+  { regex: /^right\s+breast\b/i, organName: 'RIGHT BREAST' },
+  { regex: /^left\s+breast\b/i, organName: 'LEFT BREAST' },
+  { regex: /^(both\s+)?breasts\b/i, organName: 'BREASTS' },
+  { regex: /^(the\s+)?scrotum\b|^(both\s+)?testes\b|^(the\s+)?testicle/i, organName: 'SCROTUM & TESTES' },
+];
+
+function parseFindingsToOrgans(findingsText: string): OrganFinding[] {
+  if (!findingsText || !findingsText.trim()) return [];
+
+  const lines = findingsText.split(/\r?\n/);
+  const results: OrganFinding[] = [];
+  let currentOrgan = '';
+  let currentBullets: string[] = [];
+
+  const extractBulletsFromText = (str: string): string[] => {
+    let cleaned = str.replace(/^[\s•\-\*\d+\.]+\s*/, '').trim();
+    if (!cleaned) return [];
+    const parts = cleaned.split(/(?<=\.)\s+(?=[A-Z])/).map(s => s.trim()).filter(Boolean);
+    return parts.length > 0 ? parts : [cleaned];
+  };
+
+  const addCurrent = () => {
+    if (currentOrgan && currentBullets.length > 0) {
+      results.push({ organ: currentOrgan, bullets: currentBullets });
+    }
+  };
+
+  for (let line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+
+    const cleanLine = trimmed.replace(/^[\s•\-\*\d+\.]+\s*/, '').trim();
+
+    const headerMatch = cleanLine.match(/^([A-Za-z0-9\s\/\(\)\&\-\,]{2,50}):\s*(.*)$/);
+    if (headerMatch) {
+      addCurrent();
+      currentOrgan = headerMatch[1].trim().toUpperCase();
+      currentBullets = [];
+      if (headerMatch[2] && headerMatch[2].trim()) {
+        currentBullets.push(...extractBulletsFromText(headerMatch[2]));
+      }
+      continue;
+    }
+
+    let matchedAutoOrgan: string | null = null;
+    for (const kw of ORGAN_KEYWORD_MAP) {
+      if (kw.regex.test(cleanLine)) {
+        matchedAutoOrgan = kw.organName;
+        break;
+      }
+    }
+
+    if (matchedAutoOrgan) {
+      if (currentOrgan !== matchedAutoOrgan) {
+        addCurrent();
+        currentOrgan = matchedAutoOrgan;
+        currentBullets = [];
+      }
+      currentBullets.push(...extractBulletsFromText(cleanLine));
+    } else if (currentOrgan) {
+      currentBullets.push(...extractBulletsFromText(cleanLine));
+    } else {
+      currentOrgan = 'FINDINGS';
+      currentBullets.push(...extractBulletsFromText(cleanLine));
+    }
+  }
+
+  addCurrent();
+  return results.filter(r => r.bullets.length > 0);
+}
+
 function formatQrDate(rawDate?: string): string {
   if (!rawDate) return '';
   const str = String(rawDate).trim();
@@ -119,38 +220,65 @@ function wrapText(text: string, font: any, fontSize: number, maxWidth: number): 
   return lines;
 }
 
+/**
+ * Robustly locate and load the official clinic letterhead PDF.
+ * Checks multiple absolute and relative candidate directory structures so it works across
+ * tsx dev server, production bundled dist/server.cjs, container working directories, and project paths.
+ * Fails loud with detailed error logging if the asset cannot be found — NEVER silently generates a blank page.
+ */
+export function loadLetterheadTemplateBytes(): Buffer {
+  const rootDir = process.cwd();
+  const dirName = typeof __dirname !== 'undefined' ? __dirname : rootDir;
+
+  const candidatePaths = [
+    path.resolve(rootDir, 'static', 'Letter head.pdf'),
+    path.resolve(rootDir, 'static', 'images', 'letterhead.pdf'),
+    path.resolve(rootDir, 'static', 'letterhead.pdf'),
+    path.resolve(dirName, 'static', 'Letter head.pdf'),
+    path.resolve(dirName, 'static', 'images', 'letterhead.pdf'),
+    path.resolve(dirName, 'static', 'letterhead.pdf'),
+    path.resolve(dirName, '..', 'static', 'Letter head.pdf'),
+    path.resolve(dirName, '..', '..', 'static', 'Letter head.pdf'),
+    path.resolve('/workspace', 'static', 'Letter head.pdf'),
+    path.resolve('/workspace', 'static', 'images', 'letterhead.pdf'),
+    path.resolve('/workspace', 'static', 'letterhead.pdf'),
+  ];
+
+  // Unique list of paths to check
+  const uniquePaths = Array.from(new Set(candidatePaths));
+
+  for (const p of uniquePaths) {
+    try {
+      if (fs.existsSync(p)) {
+        const stats = fs.statSync(p);
+        if (stats.isFile() && stats.size > 0) {
+          const bytes = fs.readFileSync(p);
+          if (bytes && bytes.length > 0) {
+            console.log(`[PDF Generator] Successfully loaded official letterhead template from: ${p} (${bytes.length} bytes)`);
+            return bytes;
+          }
+        }
+      }
+    } catch (err) {
+      console.warn(`[PDF Generator] Warning checking candidate letterhead path ${p}:`, err);
+    }
+  }
+
+  const searchedList = uniquePaths.map(p => `  • ${p} (exists: ${fs.existsSync(p)})`).join('\n');
+  const errorMsg = `[PDF Generator FATAL] Official Letterhead PDF asset could not be located in any known path:\n${searchedList}\nprocess.cwd() = "${rootDir}", __dirname = "${dirName}"`;
+  console.error(errorMsg);
+  throw new Error(errorMsg);
+}
+
 export async function generateReportPdfBuffer(
   patient: PatientData,
   report: ReportData,
   verifyUrl: string
 ): Promise<Buffer> {
-  // 1. Locate letterhead PDF
-  const possiblePaths = [
-    path.join(process.cwd(), 'static', 'images', 'letterhead.pdf'),
-    path.join(process.cwd(), 'static', 'Letter head.pdf'),
-  ];
-
-  let templateBytes: Buffer | null = null;
-  for (const p of possiblePaths) {
-    if (fs.existsSync(p)) {
-      templateBytes = fs.readFileSync(p);
-      break;
-    }
-  }
-
-  let templateDoc: PDFDocument;
-  let pdfDoc: PDFDocument;
-
-  if (templateBytes) {
-    templateDoc = await PDFDocument.load(templateBytes);
-    pdfDoc = await PDFDocument.load(templateBytes);
-  } else {
-    // Fallback if no letterhead file exists
-    pdfDoc = await PDFDocument.create();
-    templateDoc = await PDFDocument.create();
-    pdfDoc.addPage([612, 792]);
-    templateDoc.addPage([612, 792]);
-  }
+  // 1. Locate and load official letterhead PDF (robust resolution, fails loud if missing)
+  const templateBytes = loadLetterheadTemplateBytes();
+  const templateDoc = await PDFDocument.load(templateBytes);
+  const pdfDoc = await PDFDocument.load(templateBytes);
 
   const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
@@ -171,7 +299,7 @@ export async function generateReportPdfBuffer(
   // Function to create a new page with letterhead background if content overflows
   const checkPageBreak = async (neededHeight: number): Promise<PDFPage> => {
     if (currentY - neededHeight < bottomMargin) {
-      if (templateBytes && templateDoc.getPageCount() > 0) {
+      if (templateDoc.getPageCount() > 0) {
         const [newPage] = await pdfDoc.copyPages(templateDoc, [0]);
         pdfDoc.addPage(newPage);
         currentPage = newPage;
@@ -357,74 +485,54 @@ export async function generateReportPdfBuffer(
     });
     currentY -= 22;
 
-    const rawLines = findingsText.split(/\r?\n/);
-    for (const rawLine of rawLines) {
-      const lineStr = rawLine.trim();
-      if (!lineStr) {
-        currentY -= 6;
-        continue;
-      }
+    const organFindings = parseFindingsToOrgans(findingsText);
+    for (const group of organFindings) {
+      if (!group.bullets || group.bullets.length === 0) continue;
 
-      const organMatch = lineStr.match(/^([A-Z\s\/]{2,20}:)\s*(.*)$/);
-      if (organMatch) {
-        const heading = organMatch[1];
-        const body = organMatch[2];
-
-        await checkPageBreak(14);
-        currentPage.drawText(heading, {
+      // Draw organ/structure section heading
+      if (group.organ && group.organ !== 'FINDINGS' && group.organ !== 'GENERAL') {
+        await checkPageBreak(16);
+        const headingStr = group.organ.endsWith(':') ? group.organ : `${group.organ}:`;
+        currentPage.drawText(headingStr, {
           x: leftMargin,
           y: currentY,
           size: 9.5,
           font: helveticaBold,
-          color: rgb(0.1, 0.1, 0.1),
+          color: rgb(0.05, 0.05, 0.05),
         });
+        currentY -= 13;
+      }
 
-        const headingWidth = helveticaBold.widthOfTextAtSize(heading + ' ', 9.5);
-        if (body) {
-          const bodyLines = wrapText(body, helvetica, 9, contentWidth - headingWidth);
-          if (bodyLines.length > 0) {
-            currentPage.drawText(bodyLines[0], {
-              x: leftMargin + headingWidth,
-              y: currentY,
-              size: 9,
-              font: helvetica,
-              color: rgb(0.2, 0.2, 0.2),
-            });
-            currentY -= 13;
+      // Draw bullet points under the organ heading
+      for (const bullet of group.bullets) {
+        const bulletText = bullet.trim();
+        if (!bulletText) continue;
 
-            for (let i = 1; i < bodyLines.length; i++) {
-              await checkPageBreak(13);
-              currentPage.drawText(bodyLines[i], {
-                x: leftMargin + 15,
-                y: currentY,
-                size: 9,
-                font: helvetica,
-                color: rgb(0.2, 0.2, 0.2),
-              });
-              currentY -= 13;
-            }
-          } else {
-            currentY -= 13;
-          }
-        } else {
-          currentY -= 13;
-        }
-      } else {
-        const wrapped = wrapText(lineStr, helvetica, 9, contentWidth);
-        for (const wLine of wrapped) {
+        const wrapped = wrapText(bulletText, helvetica, 9, contentWidth - 14);
+        for (let i = 0; i < wrapped.length; i++) {
           await checkPageBreak(13);
-          currentPage.drawText(wLine, {
-            x: leftMargin,
+          if (i === 0) {
+            currentPage.drawText('•', {
+              x: leftMargin + 3,
+              y: currentY,
+              size: 10,
+              font: helveticaBold,
+              color: rgb(0.1, 0.1, 0.1),
+            });
+          }
+          currentPage.drawText(wrapped[i], {
+            x: leftMargin + 14,
             y: currentY,
             size: 9,
             font: helvetica,
-            color: rgb(0.2, 0.2, 0.2),
+            color: rgb(0.15, 0.15, 0.15),
           });
           currentY -= 13;
         }
       }
+      currentY -= 4; // Space between organ groups
     }
-    currentY -= 8;
+    currentY -= 4;
   }
 
   // 6. Impression / Conclusion Section
@@ -511,20 +619,12 @@ export async function generateReportPdfBuffer(
     color: rgb(0.6, 0.6, 0.6),
   });
 
-  currentPage.drawText('Dr. Consultant Radiologist', {
+  currentPage.drawText('Consultant Sonologist', {
     x: sigX + 10,
     y: footerY - 23,
     size: 9.5,
     font: helveticaBold,
-    color: rgb(0.1, 0.15, 0.3),
-  });
-
-  currentPage.drawText('M.B.B.S., M.D. (Radiology) / Sonologist', {
-    x: sigX + 10,
-    y: footerY - 34,
-    size: 8,
-    font: helveticaOblique,
-    color: rgb(0.3, 0.3, 0.3),
+    color: rgb(0.1, 0.1, 0.1),
   });
 
   const pdfBytes = await pdfDoc.save();

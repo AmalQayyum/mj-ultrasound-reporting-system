@@ -326,11 +326,10 @@
                                 <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-muted font-italic border-bottom" style="font-size: 12px;" onclick="selectStudy('')">-- Select Exam Type --</div>
                                 <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-slate-800" style="font-size: 13px;" onclick="selectStudy('Whole Abdomen')">Whole Abdomen</div>
                                 <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-slate-800" style="font-size: 13px;" onclick="selectStudy('Upper Abdomen')">Upper Abdomen</div>
-                                <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-slate-800" style="font-size: 13px;" onclick="selectStudy('Lower Abdomen')">Lower Abdomen / Pelvis</div>
-                                <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-slate-800" style="font-size: 13px;" onclick="selectStudy('KUB')">KUB (Kidneys, Ureters, Bladder)</div>
-                                <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-slate-800" style="font-size: 13px;" onclick="selectStudy('Renal Ultrasound')">Renal Ultrasound</div>
+                                <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-slate-800" style="font-size: 13px;" onclick="selectStudy('KUB (Kidneys, Ureters, Bladder)')">KUB (Kidneys, Ureters, Bladder)</div>
                                 <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-slate-800" style="font-size: 13px;" onclick="selectStudy('Pelvic Ultrasound')">Pelvic Ultrasound</div>
-                                <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-slate-800" style="font-size: 13px;" onclick="selectStudy('Transvaginal (TVS)')">Transvaginal (TVS)</div>
+                                <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-slate-800" style="font-size: 13px;" onclick="selectStudy('Obstetric Ultrasound')">Obstetric Ultrasound</div>
+                                <div class="study-option dropdown-item py-2 px-3 cursor-pointer text-slate-800" style="font-size: 13px;" onclick="selectStudy('Obstetric TVS / Early Pregnancy TVS')">Obstetric TVS / Early Pregnancy TVS</div>
                                 <div id="study_no_match" class="dropdown-item py-2 px-3 text-muted text-center" style="display: none; font-size: 12px;">No matching exam type</div>
                             </div>
                         </div>
@@ -505,10 +504,26 @@
     function mapStudyToTemplateName(studyName) {
         const name = (studyName || '').toLowerCase().trim();
         if (name.includes('upper')) return 'upper_abdomen';
-        if (name.includes('renal')) return 'renal';
         if (name.includes('kub')) return 'kub';
-        if (name.includes('pelv') || name.includes('tvs') || name.includes('lower') || name.includes('gyne') || name.includes('pregnancy') || name.includes('obs')) return 'pelvis';
+        if (name.includes('pelv') || name.includes('obs') || name.includes('tvs') || name.includes('pregnancy') || name.includes('gyne') || name.includes('lower')) return 'pelvis';
         return 'whole_abdomen';
+    }
+
+    function switchPelvisModeForStudy(studyName) {
+        const sLower = (studyName || '').toLowerCase();
+        if (sLower.includes('obs') || sLower.includes('tvs') || sLower.includes('pregnancy')) {
+            const modeObs = document.getElementById('mode_obs');
+            if (modeObs) modeObs.checked = true;
+            if (typeof window.togglePelvisMode === 'function') {
+                window.togglePelvisMode('obs');
+            }
+        } else {
+            const modeGyne = document.getElementById('mode_gyne');
+            if (modeGyne) modeGyne.checked = true;
+            if (typeof window.togglePelvisMode === 'function') {
+                window.togglePelvisMode('gyne');
+            }
+        }
     }
 
     function onStudyInputChange(val) {
@@ -517,7 +532,12 @@
 
     function loadOrganTemplateForStudy(studyName) {
         const tmplName = mapStudyToTemplateName(studyName);
-        if (tmplName === currentTemplateLoaded) return;
+        if (tmplName === currentTemplateLoaded) {
+            if (tmplName === 'pelvis') {
+                switchPelvisModeForStudy(studyName);
+            }
+            return;
+        }
 
         const container = document.getElementById('dynamic_organ_form_container');
         if (!container) return;
@@ -538,9 +558,9 @@
                 });
 
                 attachOrganFormListeners();
-                if (typeof window.syncObstetricReport === 'function' && tmplName === 'pelvis') {
-                    window.syncObstetricReport();
-                } else {
+                if (tmplName === 'pelvis') {
+                    switchPelvisModeForStudy(studyName);
+                } else if (typeof window.generateReportFromOrganModule === 'function') {
                     generateReportFromOrganModule();
                 }
             })

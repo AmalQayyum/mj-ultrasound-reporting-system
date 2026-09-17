@@ -235,7 +235,7 @@
         <form action="{{ url_for('main.patients') }}" method="GET" class="w-100 max-w-full mx-auto" onsubmit="event.preventDefault();">
             <div class="position-relative w-100">
                 <span class="material-symbols-outlined position-absolute" style="left: 1rem; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 20px;">search</span>
-                <input type="text" id="patient_search_input" name="q" class="form-control form-control-clinical bg-white w-100" style="padding-left: 2.75rem; padding-top: 0.75rem; padding-bottom: 0.75rem; font-size: 14px; border-radius: 8px !important; border: 1px solid var(--outline-variant);" placeholder="Search by Name, MR No / Patient ID, Phone Number, or Father/Husband Name..." value="{{ q }}" autofocus autocomplete="off" oninput="onFilterInputDebounce()">
+                <input type="text" id="patient_search_input" name="q" class="form-control form-control-clinical bg-white w-100" style="padding-left: 2.75rem; padding-top: 0.75rem; padding-bottom: 0.75rem; font-size: 14px; border-radius: 8px !important; border: 1px solid var(--outline-variant);" placeholder="Search by Name, MR No / Patient ID, Phone Number, or Father/Husband Name..." value="{{ q }}" autofocus autocomplete="off" oninput="autoCapitalizeSearchInput(this); onFilterInputDebounce();" onblur="autoCapitalizeSearchInput(this);">
             </div>
         </form>
 
@@ -346,7 +346,7 @@
                         <!-- Patient Name -->
                         <div class="col-12 col-md-6">
                             <label for="modal_full_name" class="clinical-label" style="background-color: #8db1e1; color: #ffffff; padding: 4px 12px; font-size: 13px; font-weight: 600; display: flex; align-items: center; border-radius: 4px 4px 0 0; height: 32px; margin-bottom: 0;">Name *</label>
-                            <input type="text" id="modal_full_name" name="full_name" class="form-control form-control-clinical" placeholder="e.g. Jane Doe" style="background-color: #ffffff; height: 38px; font-size: 14px; border-radius: 0 0 4px 4px;" required>
+                            <input type="text" id="modal_full_name" name="full_name" class="form-control form-control-clinical" placeholder="e.g. Jane Doe" style="background-color: #ffffff; height: 38px; font-size: 14px; border-radius: 0 0 4px 4px; text-transform: capitalize;" oninput="autoCapitalizeNameInput(this)" onblur="autoCapitalizeNameInput(this)" required>
                         </div>
 
                         <!-- Phone Number -->
@@ -442,8 +442,53 @@
 
 {% block extra_js %}
 <script>
+    function autoCapitalizeNameInput(input) {
+        if (!input) return;
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        const val = input.value;
+        const capitalized = val.replace(/\b\w/g, c => c.toUpperCase());
+        if (val !== capitalized) {
+            input.value = capitalized;
+            if (start !== null && end !== null) {
+                input.setSelectionRange(start, end);
+            }
+        }
+    }
+
+    function autoCapitalizeSearchInput(input) {
+        if (!input) return;
+        const val = input.value;
+        if (!val) return;
+
+        // Do not alter phone numbers or numeric query values
+        const isPhoneOrNumeric = /^\+?[\d\s\-()]+$/.test(val);
+        if (isPhoneOrNumeric) return;
+
+        // Do not alter MR No / Patient ID search values (e.g. PT-1234, pt-1234, MR-001, #1002)
+        const isMRNo = /^(pt|mr|id)[\s\-:]?\d+/i.test(val.trim()) || /^#\d+/i.test(val.trim());
+        if (isMRNo) return;
+
+        // Do not alter Father/Husband Name search relation prefixes (e.g., s/o, w/o, d/o, c/o, f/o)
+        const isFatherHusbandPrefix = /^(s\/o|w\/o|d\/o|c\/o|f\/o)\b/i.test(val.trim());
+        if (isFatherHusbandPrefix) return;
+
+        // Otherwise, it's a Patient Name search value -> capitalize first letter of every word
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        const capitalized = val.replace(/\b\w/g, c => c.toUpperCase());
+
+        if (val !== capitalized) {
+            input.value = capitalized;
+            if (start !== null && end !== null) {
+                input.setSelectionRange(start, end);
+            }
+        }
+    }
+
     let pendingDeletePatientId = null;
     let searchDebounceTimer = null;
+    let liveSearchAbortController = null;
 
     function togglePatientMenu(event, patientId) {
         if (event) {
@@ -539,11 +584,24 @@
         const mobileCardsDiv = document.getElementById('patient_list_mobile_cards');
         const matchSpan = document.getElementById('matches_count_span') || document.querySelector('.label-caps');
 
+        if (liveSearchAbortController) {
+            liveSearchAbortController.abort();
+        }
+        liveSearchAbortController = new AbortController();
+
+        const savedToken = localStorage.getItem('mj_session_token') || sessionStorage.getItem('mj_session_token') || '';
+        const headers = {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json'
+        };
+        if (savedToken) {
+            headers['x-session-token'] = savedToken;
+        }
+
         fetch(`/patients?${params.toString()}`, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json'
-            }
+            headers: headers,
+            credentials: 'same-origin',
+            signal: liveSearchAbortController.signal
         })
         .then(res => {
             if (res.status === 401) {
@@ -712,7 +770,10 @@
                 }
             }
         })
-        .catch(err => console.error('Live search error:', err));
+        .catch(err => {
+            if (err && err.name === 'AbortError') return;
+            console.warn('Live search fetch notice:', err);
+        });
     }
 
     function goToRegisterPatient() {
@@ -722,9 +783,19 @@
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('patient_search_input');
         if (searchInput) {
-            searchInput.addEventListener('input', onFilterInputDebounce);
+            autoCapitalizeSearchInput(searchInput);
+            searchInput.addEventListener('input', function() {
+                autoCapitalizeSearchInput(this);
+                onFilterInputDebounce();
+            });
             searchInput.addEventListener('keyup', onFilterInputDebounce);
-            searchInput.addEventListener('search', onFilterInputDebounce);
+            searchInput.addEventListener('search', function() {
+                autoCapitalizeSearchInput(this);
+                onFilterInputDebounce();
+            });
+            searchInput.addEventListener('blur', function() {
+                autoCapitalizeSearchInput(this);
+            });
         }
 
         const urlParams = new URLSearchParams(window.location.search);

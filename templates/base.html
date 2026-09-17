@@ -373,9 +373,18 @@
             border-bottom: 1px solid #f1f5f9 !important;
         }
 
-        /* Form Controls */
+        /* Form Controls & Input Outlines */
+        .form-control,
+        .form-select,
+        .form-control-clinical,
+        .form-select-clinical,
+        .info-input,
+        .obs-input,
+        .organ-input {
+            border: 1px solid #cbd5e1;
+        }
+
         .form-control-clinical, .form-select-clinical {
-            border: 1px solid var(--outline-variant);
             border-radius: 8px !important;
             padding: 0.45rem 0.75rem;
             font-size: 0.875rem;
@@ -386,9 +395,15 @@
             transition: all 0.2s ease-in-out;
         }
 
-        .form-control-clinical:focus, .form-select-clinical:focus {
+        .form-control:focus,
+        .form-select:focus,
+        .form-control-clinical:focus,
+        .form-select-clinical:focus,
+        .info-input:focus,
+        .obs-input:focus,
+        .organ-input:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: #123B7A !important;
             box-shadow: 0 0 0 3px rgba(18, 59, 122, 0.15);
             background-color: #ffffff;
         }
@@ -549,14 +564,8 @@
             display: none !important;
         }
 
-        /* 4. Download button */
-        button[onclick*="Exporting clinical ultrasound logs"],
-        button[onclick*="downloadPDF"],
-        #btn_pdf_action,
-        a[title="Download PDF"],
-        a[title="Download"],
-        a[href*="autopdf=true"],
-        button[title="Download"] {
+        /* 4. Export logs demo button */
+        button[onclick*="Exporting clinical ultrasound logs"] {
             display: none !important;
         }
 
@@ -589,6 +598,66 @@
         .recaptcha-text,
         .protected-by-recaptcha {
             display: none !important;
+        }
+
+        /* Print Media Reset */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 32mm 12mm 15mm 12mm;
+            }
+            header,
+            nav,
+            aside,
+            footer,
+            .top-navbar,
+            .sidebar,
+            .sidebar-backdrop,
+            .report-action-bar,
+            .top-action-bar,
+            .patient-details-actions,
+            .no-print,
+            .btn,
+            button,
+            .modal,
+            .modal-backdrop,
+            .toast,
+            .alert,
+            .dropdown,
+            .dropdown-menu,
+            [class*="remix" i],
+            [class*="device" i],
+            [id*="remix" i],
+            [id*="device" i],
+            [aria-label*="remix" i],
+            [aria-label*="device" i],
+            [title*="remix" i],
+            [title*="device" i],
+            [class*="preview-header" i],
+            [class*="preview-bar" i],
+            [class*="app-header" i],
+            [class*="toolbar" i],
+            [class*="banner" i],
+            [class*="controls" i],
+            [data-testid*="remix" i],
+            [data-testid*="device" i],
+            [id*="header" i]:not(.patient-header-row):not(.organ-header),
+            [class*="header" i]:not(.patient-header-row):not(.organ-header) {
+                display: none !important;
+                visibility: hidden !important;
+                height: 0 !important;
+                width: 0 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
+            }
+            .app-container, .main-workspace, main {
+                display: block !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                min-height: auto !important;
+            }
         }
     </style>
     {% block extra_head %}{% endblock %}
@@ -1058,6 +1127,33 @@
             }
         }
     }
+
+    (function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlToken = urlParams.get('token') || urlParams.get('session_token');
+        if (urlToken) {
+            localStorage.setItem('mj_session_token', urlToken);
+            sessionStorage.setItem('mj_session_token', urlToken);
+            document.cookie = 'session_token=' + urlToken + '; path=/; max-age=604800; SameSite=None; Secure; Partitioned';
+            document.cookie = 'mj_auth_token=' + urlToken + '; path=/; max-age=604800; SameSite=None; Secure; Partitioned';
+        }
+
+        const savedToken = localStorage.getItem('mj_session_token') || sessionStorage.getItem('mj_session_token');
+        document.addEventListener('click', function(e) {
+            const a = e.target.closest('a');
+            if (a && a.href && a.href.includes('/logout')) {
+                localStorage.removeItem('mj_session_token');
+                sessionStorage.removeItem('mj_session_token');
+                document.cookie = 'session_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=None; Secure; Partitioned';
+                document.cookie = 'mj_auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=None; Secure; Partitioned';
+                document.cookie = 'connect.sid=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=None; Secure';
+            } else if (savedToken && a && a.href && a.href.startsWith(window.location.origin) && !a.href.includes('token=') && !a.href.includes('/logout')) {
+                const url = new URL(a.href);
+                url.searchParams.set('token', savedToken);
+                a.href = url.toString();
+            }
+        }, true);
+    })();
     </script>
 </body>
 </html>

@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- Material Symbols -->
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
-    <!-- Google reCAPTCHA v2 JS -->
+    <!-- Google reCAPTCHA Enterprise / v2 API -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
     <style>
@@ -107,36 +107,6 @@
             padding-top: 4px;
             padding-bottom: 0px;
         }
-
-        /* reCAPTCHA responsive wrapper */
-        .recaptcha-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-            margin-bottom: 1.25rem;
-            min-height: 78px;
-            overflow: hidden;
-        }
-
-        /* Hide any text/heading above Google reCAPTCHA without breaking the checkbox or iframe */
-        .recaptcha-container > *:not(.g-recaptcha):not(script):not(iframe),
-        .recaptcha-title,
-        .recaptcha-header,
-        .recaptcha-label,
-        .recaptcha-text,
-        .protected-by-recaptcha {
-            display: none !important;
-        }
-
-        @media (max-width: 380px) {
-            .g-recaptcha {
-                transform: scale(0.85);
-                -webkit-transform: scale(0.85);
-                transform-origin: center center;
-                -webkit-transform-origin: center center;
-            }
-        }
     </style>
 </head>
 <body>
@@ -165,30 +135,27 @@
     </div>
 
     <!-- Login Form -->
-    <form action="{{ url_for('auth.login') }}" method="POST" id="loginForm">
+    <form action="/login" method="POST" id="loginForm" autocomplete="off">
         <!-- Username -->
         <div class="mb-3 text-start">
             <label class="clinical-label" for="usernameInput">Username</label>
-            <input type="text" id="usernameInput" name="username" class="form-control form-control-clinical" placeholder="Enter Username" required autofocus autocomplete="username">
+            <input type="text" id="usernameInput" name="username" class="form-control form-control-clinical" placeholder="Enter Username" value="" required autofocus autocomplete="off">
         </div>
 
         <!-- Password -->
         <div class="mb-3 text-start">
             <label class="clinical-label" for="passwordInput">Password</label>
-            <input type="password" id="passwordInput" name="password" class="form-control form-control-clinical" placeholder="Enter Password" required autocomplete="current-password">
-        </div>  
+            <input type="password" id="passwordInput" name="password" class="form-control form-control-clinical" placeholder="Enter Password" value="" required autocomplete="new-password">
+        </div>
 
-        <!-- Google reCAPTCHA v2 Checkbox -->
-        <div class="recaptcha-container">
-            <div class="g-recaptcha" 
-                 data-sitekey="{{ recaptcha_site_key if recaptcha_site_key else '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI' }}" 
-                 data-callback="onRecaptchaSuccess" 
-                 data-expired-callback="onRecaptchaExpired"></div>
+        <!-- Google reCAPTCHA Container -->
+        <div class="recaptcha-container mb-3 d-flex justify-content-center">
+            <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key or '6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI' }}"></div>
         </div>
 
         <!-- Submit Button Wrapper -->
-        <div id="loginBtnWrapper" class="w-100">
-            <button type="submit" id="loginBtn" class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2" style="background-color: #022e67; border-color: #022e67;" disabled>
+        <div id="loginBtnWrapper" class="w-100 mt-3">
+            <button type="submit" id="loginBtn" class="btn btn-primary w-100 d-flex align-items-center justify-content-center gap-2" style="background-color: #022e67; border-color: #022e67;">
                 <span class="material-symbols-outlined fs-6">login</span>
                 Sign In to Portal
             </button>
@@ -200,103 +167,111 @@
     <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- reCAPTCHA & Form Validation JavaScript -->
     <script>
-        let recaptchaToken = '';
-
-        function onRecaptchaSuccess(response) {
-            recaptchaToken = response;
-            validateLoginForm();
-        }
-
-        function onRecaptchaExpired() {
-            recaptchaToken = '';
-            validateLoginForm();
-        }
-
-        function validateLoginForm() {
-            const username = document.getElementById('usernameInput').value.trim();
-            const password = document.getElementById('passwordInput').value.trim();
-            const loginBtn = document.getElementById('loginBtn');
-            
-            let currentToken = recaptchaToken;
-            if (!currentToken && typeof grecaptcha !== 'undefined' && grecaptcha.getResponse) {
-                try {
-                    currentToken = grecaptcha.getResponse();
-                } catch(e) {}
+        (function() {
+            function clearFields() {
+                const uInput = document.getElementById('usernameInput');
+                const pInput = document.getElementById('passwordInput');
+                if (uInput) uInput.value = '';
+                if (pInput) pInput.value = '';
             }
 
-            if (username !== '' && password !== '' && currentToken !== '') {
-                loginBtn.disabled = false;
-            } else {
-                loginBtn.disabled = true;
-            }
-        }
+            clearFields();
+            window.addEventListener('pageshow', clearFields);
+            window.addEventListener('DOMContentLoaded', clearFields);
 
-        function showCaptchaWarning(message) {
-            const alertContainer = document.getElementById('alertContainer');
-            if (alertContainer) {
-                alertContainer.innerHTML = `
-                    <div class="mb-3">
-                        <div class="alert alert-danger small py-2 text-start mb-2" role="alert">
-                            ${message}
-                        </div>
-                    </div>
-                `;
-            }
-        }
+            const urlParams = new URLSearchParams(window.location.search);
+            const isLogout = urlParams.has('logout');
 
-        document.addEventListener('DOMContentLoaded', function() {
-            const usernameInput = document.getElementById('usernameInput');
-            const passwordInput = document.getElementById('passwordInput');
+            if (isLogout) {
+                localStorage.removeItem('mj_session_token');
+                sessionStorage.removeItem('mj_session_token');
+                document.cookie = 'session_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=None; Secure';
+                document.cookie = 'mj_auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=None; Secure';
+                document.cookie = 'connect.sid=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=None; Secure';
+            }
+
+            const existingToken = localStorage.getItem('mj_session_token') || sessionStorage.getItem('mj_session_token');
+
+            if (existingToken && !isLogout) {
+                // Test token validation in background
+                fetch('/api/validate-session', {
+                    headers: { 'x-session-token': existingToken, 'Accept': 'application/json' }
+                }).then(res => res.json()).then(data => {
+                    if (data && data.valid) {
+                        window.location.href = '/dashboard?token=' + encodeURIComponent(existingToken);
+                    } else {
+                        localStorage.removeItem('mj_session_token');
+                        sessionStorage.removeItem('mj_session_token');
+                    }
+                }).catch(() => {});
+            }
+
             const loginForm = document.getElementById('loginForm');
-            const loginBtnWrapper = document.getElementById('loginBtnWrapper');
+            const loginBtn = document.getElementById('loginBtn');
+            const alertContainer = document.getElementById('alertContainer');
 
-            if (usernameInput) usernameInput.addEventListener('input', validateLoginForm);
-            if (passwordInput) passwordInput.addEventListener('input', validateLoginForm);
+            if (loginForm && loginBtn) {
+                loginForm.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const username = document.getElementById('usernameInput').value.trim();
+                    const password = document.getElementById('passwordInput').value;
+                    let recaptchaToken = '';
+                    if (typeof grecaptcha !== 'undefined') {
+                        try {
+                            recaptchaToken = grecaptcha.getResponse();
+                        } catch (err) {}
+                    }
 
-            // Handle user clicking on disabled button area
-            if (loginBtnWrapper) {
-                loginBtnWrapper.addEventListener('click', function(e) {
-                    const loginBtn = document.getElementById('loginBtn');
-                    if (loginBtn && loginBtn.disabled) {
-                        let token = recaptchaToken;
-                        if (!token && typeof grecaptcha !== 'undefined' && grecaptcha.getResponse) {
-                            try { token = grecaptcha.getResponse(); } catch(err) {}
+                    loginBtn.disabled = true;
+                    loginBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Signing In...';
+
+                    try {
+                        const res = await fetch('/login', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Accept': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                username: username,
+                                password: password,
+                                'g-recaptcha-response': recaptchaToken
+                            })
+                        });
+
+                        const data = await res.json();
+                        if (res.ok && data.success) {
+                            if (data.token) {
+                                localStorage.setItem('mj_session_token', data.token);
+                                sessionStorage.setItem('mj_session_token', data.token);
+                                document.cookie = 'session_token=' + data.token + '; path=/; max-age=604800; SameSite=None; Secure; Partitioned';
+                                document.cookie = 'mj_auth_token=' + data.token + '; path=/; max-age=604800; SameSite=None; Secure; Partitioned';
+                                window.location.href = (data.redirect || '/dashboard') + '?token=' + encodeURIComponent(data.token);
+                            } else {
+                                window.location.href = data.redirect || '/dashboard';
+                            }
+                            return;
+                        } else {
+                            // Show error alert
+                            const errMsg = data.error || data.message || 'Invalid username or password.';
+                            if (alertContainer) {
+                                alertContainer.innerHTML = '<div class="alert alert-danger small py-2 text-start mb-3" role="alert">' + errMsg + '</div>';
+                            }
+                            if (typeof grecaptcha !== 'undefined' && typeof grecaptcha.reset === 'function') {
+                                try { grecaptcha.reset(); } catch(gErr) {}
+                            }
+                            loginBtn.disabled = false;
+                            loginBtn.innerHTML = '<span class="material-symbols-outlined fs-6">login</span> Sign In to Portal';
                         }
-                        if (!token) {
-                            showCaptchaWarning("Please verify that you are not a robot.");
-                        }
+                    } catch (err) {
+                        // Fallback to standard form submit
+                        loginForm.submit();
                     }
                 });
             }
-
-            // Handle form submission
-            if (loginForm) {
-                loginForm.addEventListener('submit', function(e) {
-                    let token = recaptchaToken;
-                    if (!token && typeof grecaptcha !== 'undefined' && grecaptcha.getResponse) {
-                        try { token = grecaptcha.getResponse(); } catch(err) {}
-                    }
-
-                    if (!token) {
-                        e.preventDefault();
-                        showCaptchaWarning("Please verify that you are not a robot.");
-                        if (typeof grecaptcha !== 'undefined' && grecaptcha.reset) {
-                            try { grecaptcha.reset(); } catch(err) {}
-                        }
-                        recaptchaToken = '';
-                        validateLoginForm();
-                        return false;
-                    }
-                });
-            }
-
-            // Reset captcha on load if page reloaded after failed attempt
-            setTimeout(function() {
-                validateLoginForm();
-            }, 500);
-        });
+        })();
     </script>
 </body>
 </html>

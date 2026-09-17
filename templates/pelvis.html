@@ -20,27 +20,10 @@
         </div>
     </div>
 
-    <!-- MAIN CATEGORY SELECTOR -->
-    <div class="card border-0 bg-slate-50 p-3 mb-4 rounded-3 border" style="border-color: #cbd5e1 !important;">
-        <div class="row g-3">
-            <div class="col-12">
-                <label class="fw-bold text-uppercase text-slate-800 mb-1.5 d-flex align-items-center gap-1.5" style="font-size: 12px;">
-                    <span class="material-symbols-outlined text-primary fs-6">category</span>
-                    Exam Module Type
-                </label>
-                <div class="btn-group w-full" role="group">
-                    <input type="radio" class="btn-check obs-input" name="pelvis_exam_mode" id="mode_gyne" value="Gynecological Pelvis" checked onclick="togglePelvisMode('gyne')">
-                    <label class="btn btn-outline-primary btn-sm fw-bold py-2" for="mode_gyne">
-                        <span class="material-symbols-outlined fs-6 align-middle me-1">female</span>Lower Abdomen / Gynecological Pelvis
-                    </label>
-
-                    <input type="radio" class="btn-check obs-input" name="pelvis_exam_mode" id="mode_obs" value="Obstetric Pregnancy" onclick="togglePelvisMode('obs')">
-                    <label class="btn btn-outline-primary btn-sm fw-bold py-2" for="mode_obs">
-                        <span class="material-symbols-outlined fs-6 align-middle me-1">child_care</span>Obstetric / Pregnancy
-                    </label>
-                </div>
-            </div>
-        </div>
+    <!-- HIDDEN MODULE MODE INPUTS (MANAGED AUTOMATICALLY BY EXAM / STUDY TYPE) -->
+    <div class="d-none">
+        <input type="radio" class="obs-input" name="pelvis_exam_mode" id="mode_gyne" value="Gynecological Pelvis" checked onclick="togglePelvisMode('gyne')">
+        <input type="radio" class="obs-input" name="pelvis_exam_mode" id="mode_obs" value="Obstetric Pregnancy" onclick="togglePelvisMode('obs')">
     </div>
 
     <!-- ============================================================== -->
@@ -457,7 +440,7 @@
                             <div class="form-check">
                                 <input class="form-check-input obs-input" type="radio" name="obs_viability" id="viab_seen" value="Seen" checked>
                                 <label class="form-check-label small fw-semibold text-success" for="viab_seen">
-                                    <span class="material-symbols-outlined fs-6 align-middle me-0.5">favorite</span>Seen (Live Fetus)
+                                    <span class="material-symbols-outlined fs-6 align-middle me-0.5">favorite</span>Seen (Alive Fetus)
                                 </label>
                             </div>
                             <div class="form-check">
@@ -634,6 +617,10 @@
                             <div class="col-6 col-sm-2">
                                 <label class="form-label small fw-bold text-secondary mb-1">FL (mm)</label>
                                 <input type="number" step="0.1" id="bio_fl" class="form-control form-control-sm obs-input font-mono">
+                            </div>
+                            <div class="col-6 col-sm-2">
+                                <label class="form-label small fw-bold text-secondary mb-1">EDD</label>
+                                <input type="text" id="bio_edd" class="form-control form-control-sm obs-input font-mono" placeholder="e.g. 15-Oct-2026">
                             </div>
                         </div>
                     </div>
@@ -815,7 +802,8 @@
                 ubPvr: document.getElementById('ub_pvr')?.value || '',
 
                 // Additional
-                additionalNotes: document.getElementById('pelvis_additional_notes')?.value || ''
+                additionalNotes: document.getElementById('pelvis_additional_notes')?.value || '',
+                bioEdd: document.getElementById('bio_edd')?.value || ''
             };
 
             // Save JSON string to hidden input
@@ -831,73 +819,77 @@
                 const viab = document.querySelector('input[name="obs_viability"]:checked')?.value || 'Seen';
                 const pres = document.querySelector('input[name="obs_presentation"]:checked')?.value || 'Cephalic';
 
-                findingsLines.push(`A ${gest.toLowerCase()} intrauterine fetus is visualized.`);
+                let fetalStr = `FETAL BIOMETRY & VIABILITY:\nA ${gest.toLowerCase()} intrauterine fetus is visualized.`;
                 if (viab === 'Seen') {
-                    findingsLines.push(`Fetal cardiac activity and active body movements are SEEN (Live Fetus). Fetal presentation is ${pres.toLowerCase()}.`);
-                    impressionLines.push(`Single live intrauterine fetus corresponding to ultrasound biometry.`);
+                    fetalStr += ` Fetal cardiac activity and active body movements are SEEN (Alive Fetus). Fetal presentation is ${pres.toLowerCase()}.`;
+                    impressionLines.push(`Single alive intrauterine fetus corresponding to ultrasound biometry.`);
                 } else {
-                    findingsLines.push(`NO fetal cardiac activity or movement identified.`);
+                    fetalStr += ` NO fetal cardiac activity or movement identified.`;
                     impressionLines.push(`Intrauterine pregnancy without active fetal cardiac pulsation.`);
                 }
+                findingsLines.push(fetalStr);
 
                 const placPos = document.getElementById('placenta_position')?.value || 'Posterior Wall';
                 const placGrade = document.getElementById('placenta_grade')?.value || 'Grade I';
-                findingsLines.push(`Placenta is situated on the ${placPos} with ${placGrade} maturation.`);
+                findingsLines.push(`PLACENTA:\nPlacenta is situated on the ${placPos} with ${placGrade} maturation.`);
 
                 const afi = document.getElementById('afi_cm')?.value;
-                if (afi) findingsLines.push(`Amniotic fluid index (AFI) measures ${afi} cm (adequate).`);
-                else findingsLines.push(`Amniotic fluid volume is subjectively adequate.`);
+                if (afi) findingsLines.push(`AMNIOTIC FLUID:\nAmniotic fluid index (AFI) measures ${afi} cm (adequate).`);
+                else findingsLines.push(`AMNIOTIC FLUID:\nAmniotic fluid volume is subjectively adequate.`);
+
+                const edd = document.getElementById('bio_edd')?.value;
+                if (edd) findingsLines.push(`EXPECTED DATE OF DELIVERY (EDD):\nExpected Date of Delivery (EDD): ${edd}.`);
 
             } else {
                 // GYNECOLOGICAL PELVIS NARRATIVE GENERATOR
 
                 // 1. Uterus
-                let utStr = `Uterus is ${dataObj.utPosition.toLowerCase()}`;
+                let utStr = `UTERUS:\nUterus is ${dataObj.utPosition.toLowerCase()}`;
                 if (dataObj.utLength && dataObj.utAp && dataObj.utWidth) {
                     utStr += ` and measures ${dataObj.utLength} × ${dataObj.utAp} × ${dataObj.utWidth} cm.`;
                 } else {
                     utStr += `.`;
                 }
-                findingsLines.push(utStr);
 
                 if (dataObj.utMyometrium === 'Normal') {
-                    findingsLines.push(`Myometrium is homogeneous in echotexture.`);
+                    utStr += ` Myometrium is homogeneous in echotexture.`;
                 } else {
-                    findingsLines.push(`Myometrium appears ${dataObj.utMyometrium.toLowerCase()} in echotexture.`);
+                    utStr += ` Myometrium appears ${dataObj.utMyometrium.toLowerCase()} in echotexture.`;
                     impressionLines.push(`${dataObj.utMyometrium} myometrial pattern.`);
                 }
 
                 if (dataObj.utEtMm) {
-                    findingsLines.push(`Endometrial thickness measures ${dataObj.utEtMm} mm (${dataObj.utEtAppearance.toLowerCase()}).`);
+                    utStr += ` Endometrial thickness measures ${dataObj.utEtMm} mm (${dataObj.utEtAppearance.toLowerCase()}).`;
                 } else {
-                    findingsLines.push(`Endometrial cavity appears ${dataObj.utEtAppearance.toLowerCase()}.`);
+                    utStr += ` Endometrial cavity appears ${dataObj.utEtAppearance.toLowerCase()}.`;
                 }
 
                 if (dataObj.utFocalLesion === 'None') {
-                    findingsLines.push(`No focal uterine lesion is identified.`);
+                    utStr += ` No focal uterine lesion is identified.`;
                 } else {
-                    let lesText = `Focal uterine lesion identified: ${dataObj.utFocalLesion}.`;
-                    if (dataObj.utLesionDetails) lesText += ` ${dataObj.utLesionDetails}.`;
-                    findingsLines.push(lesText);
+                    utStr += ` Focal uterine lesion identified: ${dataObj.utFocalLesion}.`;
+                    if (dataObj.utLesionDetails) utStr += ` ${dataObj.utLesionDetails}.`;
                     impressionLines.push(`Uterine ${dataObj.utFocalLesion.toLowerCase()}${dataObj.utLesionDetails ? ' (' + dataObj.utLesionDetails + ')' : ''}.`);
                 }
 
                 if (dataObj.utEndoFluid === 'Present') {
-                    findingsLines.push(`Fluid is noted within the endometrial cavity.`);
+                    utStr += ` Fluid is noted within the endometrial cavity.`;
                     impressionLines.push(`Fluid in endometrial cavity.`);
                 }
+                findingsLines.push(utStr);
 
                 // 2. Ovaries
+                let ovLines = [];
                 if (dataObj.roVis === 'Yes' && dataObj.loVis === 'Yes') {
                     if (dataObj.roAppearance === 'Normal' && dataObj.loAppearance === 'Normal') {
-                        findingsLines.push(`Both ovaries are normal in size and echotexture.`);
+                        ovLines.push(`Both ovaries are normal in size and echotexture.`);
                     } else {
                         // Right Ovary
                         let roStr = `Right ovary measures ${dataObj.roL} × ${dataObj.roW} × ${dataObj.roH} cm`;
                         if (dataObj.roVol) roStr += ` (Volume: ${dataObj.roVol})`;
                         roStr += ` with ${dataObj.roAppearance.toLowerCase()} appearance.`;
                         if (dataObj.roNotes) roStr += ` ${dataObj.roNotes}.`;
-                        findingsLines.push(roStr);
+                        ovLines.push(roStr);
 
                         if (dataObj.roAppearance !== 'Normal') {
                             impressionLines.push(`Right ovary: ${dataObj.roAppearance}.`);
@@ -908,39 +900,42 @@
                         if (dataObj.loVol) loStr += ` (Volume: ${dataObj.loVol})`;
                         loStr += ` with ${dataObj.loAppearance.toLowerCase()} appearance.`;
                         if (dataObj.loNotes) loStr += ` ${dataObj.loNotes}.`;
-                        findingsLines.push(loStr);
+                        ovLines.push(loStr);
 
                         if (dataObj.loAppearance !== 'Normal') {
                             impressionLines.push(`Left ovary: ${dataObj.loAppearance}.`);
                         }
                     }
                 } else {
-                    if (dataObj.roVis === 'No') findingsLines.push(`Right ovary is not visualized.`);
-                    if (dataObj.loVis === 'No') findingsLines.push(`Left ovary is not visualized.`);
+                    if (dataObj.roVis === 'No') ovLines.push(`Right ovary is not visualized.`);
+                    if (dataObj.loVis === 'No') ovLines.push(`Left ovary is not visualized.`);
                 }
+                findingsLines.push(`OVARIES:\n${ovLines.join(' ')}`);
 
                 // 3. Adnexa
+                let adStr = `ADNEXA:\n`;
                 if (dataObj.adnexaStatus === 'Normal') {
-                    findingsLines.push(`No adnexal mass or abnormality is seen.`);
+                    adStr += `No adnexal mass or abnormality is seen.`;
                 } else {
-                    let adStr = `Adnexal pathology noted: ${dataObj.adnexaStatus}.`;
+                    adStr += `Adnexal pathology noted: ${dataObj.adnexaStatus}.`;
                     if (dataObj.adnexaMassDesc) adStr += ` ${dataObj.adnexaMassDesc}.`;
-                    findingsLines.push(adStr);
                     impressionLines.push(`${dataObj.adnexaStatus}${dataObj.adnexaMassDesc ? ' (' + dataObj.adnexaMassDesc + ')' : ''}.`);
                 }
+                findingsLines.push(adStr);
 
-                // 4. Cul-de-sac
+                // 4. Cul-de-sac / Pouch of Douglas
+                let podStr = `POUCH OF DOUGLAS:\n`;
                 if (dataObj.podFluid === 'None') {
-                    findingsLines.push(`No free fluid is noted in the pouch of Douglas.`);
+                    podStr += `No free fluid is noted in the pouch of Douglas.`;
                 } else {
-                    let podStr = `${dataObj.podFluid} free fluid is noted in the pouch of Douglas.`;
+                    podStr += `${dataObj.podFluid} free fluid is noted in the pouch of Douglas.`;
                     if (dataObj.podComments) podStr += ` ${dataObj.podComments}.`;
-                    findingsLines.push(podStr);
                     impressionLines.push(`${dataObj.podFluid} pelvic free fluid in pouch of Douglas.`);
                 }
+                findingsLines.push(podStr);
 
                 // 5. Urinary Bladder
-                let ubStr = `Urinary bladder is ${dataObj.ubDistended.toLowerCase()} with ${dataObj.ubWall.toLowerCase()} wall thickness.`;
+                let ubStr = `URINARY BLADDER:\nUrinary bladder is ${dataObj.ubDistended.toLowerCase()} with ${dataObj.ubWall.toLowerCase()} wall thickness.`;
                 if (dataObj.ubCalc === 'Present') {
                     ubStr += ` Urinary bladder calculus identified.`;
                     impressionLines.push(`Urinary bladder calculus.`);
@@ -955,7 +950,7 @@
 
                 // 6. Additional Findings
                 if (dataObj.additionalNotes && dataObj.additionalNotes.trim()) {
-                    findingsLines.push(`ADDITIONAL OBSERVATIONS: ${dataObj.additionalNotes.trim()}`);
+                    findingsLines.push(`ADDITIONAL OBSERVATIONS:\n${dataObj.additionalNotes.trim()}`);
                 }
 
                 // Impression Fallback if all normal
@@ -1070,6 +1065,7 @@
                 if (data.ubPvr) { const el = document.getElementById('ub_pvr'); if (el) el.value = data.ubPvr; }
 
                 if (data.additionalNotes) { const el = document.getElementById('pelvis_additional_notes'); if (el) el.value = data.additionalNotes; }
+                if (data.bioEdd) { const el = document.getElementById('bio_edd'); if (el) el.value = data.bioEdd; }
 
             } catch (e) {
                 console.warn('Could not parse saved structured data:', e);

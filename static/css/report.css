@@ -6,7 +6,7 @@
 @media print {
     @page {
         size: A4 portrait;
-        margin: 18mm 12mm 15mm 12mm; /* Small top (18mm) and bottom (15mm) margins for physical stationery print */
+        margin: 32mm 12mm 15mm 12mm; /* Blank space ONLY at the top for physical pre-printed letterhead */
     }
 
     *, *::before, *::after {
@@ -35,18 +35,47 @@
         display: block !important;
     }
 
-    /* Hide screen-only controls, navigation, action bars, banners, and pdf spacers */
-    .no-print, 
+    /* Hide the entire application/browser UI header, navigation, Remix button, Device button, action bars, sidebars, banners, modals, and screen-only controls */
+    header, 
+    nav, 
+    aside, 
+    footer,
+    .top-navbar, 
+    .sidebar, 
+    .sidebar-backdrop, 
     .report-action-bar, 
     .top-action-bar,
     .letterhead-guide-banner,
-    nav, 
-    header.site-header, 
-    footer.site-footer, 
+    .patient-details-actions,
+    .no-print,
     .btn,
+    button,
+    .modal,
+    .modal-backdrop,
+    .toast,
+    .alert,
+    .dropdown,
+    .dropdown-menu,
     #report_notification_toast,
-    .pdf-page-break-spacer {
+    .pdf-page-break-spacer,
+    [class*="remix" i],
+    [class*="device" i],
+    [id*="remix" i],
+    [id*="device" i],
+    [aria-label*="remix" i],
+    [aria-label*="device" i],
+    [title*="remix" i],
+    [title*="device" i],
+    [data-testid*="remix" i],
+    [data-testid*="device" i],
+    [class*="preview-header" i],
+    [class*="preview-bar" i],
+    [class*="app-header" i],
+    [class*="toolbar" i],
+    [class*="banner" i],
+    [class*="controls" i] {
         display: none !important;
+        visibility: hidden !important;
         height: 0 !important;
         width: 0 !important;
         margin: 0 !important;
@@ -89,13 +118,6 @@
         break-inside: avoid !important;
         page-break-after: auto !important;
         break-after: auto !important;
-    }
-
-    /* Reset negative margins that were set for screen preview */
-    #report_paper > section:nth-of-type(1) > div:nth-of-type(1),
-    div#report_paper > section:nth-of-type(1) > div:nth-of-type(1),
-    div#report_paper:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(1) {
-        margin-top: 0 !important;
     }
 
     /* Section titles & dividers */
@@ -158,14 +180,17 @@
         break-inside: avoid !important;
     }
 
-    /* Signature area - keep block intact, no forced page break before it */
+    /* Signature area - keep block intact, flows naturally directly after content */
     .report-bottom-area {
-        margin-top: 10pt !important;
+        margin-top: 16pt !important;
         margin-bottom: 0 !important;
         padding-top: 4pt !important;
         padding-bottom: 0 !important;
         height: auto !important;
         min-height: auto !important;
+        display: flex !important;
+        justify-content: flex-end !important;
+        align-items: flex-end !important;
         page-break-before: auto !important;
         break-before: auto !important;
         page-break-inside: avoid !important;
@@ -255,22 +280,20 @@ body.report-preview-body {
     color: #000000;
     font-size: 13px;
     line-height: 1.4;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    display: block;
     background-color: #ffffff;
 }
 
 /* Print Layout specific styling (For Pre-printed Letterhead Paper) */
 .report-paper.report-print-layout {
     background-image: none !important;
-    padding: 18mm 12mm 15mm 12mm; /* Small top (18mm) and bottom (15mm) margins */
+    padding: 32mm 12mm 15mm 12mm; /* Leave blank space ONLY at TOP for physical letterhead */
 }
 
 /* Download PDF Layout specific styling (With Digital Clinic Letterhead) */
 .report-paper.report-pdf-layout,
 .report-paper:not(.report-print-layout) {
-    background-image: url('/static/letterhead_page_1.png');
+    background-image: url('/static/images/letterhead.svg');
     background-size: 210mm 297mm;
     background-repeat: repeat-y;
     background-position: top center;
@@ -288,7 +311,7 @@ body.report-preview-body {
     min-height: 297mm !important;
     height: auto !important;
     background-color: #ffffff !important;
-    background-image: url('/static/letterhead_page_1.png') !important;
+    background-image: url('/static/images/letterhead.svg') !important;
     background-size: 210mm 297mm !important;
     background-repeat: repeat-y !important;
     background-position: top center !important;
@@ -385,16 +408,6 @@ body.report-preview-body {
 }
 
 /* Patient Details Section & Header Row Layout */
-#report_paper > section:nth-of-type(1) > div:nth-of-type(1),
-div#report_paper > section:nth-of-type(1) > div:nth-of-type(1) {
-    margin-top: -55px !important;
-}
-
-div#report_paper:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(1) {
-    margin-top: 13px !important;
-    margin-right: 0px !important;
-}
-
 .patient-details-section {
     margin-bottom: 6pt;
 }
@@ -527,7 +540,7 @@ div#report_paper:nth-of-type(2) > section:nth-of-type(1) > div:nth-of-type(1) {
 /* Radiology Findings Formatting */
 .findings-container {
     margin-bottom: 6pt;
-    flex-grow: 1;
+    display: block;
 }
 
 .organ-group {

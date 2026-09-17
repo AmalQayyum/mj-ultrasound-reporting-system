@@ -141,6 +141,11 @@ function resetPrintLayout() {
 
 function waitForReportReady() {
     return new Promise((resolve) => {
+        // Fast timeout so printing is never blocked or stalled
+        const safetyTimer = setTimeout(() => {
+            resolve();
+        }, 400);
+
         const checkReady = () => {
             if (document.readyState !== 'complete' && document.readyState !== 'interactive') {
                 window.addEventListener('load', checkReady, { once: true });
@@ -148,7 +153,7 @@ function waitForReportReady() {
             }
 
             const images = Array.from(document.querySelectorAll('img'));
-            const uncompleteImages = images.filter(img => !img.complete || (img.src && img.naturalWidth === 0));
+            const uncompleteImages = images.filter(img => !img.complete && img.src);
 
             if (uncompleteImages.length > 0) {
                 let loadedCount = 0;
@@ -156,125 +161,136 @@ function waitForReportReady() {
                 const onDone = () => {
                     loadedCount++;
                     if (loadedCount >= total) {
-                        setTimeout(checkReady, 50);
+                        clearTimeout(safetyTimer);
+                        resolve();
                     }
                 };
                 uncompleteImages.forEach(img => {
-                    img.addEventListener('load', onDone, { once: true });
-                    img.addEventListener('error', onDone, { once: true });
+                    if (img.complete) {
+                        onDone();
+                    } else {
+                        img.addEventListener('load', onDone, { once: true });
+                        img.addEventListener('error', onDone, { once: true });
+                    }
                 });
                 return;
             }
 
+            clearTimeout(safetyTimer);
             if (document.fonts && document.fonts.status !== 'loaded') {
                 document.fonts.ready.then(() => {
-                    requestAnimationFrame(() => setTimeout(resolve, 80));
+                    setTimeout(resolve, 50);
                 }).catch(() => {
-                    requestAnimationFrame(() => setTimeout(resolve, 80));
+                    setTimeout(resolve, 50);
                 });
                 return;
             }
 
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    setTimeout(resolve, 80);
-                });
-            });
+            setTimeout(resolve, 50);
         };
 
         checkReady();
     });
 }
 
-let isPrinting = false;
-async function triggerPrint() {
-    if (isPrinting) return;
-    isPrinting = true;
+function isInsideIframe() {
     try {
-        resetPrintLayout();
-        await waitForReportReady();
-        resetPrintLayout();
-        window.focus();
-        window.print();
-    } catch (err) {
-        console.error('Print trigger error:', err);
-    } finally {
-        setTimeout(() => {
-            isPrinting = false;
-        }, 1000);
+        return window.self !== window.top;
+    } catch (e) {
+        return true;
     }
 }
 
-function downloadPDF() {
-    const btnPDF = document.getElementById('btn_pdf_action');
-    if (btnPDF) {
-        btnPDF.disabled = true;
-        btnPDF.innerHTML = `<span class="spinner-border spinner-border-sm me-1.5" role="status" aria-hidden="true"></span> Generating PDF...`;
-    }
-
-    const element = document.getElementById('report_paper');
-    if (!element) {
-        if (btnPDF) {
-            btnPDF.disabled = false;
-            btnPDF.innerHTML = `<span class="material-symbols-outlined fs-6">picture_as_pdf</span> Download PDF`;
+function triggerPrint() {
+    if (isInsideIframe()) {
+        let printUrl = window.location.pathname;
+        if (!printUrl.endsWith('/print')) {
+            const match = printUrl.match(/\/report\/(\d+)/);
+            if (match) {
+                printUrl = `/report/${match[1]}/print`;
+            }
         }
-        showNotification('Report content not found to generate PDF.', 'error');
+        const fullUrl = printUrl + '?autoprint=true';
+        window.open(fullUrl, '_blank');
         return;
     }
 
-    // Toggle pdf-rendering mode and apply multi-page layout
-    element.classList.add('pdf-rendering');
-    applyMultiPageLayout(element);
+    try {
+        window.focus();
+    } catch (_) {}
+    window.print();
+}
+window.triggerPrint = triggerPrint;
 
-    const reportNo = document.getElementById('report_no_val')?.innerText?.trim() || 'MJ';
-    const patientName = document.getElementById('patient_name_val')?.innerText?.trim() || 'Patient';
-    const cleanName = patientName.replace(/[^a-zA-Z0-9]/g, '_');
+async function downloadPDF() {
+    let reportId = '';
+    const reportNoElem = document.getElementById('report_no_val');
+    if (reportNoElem && reportNoElem.innerText && reportNoElem.innerText.trim()) {
+        reportId = reportNoElem.innerText.trim();
+    }
 
-    // Margins in mm: [top, left, bottom, right]
-    // Zero margin so uploaded letterhead spans full 210x297mm A4 page
-    const opt = {
-        margin: 0,
-        filename: `Ultrasound_Report_${cleanName}_#${reportNo}.pdf`,
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: {
-            scale: 2,
-            useCORS: true,
-            allowTaint: true,
-            logging: false,
-            scrollX: 0,
-            scrollY: 0
-        },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['css', 'legacy'] }
-    };
-
-    const cleanup = () => {
-        element.classList.remove('pdf-rendering');
-        element.querySelectorAll('.pdf-page-break-spacer').forEach(s => s.remove());
-        element.style.minHeight = '';
-        if (btnPDF) {
-            btnPDF.disabled = false;
-            btnPDF.innerHTML = `<span class="material-symbols-outlined fs-6">picture_as_pdf</span> Download PDF`;
+    if (!reportId) {
+        const match = window.location.pathname.match(/\/report\/(\d+)/);
+        if (match) {
+            reportId = match[1];
         }
-    };
+    }
 
-    if (typeof html2pdf !== 'undefined') {
-        html2pdf().set(opt).from(element).save().then(() => {
-            cleanup();
-            showNotification('PDF generated and downloaded successfully!', 'success');
-        }).catch((err) => {
-            console.error('PDF generation error:', err);
-            cleanup();
-            triggerPrint();
-        });
+    if (!reportId) {
+        const btnPDF = document.getElementById('btn_pdf_action');
+        if (btnPDF && btnPDF.getAttribute('href')) {
+            const match = btnPDF.getAttribute('href').match(/\/report\/(\d+)/);
+            if (match) reportId = match[1];
+        }
+    }
+
+    if (reportId) {
+        if (typeof showNotification === 'function') {
+            showNotification('Generating official PDF with clinic letterhead...', 'info');
+        }
+        try {
+            const token = localStorage.getItem('mj_session_token') || sessionStorage.getItem('mj_session_token') || '';
+            const headers = token ? { 'x-session-token': token } : {};
+            const response = await fetch(`/report/${reportId}/pdf?download=true`, { headers });
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = `Ultrasound_Report_PT-${reportId}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => window.URL.revokeObjectURL(blobUrl), 1000);
+            if (typeof showNotification === 'function') {
+                showNotification('PDF downloaded successfully!', 'success');
+            }
+        } catch (err) {
+            console.warn('Blob PDF download failed, falling back to location download:', err);
+            window.location.href = `/report/${reportId}/pdf?download=true`;
+        }
     } else {
-        cleanup();
-        triggerPrint();
+        console.error('Could not find report ID for PDF download');
+        if (typeof showNotification === 'function') {
+            showNotification('Report ID not found for PDF download.', 'error');
+        }
     }
 }
+window.downloadPDF = downloadPDF;
 
 document.addEventListener('DOMContentLoaded', function() {
     resetPrintLayout();
+
+    const btnPrint = document.getElementById('btn_print_action');
+    if (btnPrint) {
+        btnPrint.addEventListener('click', function(e) {
+            if (e) {
+                if (typeof e.preventDefault === 'function') e.preventDefault();
+                if (typeof e.stopPropagation === 'function') e.stopPropagation();
+            }
+            triggerPrint();
+        });
+    }
 });
 
 window.addEventListener('pageshow', function() {
